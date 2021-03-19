@@ -1,0 +1,141 @@
+<?php
+
+header('Content-Type: text/html; charset=utf-8');
+
+
+// Initialize the session
+session_start();
+ 
+// Check if the user is logged in, if not then redirect him to login page
+if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
+    header("location: login.php");
+    exit;
+}
+
+
+
+error_reporting(E_ALL);
+error_reporting(-1);
+ini_set('error_reporting', E_ALL);
+
+include_once("config/dbconfig.php");
+
+
+    function get_percentage($totalp, $numberp)
+    {
+      if ( $totalp > 0 ) {
+       return round($numberp / ($totalp / 100),2);
+      } else {
+        return 0;
+      }
+    }
+
+
+
+// Função de porcentagem: N é X% de N
+function porcentagem_nx ( $parcial, $total ) {
+    return ( $parcial * 100 ) / $total;
+
+}
+
+
+
+?>
+<html>
+<head>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>QualiBrain - Qualidoc</title>
+
+  <!-- Custom fonts for this template-->
+  <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+  <link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+  <!-- Custom styles for this template-->
+  <link href="css/sb-admin-2.min.css" rel="stylesheet">
+<link href="css/sb-admin-2.min.css" rel="stylesheet">
+<link href="css/comum.css" rel="stylesheet">
+
+
+</head>
+
+<body id="page-top">
+<div class="" id="totalprodutosmodala" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel1">Total Produtos Curva A</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+	<div class="modal-body">
+<br>
+<?
+?>
+
+<select class="custom-select" name="departamento" id="departamento" >
+  <option selected value="">Selecione o Departamento</option>
+<option value="">Geral</option>
+
+  <option value="medicamento">Medicamento</option>
+  <option value="perfumaria">Perfumaria</option>
+  <option value="NAO">Nao Medicamento</option>
+
+
+
+</select>
+
+
+<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+<script type="text/javascript">
+  $(document).ready(function(){ /* PREPARE THE SCRIPT */
+    $("#departamento").change(function(){ /* WHEN YOU CHANGE AND SELECT FROM THE SELECT FIELD */
+
+      var departamento = $(this).val(); /* GET THE VALUE OF THE SELECTED DATA */
+     // var dataString = departamento; /* STORE THAT TO A DATA STRING */
+var dataString = departamento;
+
+     $.ajax({ /* THEN THE AJAX CALL */        type: "POST", /* TYPE OF METHOD TO USE TO PASS THE DATA */
+        url: "get-datasimulator.php", /* PAGE WHERE WE WILL PASS THE DATA */
+        data: {departamento: departamento},
+ /* THE DATA WE WILL BE PASSING */
+        success: function(result){ /* GET THE TO BE RETURNED DATA */
+          $("#show").html(result); /* THE RETURNED DATA WILL BE SHOWN IN THIS DIV */
+        }
+      });
+
+    });
+  });
+</script>
+
+<br>
+
+<br>
+<div id="show">
+  <!-- ITEMS TO BE DISPLAYED HERE -->
+</div>
+<br>
+
+<p>Os valores acima referem-se aos produtos de curva A, ativos, com estoque e sem considerar os descontinuados.</p>
+<br>
+<div class="btn-group btn-group-toggle" data-toggle="buttons">
+<button type="button" class="btn btn-outline-success">
+<a href='relatorio/exportxlsa.php'>Exportar</a></button> </div><br><br><div class="dropdown-divider"></div>
+
+</div>
+        <div class="modal-footer">
+
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

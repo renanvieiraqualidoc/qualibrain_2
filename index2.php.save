@@ -1,0 +1,228 @@
+
+<?php
+
+header('Content-Type: text/html; charset=utf-8');
+
+
+// Initialize the session
+session_start();
+ 
+// Check if the user is logged in, if not then redirect him to login page
+if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
+    header("location: login.php");
+    exit;
+}
+
+
+
+error_reporting(E_ALL);
+error_reporting(-1);
+ini_set('error_reporting', E_ALL);
+
+include_once("config/dbconfig.php");
+
+
+    function get_percentage($totalp, $numberp)
+    {
+      if ( $totalp > 0 ) {
+       return round($numberp / ($totalp / 100),2);
+      } else {
+        return 0;
+      }
+    }
+
+
+
+// Função de porcentagem: N é X% de N
+function porcentagem_nx ( $parcial, $total ) {
+    return ( $parcial * 100 ) / $total;
+
+}
+
+//pbm
+$select_pbmc = "SELECT count(1) FROM Products where active='1' and qty_stock_rms>0 and pbm='1'";
+$resultado_pbmc = mysqli_query($conn,$select_pbmc);
+$total_pbmc = mysqli_fetch_array($resultado_pbmc)[0];
+
+//Promo
+$select_promo = "SELECT count(1) From promo";
+$resultado_promo = mysqli_query($conn,$select_promo);
+$total_promo = mysqli_fetch_array($resultado_promo)[0];
+
+
+//Promo-home
+$select_promo1 = "SELECT count(1) From promo where home=1";
+$resultado_promo1 = mysqli_query($conn,$select_promo1);
+$total_promo_home = mysqli_fetch_array($resultado_promo1)[0];
+
+
+header('Content-Type: text/html; charset=utf-8');
+//***********Sortimentos Monitorados**************//
+
+
+//***********GERAL PRODUTOS**************//
+
+if (isset($_GET['vpbm'])) {
+$pbma = $_GET['vpbm'];
+
+}else{
+
+$pbma = '5';
+}
+
+
+
+////cashback
+
+//Cashback qtd
+$select_cashback_geral = "SELECT count(1) FROM Products where active=1 and current_cashback > 0 and qty_stock_rms>0 and pbm <> $pbma";
+$resultado_cashback_geral = mysqli_query($conn,$select_cashback_geral);
+$margem_cashback_geral = mysqli_fetch_array($resultado_cashback_geral)[0];
+
+
+
+$select_descontinuado_geral = "SELECT count(1) FROM Products where active=1 and descontinuado = 1 and pbm <> $pbma";
+$resultado_descontinuado_geral = mysqli_query($conn,$select_descontinuado_geral);
+$total_descontinuado_geral = mysqli_fetch_array($resultado_descontinuado_geral)[0];
+
+
+$select_otc_geral = "SELECT count(1) FROM Products where active=1 and otc = 1 and pbm <> $pbma";
+$resultado_otc_geral = mysqli_query($conn,$select_otc_geral);
+$total_otc_geral = mysqli_fetch_array($resultado_otc_geral)[0];
+
+
+
+
+
+$select_termol_geral = "SELECT count(1) FROM termolabo where ativo=1";
+$resultado_termol_geral = mysqli_query($conn,$select_termol_geral);
+$total_termol_geral = mysqli_fetch_array($resultado_termol_geral)[0];
+
+
+
+$consultatotalcashback = "SELECT qty_stock_rms, current_cashback from Products where active=1 and current_cashback > 0 and qty_stock_rms>0 and pbm <> $pbma";
+$res_cashback = mysqli_query($conn,$consultatotalcashback);
+        while($rowcashback = mysqli_fetch_array($res_cashback)){
+
+$valoritemcashback = $valoritemcashback + ($rowcashback[0] * $rowcashback[1]);
+
+}
+
+
+
+//tabelados
+
+
+//$select_tabelados_geral = " SELECT count(1) from Products where active=1 and tabulated_price > 0 and qty_stock_rms>0 and pbm <> $pbma";
+//$resultado_tabelados_geral = mysqli_query($conn,$select_tabelados_geral);
+//$margem_tabelados_geral = mysqli_fetch_array($resultado_tabelados_geral)[0];
+
+//controlados
+
+$select_controlados_geral = " SELECT count(1) from Products where active=1 and controlled_substance = 1 and pbm <> $pbma and descontinuado <> 1";
+$resultado_controlados_geral = mysqli_query($conn,$select_controlados_geral);
+$margem_controlados_geral = mysqli_fetch_array($resultado_controlados_geral)[0];
+
+
+
+
+
+
+
+//Margem Bruta Simulada Geral Consulta
+$select_margembruta_geral = "SELECT AVG(current_gross_margin_percent) FROM Products where active=1 and qty_stock_rms>'0' and pbm <> $pbma and descontinuado <> 1";
+$resultado_margembruta_geral = mysqli_query($conn,$select_margembruta_geral);
+$margem_bruta_geral = mysqli_fetch_array($resultado_margembruta_geral)[0];
+
+
+//Margem Bruta Simulada Geral Consulta Curva A
+$select_margembruta_geral_a = "SELECT AVG(current_gross_margin_percent)  FROM Products where active=1 and curve='A' and qty_stock_rms>'0' and pbm <> $pbma  and descontinuado <> 1";
+$resultado_margembruta_geral_a = mysqli_query($conn,$select_margembruta_geral_a);
+$margem_bruta_geral_a = mysqli_fetch_array($resultado_margembruta_geral_a)[0];
+ 
+//Margem Bruta Simulada Geral Consulta Curva B
+$select_margembruta_geral_b = "SELECT AVG(current_gross_margin_percent)  FROM Products where active=1 and curve='B' and qty_stock_rms>'0' and pbm <> $pbma and descontinuado <> 1";
+$resultado_margembruta_geral_b = mysqli_query($conn,$select_margembruta_geral_b);
+$margem_bruta_geral_b = mysqli_fetch_array($resultado_margembruta_geral_b)[0];
+
+//Margem Bruta Simulada Geral Consulta Curva C
+$select_margembruta_geral_c = "SELECT AVG(current_gross_margin_percent) FROM Products where active=1 and curve='C' and qty_stock_rms>'0' and pbm <> $pbma and descontinuado <> 1";
+$resultado_margembruta_geral_c = mysqli_query($conn,$select_margembruta_geral_c);
+$margem_bruta_geral_c = mysqli_fetch_array($resultado_margembruta_geral_c)[0];
+
+
+
+
+
+//Margem Para o Menor Preco Geral Consulta
+$select_margemmenor_geral = "SELECT AVG(diff_current_pay_only_lowest) FROM Products where active=1 and qty_stock_rms>'0' and pbm <> $pbma and descontinuado <> 1 and qty_competitors_available > 0";
+$resultado_margemmenor_geral = mysqli_query($conn,$select_margemmenor_geral);
+$margemmenor_geral = mysqli_fetch_array($resultado_margemmenor_geral)[0];
+
+//Margem Para o Menor Preco Geral Consulta Curva A
+$select_margemmenor_geral_a = "SELECT AVG(diff_current_pay_only_lowest) FROM Products where active=1 and curve='A' and qty_stock_rms>'0' and pbm <> $pbma  and descontinuado <> 1 and qty_competitors_available > 0";
+$resultado_margemmenor_geral_a = mysqli_query($conn,$select_margemmenor_geral_a);
+$margemmenor_geral_a = mysqli_fetch_array($resultado_margemmenor_geral_a)[0];
+
+//Margem Para o Menor Preco Geral Consulta Curva B
+$select_margemmenor_geral_b = "SELECT AVG(diff_current_pay_only_lowest) FROM Products where active=1 and curve='B' and qty_stock_rms>'0' and pbm <> $pbma  and descontinuado <> 1  and qty_competitors_available > 0";
+$resultado_margemmenor_geral_b = mysqli_query($conn,$select_margemmenor_geral_b);
+$margemmenor_geral_b = mysqli_fetch_array($resultado_margemmenor_geral_b)[0];
+
+
+//Margem Para o Menor Preco Geral Consulta Curva C
+$select_margemmenor_geral_c = "SELECT AVG(diff_current_pay_only_lowest) FROM Products where active=1 and curve='C' and qty_stock_rms>'0' and pbm <> $pbma  and descontinuado <> 1  and qty_competitors_available > 0";
+$resultado_margemmenor_geral_c = mysqli_query($conn,$select_margemmenor_geral_c);
+$margemmenor_geral_c = mysqli_fetch_array($resultado_margemmenor_geral_c)[0];
+
+//Qtd Produtos Geral
+$select_qtd_geral = "SELECT count(Products.sku) FROM Products where active=1 and pbm <> $pbma ";
+$resultado_qtd_geral = mysqli_query($conn,$select_qtd_geral);
+$qtd_geral = mysqli_fetch_array($resultado_qtd_geral)[0];
+
+//Qtd Produtos Geral Curva A
+$select_qtd_geral_a = "SELECT count(1) FROM Products where active=1 and curve='A' and qty_stock_rms > 0 and pbm <> $pbma";
+$resultado_qtd_geral_a = mysqli_query($conn,$select_qtd_geral_a);
+$qtd_geral_a = mysqli_fetch_array($resultado_qtd_geral_a)[0];
+
+//Qtd Produtos Geral Curva B
+$select_qtd_geral_b = "SELECT count(1) FROM Products where active=1 and curve='B'  and qty_stock_rms > 0 and pbm <> $pbma";
+$resultado_qtd_geral_b = mysqli_query($conn,$select_qtd_geral_b);
+$qtd_geral_b = mysqli_fetch_array($resultado_qtd_geral_b)[0];
+
+
+//Qtd Produtos Geral Curva C
+$select_qtd_geral_c = "SELECT count(1) FROM Products where active=1 and curve='C'  and qty_stock_rms > 0 and pbm <> $pbma";
+$resultado_qtd_geral_c = mysqli_query($conn,$select_qtd_geral_c);
+$qtd_geral_c = mysqli_fetch_array($resultado_qtd_geral_c)[0];
+
+
+
+
+
+
+$consultatotalestoquef = "SELECT SUM(qty_stock_rms)FROM Products where active=1 and current_gross_margin_percent < 0 and pbm <> $pbma";
+$resultado_qtd_geral_estoquef = mysqli_query($conn,$consultatotalestoquef);
+$qtd_geral_estoquef = mysqli_fetch_array($resultado_qtd_geral_estoquef)[0];
+
+$consultatotalestoquef5 = "SELECT SUM(qty_stock_rms)FROM Products where active=1 and (current_gross_margin_percent  BETWEEN -0.05 and -0.001) and pbm <> $pbma";
+$resultado_qtd_geral_estoquef5 = mysqli_query($conn,$consultatotalestoquef5);
+$qtd_geral_estoquef5 = mysqli_fetch_array($resultado_qtd_geral_estoquef5)[0];
+
+
+
+
+$consultatotalestoquef10 = "SELECT SUM(qty_stock_rms)FROM Products where active=1 and (current_gross_margin_percent BETWEEN -0.10 and -0.04999) and pbm <> $pbma";
+$resultado_qtd_geral_estoquef10 = mysqli_query($conn,$consultatotalestoquef10);
+$qtd_geral_estoquef10 = mysqli_fetch_array($resultado_qtd_geral_estoquef10)[0];
+
+
+$consultatotalestoquef20 = "SELECT SUM(qty_stock_rms)FROM Products where active=1 and (current_gross_margin_percent BETWEEN -0.20 and -0.0999) and pbm <> $pbma";
+$resultado_qtd_geral_estoquef20 = mysqli_query($conn,$consultatotalestoquef20);
+$qtd_geral_estoquef20 = mysqli_fetch_array($resultado_qtd_geral_estoquef20)[0];
+
+$consultatotalestoquef30 = "SELECT SUM(qty_stock_rms)FROM Products where active=1 and (current_gross_margin_percent BETWEEN  -0.30 and -0.19999) and pbm <> $pbma";
+$resultado_qtd_geral_estoquef30 = mysqli_query($conn,$consultatotalestoquef30);
+$qtd_geral_estoquef30 = mysqli_fetch_array($resultado_qtd_geral_estoquef30)[0];
+
+$consultatotalestoquef30a = "SELECT SUM(qty_stock_rms)FROM Products where active=1 and current_gross_margin_percent < -0.30 and pbm <> $pbma";

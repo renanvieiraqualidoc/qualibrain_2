@@ -1,0 +1,370 @@
+<?php
+error_reporting(E_ALL);
+error_reporting(-1);
+ini_set('error_reporting', E_ALL);
+
+include_once("config/dbconfig.php");
+
+// DEFINE O FUSO HORARIO COMO O HORARIO DE BRASILIA
+    date_default_timezone_set('America/Sao_Paulo');
+// CRIA UMA VARIAVEL E ARMAZENA A HORA ATUAL DO FUSO-HORÀRIO DEFINIDO (BRASÍLIA)
+   echo $dataLocal = date("Y-m-d H:i:s");
+
+$updata = "UPDATE Products SET update_time = '.$dataLocal.'";
+if ($conn->query($updata) === TRUE) {
+  echo "Atualizar Data --> OK <br>";
+} else {
+  echo "Error: " . $updata . "<br>" . $conn->error;
+}
+
+
+
+$sync_insert = "INSERT IGNORE INTO fspider.Products (sku) 
+SELECT sku FROM cockpit.Products";
+
+if ($conn->query($sync_insert) === TRUE) {
+  echo "Inserir novos SKU'S --> OK <br>";
+} else {
+  echo "Error: " . $sync_insert . "<br>" . $conn->error;
+}
+
+
+$sync_update="UPDATE fspider.Products INNER JOIN cockpit.Products ON (fspider.Products.sku = cockpit.Products.sku) SET fspider.Products.current_cashback = cockpit.Products.current_cashback, fspider.Products.status_code_fk=cockpit.Products.status_code_fk,
+fspider.Products.situation_code_fk = cockpit.Products.situation_code_fk,
+fspider.Products.title = cockpit.Products.title,
+fspider.Products.active = cockpit.Products.active,
+fspider.Products.department = cockpit.Products.department,
+fspider.Products.category = cockpit.Products.category,
+fspider.Products.qty_stock = cockpit.Products.qty_stock,
+fspider.Products.qty_stock_rms = cockpit.Products.qty_stock_rms,
+fspider.Products.tabulated_price = cockpit.Products.tabulated_price,
+fspider.Products.tabulated_price_suggestion = cockpit.Products.tabulated_price_suggestion,
+fspider.Products.minimum_price = cockpit.Products.minimum_price,
+fspider.Products.maximum_price = cockpit.Products.maximum_price,
+fspider.Products.lowest_price = cockpit.Products.lowest_price,
+fspider.Products.lowest_price_competitor = cockpit.Products.lowest_price_competitor,
+fspider.Products.qty_competitors = cockpit.Products.qty_competitors,
+fspider.Products.qty_competitors_available = cockpit.Products.qty_competitors_available,
+fspider.Products.price_cost = cockpit.Products.price_cost,
+fspider.Products.margin = cockpit.Products.margin,
+fspider.Products.sale_price = cockpit.Products.sale_price,
+fspider.Products.price_pay_only = cockpit.Products.price_pay_only,
+fspider.Products.less_price_around = cockpit.Products.less_price_around,
+fspider.Products.margin_value = cockpit.Products.margin_value,
+fspider.Products.cashback = cockpit.Products.cashback,
+fspider.Products.gross_margin = cockpit.Products.gross_margin,
+fspider.Products.gross_margin_percent = cockpit.Products.gross_margin_percent,
+fspider.Products.diff_pay_only_lowest = cockpit.Products.diff_pay_only_lowest,
+fspider.Products.current_price_pay_only = cockpit.Products.current_price_pay_only,
+fspider.Products.current_less_price_around = cockpit.Products.current_less_price_around,
+fspider.Products.current_margin_value = cockpit.Products.current_margin_value,
+fspider.Products.current_cashback = cockpit.Products.current_cashback,
+fspider.Products.current_gross_margin = cockpit.Products.current_gross_margin,
+fspider.Products.current_gross_margin_percent = cockpit.Products.current_gross_margin_percent,
+fspider.Products.diff_current_pay_only_lowest = cockpit.Products.diff_current_pay_only_lowest";
+
+if ($conn->query($sync_update) === TRUE) {
+  echo "Atualizar Novos SKU's --> OK <br>";
+} else {
+  echo "Error: " . $sync_update . "<br>" . $conn->error;
+}  
+
+
+
+$uppbm= "UPDATE Products AS b INNER JOIN pbm AS g ON b.sku = g.sku SET b.pbm = 1";
+
+if ($conn->query($uppbm) === TRUE) {
+  echo "Atualizar Novos PBMs --> OK <br>";
+} else {
+  echo "Error: " . $uppbm . "<br>" . $conn->error;
+}  
+
+
+
+
+
+$upcontrolados= "UPDATE Products AS b INNER JOIN controlados AS g ON b.sku = g.sku SET b.controlled_substance = 1";
+
+if ($conn->query($upcontrolados) === TRUE) {
+  echo "Atualizar Novos Controlados --> OK <br>";
+} else {
+  echo "Error: " . $upcontrolados . "<br>" . $conn->error;
+}  
+
+
+
+
+$updescontinuado= "UPDATE Products AS b INNER JOIN descontinuado AS g ON b.sku = g.sku SET b.descontinuado = 1";
+
+if ($conn->query($updescontinuado) === TRUE) {
+  echo "Atualizar Novos Controlados --> OK <br>";
+} else {
+  echo "Error: " . $updescontinuado . "<br>" . $conn->error;
+}  
+
+
+
+
+
+$sqlta1="UPDATE Products SET title = REPLACE(title,'Š','S')";	if ($conn->query($sqlta1) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta2="UPDATE Products SET title = REPLACE(title,'š','s')";	if ($conn->query($sqlta2) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta3="UPDATE Products SET title = REPLACE(title,'Ð','Dj')";	if ($conn->query($sqlta3) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta4="UPDATE Products SET title = REPLACE(title,'Ž','Z')";	if ($conn->query($sqlta4) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta5="UPDATE Products SET title = REPLACE(title,'ž','z')";	if ($conn->query($sqlta5) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta6="UPDATE Products SET title = REPLACE(title,'À','A')";	if ($conn->query($sqlta6) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta7="UPDATE Products SET title = REPLACE(title,'Á','A')";	if ($conn->query($sqlta7) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta8="UPDATE Products SET title = REPLACE(title,'Â','A')";	if ($conn->query($sqlta8) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta9="UPDATE Products SET title = REPLACE(title,'Ã','A')";	if ($conn->query($sqlta9) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta10="UPDATE Products SET title = REPLACE(title,'Ä','A')";	if ($conn->query($sqlta10) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta11="UPDATE Products SET title = REPLACE(title,'Å','A')";	if ($conn->query($sqlta11) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta12="UPDATE Products SET title = REPLACE(title,'Æ','A')";	if ($conn->query($sqlta12) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta13="UPDATE Products SET title = REPLACE(title,'Ç','C')";	if ($conn->query($sqlta13) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta14="UPDATE Products SET title = REPLACE(title,'È','E')";	if ($conn->query($sqlta14) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta15="UPDATE Products SET title = REPLACE(title,'É','E')";	if ($conn->query($sqlta15) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta16="UPDATE Products SET title = REPLACE(title,'Ê','E')";	if ($conn->query($sqlta16) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta17="UPDATE Products SET title = REPLACE(title,'Ë','E')";	if ($conn->query($sqlta17) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta18="UPDATE Products SET title = REPLACE(title,'Ì','I')";	if ($conn->query($sqlta18) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta19="UPDATE Products SET title = REPLACE(title,'Í','I')";	if ($conn->query($sqlta19) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta20="UPDATE Products SET title = REPLACE(title,'Î','I')";	if ($conn->query($sqlta20) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta21="UPDATE Products SET title = REPLACE(title,'Ï','I')";	if ($conn->query($sqlta21) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta22="UPDATE Products SET title = REPLACE(title,'Ñ','N')";	if ($conn->query($sqlta22) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta23="UPDATE Products SET title = REPLACE(title,'Ò','O')";	if ($conn->query($sqlta23) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta24="UPDATE Products SET title = REPLACE(title,'Ó','O')";	if ($conn->query($sqlta24) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta25="UPDATE Products SET title = REPLACE(title,'Ô','O')";	if ($conn->query($sqlta25) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta26="UPDATE Products SET title = REPLACE(title,'Õ','O')";	if ($conn->query($sqlta26) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta27="UPDATE Products SET title = REPLACE(title,'Ö','O')";	if ($conn->query($sqlta27) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta28="UPDATE Products SET title = REPLACE(title,'Ø','O')";	if ($conn->query($sqlta28) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta29="UPDATE Products SET title = REPLACE(title,'Ù','U')";	if ($conn->query($sqlta29) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta30="UPDATE Products SET title = REPLACE(title,'Ú','U')";	if ($conn->query($sqlta30) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta31="UPDATE Products SET title = REPLACE(title,'Û','U')";	if ($conn->query($sqlta31) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta32="UPDATE Products SET title = REPLACE(title,'Ü','U')";	if ($conn->query($sqlta32) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta33="UPDATE Products SET title = REPLACE(title,'Ý','Y')";	if ($conn->query($sqlta33) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta34="UPDATE Products SET title = REPLACE(title,'Þ','B')";	if ($conn->query($sqlta34) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta35="UPDATE Products SET title = REPLACE(title,'ß','Ss')";	if ($conn->query($sqlta35) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta36="UPDATE Products SET title = REPLACE(title,'à','a')";	if ($conn->query($sqlta36) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta37="UPDATE Products SET title = REPLACE(title,'á','a')";	if ($conn->query($sqlta37) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta38="UPDATE Products SET title = REPLACE(title,'â','a')";	if ($conn->query($sqlta38) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta39="UPDATE Products SET title = REPLACE(title,'ã','a')";	if ($conn->query($sqlta39) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta40="UPDATE Products SET title = REPLACE(title,'ä','a')";	if ($conn->query($sqlta40) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta41="UPDATE Products SET title = REPLACE(title,'å','a')";	if ($conn->query($sqlta41) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta42="UPDATE Products SET title = REPLACE(title,'æ','a')";	if ($conn->query($sqlta42) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta43="UPDATE Products SET title = REPLACE(title,'ç','c')";	if ($conn->query($sqlta43) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta44="UPDATE Products SET title = REPLACE(title,'è','e')";	if ($conn->query($sqlta44) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta45="UPDATE Products SET title = REPLACE(title,'é','e')";	if ($conn->query($sqlta45) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta46="UPDATE Products SET title = REPLACE(title,'ê','e')";	if ($conn->query($sqlta46) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta47="UPDATE Products SET title = REPLACE(title,'ë','e')";	if ($conn->query($sqlta47) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta48="UPDATE Products SET title = REPLACE(title,'ì','i')";	if ($conn->query($sqlta48) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta49="UPDATE Products SET title = REPLACE(title,'í','i')";	if ($conn->query($sqlta49) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta50="UPDATE Products SET title = REPLACE(title,'î','i')";	if ($conn->query($sqlta50) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta51="UPDATE Products SET title = REPLACE(title,'ï','i')";	if ($conn->query($sqlta51) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta52="UPDATE Products SET title = REPLACE(title,'ð','o')";	if ($conn->query($sqlta52) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta53="UPDATE Products SET title = REPLACE(title,'ñ','n')";	if ($conn->query($sqlta53) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta54="UPDATE Products SET title = REPLACE(title,'ò','o')";	if ($conn->query($sqlta54) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta55="UPDATE Products SET title = REPLACE(title,'ó','o')";	if ($conn->query($sqlta55) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta56="UPDATE Products SET title = REPLACE(title,'ô','o')";	if ($conn->query($sqlta56) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta57="UPDATE Products SET title = REPLACE(title,'õ','o')";	if ($conn->query($sqlta57) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta58="UPDATE Products SET title = REPLACE(title,'ö','o')";	if ($conn->query($sqlta58) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta59="UPDATE Products SET title = REPLACE(title,'ø','o')";	if ($conn->query($sqlta59) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta60="UPDATE Products SET title = REPLACE(title,'ù','u')";	if ($conn->query($sqlta60) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta61="UPDATE Products SET title = REPLACE(title,'ú','u')";	if ($conn->query($sqlta61) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta62="UPDATE Products SET title = REPLACE(title,'û','u')";	if ($conn->query($sqlta62) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta63="UPDATE Products SET title = REPLACE(title,'ý','y')";	if ($conn->query($sqlta63) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta64="UPDATE Products SET title = REPLACE(title,'ý','y')";	if ($conn->query($sqlta64) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta65="UPDATE Products SET title = REPLACE(title,'þ','b')";	if ($conn->query($sqlta65) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta66="UPDATE Products SET title = REPLACE(title,'ÿ','y')";	if ($conn->query($sqlta66) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta67="UPDATE Products SET title = REPLACE(title,'ƒ','f')";	if ($conn->query($sqlta67) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta68="UPDATE Products SET title = REPLACE(title,'ě','e')";	if ($conn->query($sqlta68) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta69="UPDATE Products SET title = REPLACE(title,'ž','z')";	if ($conn->query($sqlta69) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta70="UPDATE Products SET title = REPLACE(title,'š','s')";	if ($conn->query($sqlta70) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta71="UPDATE Products SET title = REPLACE(title,'č','c')";	if ($conn->query($sqlta71) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta72="UPDATE Products SET title = REPLACE(title,'ř','r')";	if ($conn->query($sqlta72) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta73="UPDATE Products SET title = REPLACE(title,'ď','d')";	if ($conn->query($sqlta73) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta74="UPDATE Products SET title = REPLACE(title,'ť','t')";	if ($conn->query($sqlta74) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta75="UPDATE Products SET title = REPLACE(title,'ň','n')";	if ($conn->query($sqlta75) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta76="UPDATE Products SET title = REPLACE(title,'ů','u')";	if ($conn->query($sqlta76) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta77="UPDATE Products SET title = REPLACE(title,'Ě','E')";	if ($conn->query($sqlta77) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta78="UPDATE Products SET title = REPLACE(title,'Ž','Z')";	if ($conn->query($sqlta78) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta79="UPDATE Products SET title = REPLACE(title,'Š','S')";	if ($conn->query($sqlta79) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta80="UPDATE Products SET title = REPLACE(title,'Č','C')";	if ($conn->query($sqlta80) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta81="UPDATE Products SET title = REPLACE(title,'Ř','R')";	if ($conn->query($sqlta81) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta82="UPDATE Products SET title = REPLACE(title,'Ď','D')";	if ($conn->query($sqlta82) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta83="UPDATE Products SET title = REPLACE(title,'Ť','T')";	if ($conn->query($sqlta83) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta84="UPDATE Products SET title = REPLACE(title,'Ň','N')";	if ($conn->query($sqlta84) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta85="UPDATE Products SET title = REPLACE(title,'Ů','U')";	if ($conn->query($sqlta85) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta86="UPDATE Products SET department = REPLACE(department,'Š','S')";	if ($conn->query($sqlta86) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta87="UPDATE Products SET department = REPLACE(department,'š','s')";	if ($conn->query($sqlta87) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta88="UPDATE Products SET department = REPLACE(department,'Ð','Dj')";	if ($conn->query($sqlta88) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta89="UPDATE Products SET department = REPLACE(department,'Ž','Z')";	if ($conn->query($sqlta89) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta90="UPDATE Products SET department = REPLACE(department,'ž','z')";	if ($conn->query($sqlta90) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta91="UPDATE Products SET department = REPLACE(department,'À','A')";	if ($conn->query($sqlta91) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta92="UPDATE Products SET department = REPLACE(department,'Á','A')";	if ($conn->query($sqlta92) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta93="UPDATE Products SET department = REPLACE(department,'Â','A')";	if ($conn->query($sqlta93) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta94="UPDATE Products SET department = REPLACE(department,'Ã','A')";	if ($conn->query($sqlta94) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta95="UPDATE Products SET department = REPLACE(department,'Ä','A')";	if ($conn->query($sqlta95) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta96="UPDATE Products SET department = REPLACE(department,'Å','A')";	if ($conn->query($sqlta96) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta97="UPDATE Products SET department = REPLACE(department,'Æ','A')";	if ($conn->query($sqlta97) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta98="UPDATE Products SET department = REPLACE(department,'Ç','C')";	if ($conn->query($sqlta98) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta99="UPDATE Products SET department = REPLACE(department,'È','E')";	if ($conn->query($sqlta99) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta100="UPDATE Products SET department = REPLACE(department,'É','E')";	if ($conn->query($sqlta100) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta101="UPDATE Products SET department = REPLACE(department,'Ê','E')";	if ($conn->query($sqlta101) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta102="UPDATE Products SET department = REPLACE(department,'Ë','E')";	if ($conn->query($sqlta102) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta103="UPDATE Products SET department = REPLACE(department,'Ì','I')";	if ($conn->query($sqlta103) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta104="UPDATE Products SET department = REPLACE(department,'Í','I')";	if ($conn->query($sqlta104) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta105="UPDATE Products SET department = REPLACE(department,'Î','I')";	if ($conn->query($sqlta105) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta106="UPDATE Products SET department = REPLACE(department,'Ï','I')";	if ($conn->query($sqlta106) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta107="UPDATE Products SET department = REPLACE(department,'Ñ','N')";	if ($conn->query($sqlta107) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta108="UPDATE Products SET department = REPLACE(department,'Ò','O')";	if ($conn->query($sqlta108) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta109="UPDATE Products SET department = REPLACE(department,'Ó','O')";	if ($conn->query($sqlta109) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta110="UPDATE Products SET department = REPLACE(department,'Ô','O')";	if ($conn->query($sqlta110) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta111="UPDATE Products SET department = REPLACE(department,'Õ','O')";	if ($conn->query($sqlta111) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta112="UPDATE Products SET department = REPLACE(department,'Ö','O')";	if ($conn->query($sqlta112) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta113="UPDATE Products SET department = REPLACE(department,'Ø','O')";	if ($conn->query($sqlta113) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta114="UPDATE Products SET department = REPLACE(department,'Ù','U')";	if ($conn->query($sqlta114) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta115="UPDATE Products SET department = REPLACE(department,'Ú','U')";	if ($conn->query($sqlta115) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta116="UPDATE Products SET department = REPLACE(department,'Û','U')";	if ($conn->query($sqlta116) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta117="UPDATE Products SET department = REPLACE(department,'Ü','U')";	if ($conn->query($sqlta117) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta118="UPDATE Products SET department = REPLACE(department,'Ý','Y')";	if ($conn->query($sqlta118) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta119="UPDATE Products SET department = REPLACE(department,'Þ','B')";	if ($conn->query($sqlta119) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta120="UPDATE Products SET department = REPLACE(department,'ß','Ss')";	if ($conn->query($sqlta120) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta121="UPDATE Products SET department = REPLACE(department,'à','a')";	if ($conn->query($sqlta121) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta122="UPDATE Products SET department = REPLACE(department,'á','a')";	if ($conn->query($sqlta122) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta123="UPDATE Products SET department = REPLACE(department,'â','a')";	if ($conn->query($sqlta123) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta124="UPDATE Products SET department = REPLACE(department,'ã','a')";	if ($conn->query($sqlta124) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta125="UPDATE Products SET department = REPLACE(department,'ä','a')";	if ($conn->query($sqlta125) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta126="UPDATE Products SET department = REPLACE(department,'å','a')";	if ($conn->query($sqlta126) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta127="UPDATE Products SET department = REPLACE(department,'æ','a')";	if ($conn->query($sqlta127) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta128="UPDATE Products SET department = REPLACE(department,'ç','c')";	if ($conn->query($sqlta128) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta129="UPDATE Products SET department = REPLACE(department,'è','e')";	if ($conn->query($sqlta129) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta130="UPDATE Products SET department = REPLACE(department,'é','e')";	if ($conn->query($sqlta130) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta131="UPDATE Products SET department = REPLACE(department,'ê','e')";	if ($conn->query($sqlta131) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta132="UPDATE Products SET department = REPLACE(department,'ë','e')";	if ($conn->query($sqlta132) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta133="UPDATE Products SET department = REPLACE(department,'ì','i')";	if ($conn->query($sqlta133) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta134="UPDATE Products SET department = REPLACE(department,'í','i')";	if ($conn->query($sqlta134) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta135="UPDATE Products SET department = REPLACE(department,'î','i')";	if ($conn->query($sqlta135) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta136="UPDATE Products SET department = REPLACE(department,'ï','i')";	if ($conn->query($sqlta136) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta137="UPDATE Products SET department = REPLACE(department,'ð','o')";	if ($conn->query($sqlta137) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta138="UPDATE Products SET department = REPLACE(department,'ñ','n')";	if ($conn->query($sqlta138) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta139="UPDATE Products SET department = REPLACE(department,'ò','o')";	if ($conn->query($sqlta139) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta140="UPDATE Products SET department = REPLACE(department,'ó','o')";	if ($conn->query($sqlta140) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta141="UPDATE Products SET department = REPLACE(department,'ô','o')";	if ($conn->query($sqlta141) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta142="UPDATE Products SET department = REPLACE(department,'õ','o')";	if ($conn->query($sqlta142) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta143="UPDATE Products SET department = REPLACE(department,'ö','o')";	if ($conn->query($sqlta143) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta144="UPDATE Products SET department = REPLACE(department,'ø','o')";	if ($conn->query($sqlta144) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta145="UPDATE Products SET department = REPLACE(department,'ù','u')";	if ($conn->query($sqlta145) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta146="UPDATE Products SET department = REPLACE(department,'ú','u')";	if ($conn->query($sqlta146) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta147="UPDATE Products SET department = REPLACE(department,'û','u')";	if ($conn->query($sqlta147) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta148="UPDATE Products SET department = REPLACE(department,'ý','y')";	if ($conn->query($sqlta148) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta149="UPDATE Products SET department = REPLACE(department,'ý','y')";	if ($conn->query($sqlta149) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta150="UPDATE Products SET department = REPLACE(department,'þ','b')";	if ($conn->query($sqlta150) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta151="UPDATE Products SET department = REPLACE(department,'ÿ','y')";	if ($conn->query($sqlta151) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta152="UPDATE Products SET department = REPLACE(department,'ƒ','f')";	if ($conn->query($sqlta152) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta153="UPDATE Products SET department = REPLACE(department,'ě','e')";	if ($conn->query($sqlta153) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta154="UPDATE Products SET department = REPLACE(department,'ž','z')";	if ($conn->query($sqlta154) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta155="UPDATE Products SET department = REPLACE(department,'š','s')";	if ($conn->query($sqlta155) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta156="UPDATE Products SET department = REPLACE(department,'č','c')";	if ($conn->query($sqlta156) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta157="UPDATE Products SET department = REPLACE(department,'ř','r')";	if ($conn->query($sqlta157) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta158="UPDATE Products SET department = REPLACE(department,'ď','d')";	if ($conn->query($sqlta158) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta159="UPDATE Products SET department = REPLACE(department,'ť','t')";	if ($conn->query($sqlta159) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta160="UPDATE Products SET department = REPLACE(department,'ň','n')";	if ($conn->query($sqlta160) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta161="UPDATE Products SET department = REPLACE(department,'ů','u')";	if ($conn->query($sqlta161) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta162="UPDATE Products SET department = REPLACE(department,'Ě','E')";	if ($conn->query($sqlta162) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta163="UPDATE Products SET department = REPLACE(department,'Ž','Z')";	if ($conn->query($sqlta163) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta164="UPDATE Products SET department = REPLACE(department,'Š','S')";	if ($conn->query($sqlta164) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta165="UPDATE Products SET department = REPLACE(department,'Č','C')";	if ($conn->query($sqlta165) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta166="UPDATE Products SET department = REPLACE(department,'Ř','R')";	if ($conn->query($sqlta166) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta167="UPDATE Products SET department = REPLACE(department,'Ď','D')";	if ($conn->query($sqlta167) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta168="UPDATE Products SET department = REPLACE(department,'Ť','T')";	if ($conn->query($sqlta168) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta169="UPDATE Products SET department = REPLACE(department,'Ň','N')";	if ($conn->query($sqlta169) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta170="UPDATE Products SET department = REPLACE(department,'Ů','U')";	if ($conn->query($sqlta170) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta171="UPDATE Products SET category = REPLACE(category,'Š','S')";	if ($conn->query($sqlta171) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta172="UPDATE Products SET category = REPLACE(category,'š','s')";	if ($conn->query($sqlta172) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta173="UPDATE Products SET category = REPLACE(category,'Ð','Dj')";	if ($conn->query($sqlta173) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta174="UPDATE Products SET category = REPLACE(category,'Ž','Z')";	if ($conn->query($sqlta174) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta175="UPDATE Products SET category = REPLACE(category,'ž','z')";	if ($conn->query($sqlta175) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta176="UPDATE Products SET category = REPLACE(category,'À','A')";	if ($conn->query($sqlta176) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta177="UPDATE Products SET category = REPLACE(category,'Á','A')";	if ($conn->query($sqlta177) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta178="UPDATE Products SET category = REPLACE(category,'Â','A')";	if ($conn->query($sqlta178) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta179="UPDATE Products SET category = REPLACE(category,'Ã','A')";	if ($conn->query($sqlta179) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta180="UPDATE Products SET category = REPLACE(category,'Ä','A')";	if ($conn->query($sqlta180) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta181="UPDATE Products SET category = REPLACE(category,'Å','A')";	if ($conn->query($sqlta181) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta182="UPDATE Products SET category = REPLACE(category,'Æ','A')";	if ($conn->query($sqlta182) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta183="UPDATE Products SET category = REPLACE(category,'Ç','C')";	if ($conn->query($sqlta183) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta184="UPDATE Products SET category = REPLACE(category,'È','E')";	if ($conn->query($sqlta184) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta185="UPDATE Products SET category = REPLACE(category,'É','E')";	if ($conn->query($sqlta185) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta186="UPDATE Products SET category = REPLACE(category,'Ê','E')";	if ($conn->query($sqlta186) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta187="UPDATE Products SET category = REPLACE(category,'Ë','E')";	if ($conn->query($sqlta187) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta188="UPDATE Products SET category = REPLACE(category,'Ì','I')";	if ($conn->query($sqlta188) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta189="UPDATE Products SET category = REPLACE(category,'Í','I')";	if ($conn->query($sqlta189) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta190="UPDATE Products SET category = REPLACE(category,'Î','I')";	if ($conn->query($sqlta190) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta191="UPDATE Products SET category = REPLACE(category,'Ï','I')";	if ($conn->query($sqlta191) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta192="UPDATE Products SET category = REPLACE(category,'Ñ','N')";	if ($conn->query($sqlta192) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta193="UPDATE Products SET category = REPLACE(category,'Ò','O')";	if ($conn->query($sqlta193) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta194="UPDATE Products SET category = REPLACE(category,'Ó','O')";	if ($conn->query($sqlta194) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta195="UPDATE Products SET category = REPLACE(category,'Ô','O')";	if ($conn->query($sqlta195) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta196="UPDATE Products SET category = REPLACE(category,'Õ','O')";	if ($conn->query($sqlta196) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta197="UPDATE Products SET category = REPLACE(category,'Ö','O')";	if ($conn->query($sqlta197) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta198="UPDATE Products SET category = REPLACE(category,'Ø','O')";	if ($conn->query($sqlta198) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta199="UPDATE Products SET category = REPLACE(category,'Ù','U')";	if ($conn->query($sqlta199) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta200="UPDATE Products SET category = REPLACE(category,'Ú','U')";	if ($conn->query($sqlta200) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta201="UPDATE Products SET category = REPLACE(category,'Û','U')";	if ($conn->query($sqlta201) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta202="UPDATE Products SET category = REPLACE(category,'Ü','U')";	if ($conn->query($sqlta202) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta203="UPDATE Products SET category = REPLACE(category,'Ý','Y')";	if ($conn->query($sqlta203) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta204="UPDATE Products SET category = REPLACE(category,'Þ','B')";	if ($conn->query($sqlta204) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta205="UPDATE Products SET category = REPLACE(category,'ß','Ss')";	if ($conn->query($sqlta205) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta206="UPDATE Products SET category = REPLACE(category,'à','a')";	if ($conn->query($sqlta206) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta207="UPDATE Products SET category = REPLACE(category,'á','a')";	if ($conn->query($sqlta207) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta208="UPDATE Products SET category = REPLACE(category,'â','a')";	if ($conn->query($sqlta208) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta209="UPDATE Products SET category = REPLACE(category,'ã','a')";	if ($conn->query($sqlta209) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta210="UPDATE Products SET category = REPLACE(category,'ä','a')";	if ($conn->query($sqlta210) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta211="UPDATE Products SET category = REPLACE(category,'å','a')";	if ($conn->query($sqlta211) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta212="UPDATE Products SET category = REPLACE(category,'æ','a')";	if ($conn->query($sqlta212) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta213="UPDATE Products SET category = REPLACE(category,'ç','c')";	if ($conn->query($sqlta213) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta214="UPDATE Products SET category = REPLACE(category,'è','e')";	if ($conn->query($sqlta214) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta215="UPDATE Products SET category = REPLACE(category,'é','e')";	if ($conn->query($sqlta215) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta216="UPDATE Products SET category = REPLACE(category,'ê','e')";	if ($conn->query($sqlta216) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta217="UPDATE Products SET category = REPLACE(category,'ë','e')";	if ($conn->query($sqlta217) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta218="UPDATE Products SET category = REPLACE(category,'ì','i')";	if ($conn->query($sqlta218) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta219="UPDATE Products SET category = REPLACE(category,'í','i')";	if ($conn->query($sqlta219) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta220="UPDATE Products SET category = REPLACE(category,'î','i')";	if ($conn->query($sqlta220) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta221="UPDATE Products SET category = REPLACE(category,'ï','i')";	if ($conn->query($sqlta221) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta222="UPDATE Products SET category = REPLACE(category,'ð','o')";	if ($conn->query($sqlta222) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta223="UPDATE Products SET category = REPLACE(category,'ñ','n')";	if ($conn->query($sqlta223) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta224="UPDATE Products SET category = REPLACE(category,'ò','o')";	if ($conn->query($sqlta224) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta225="UPDATE Products SET category = REPLACE(category,'ó','o')";	if ($conn->query($sqlta225) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta226="UPDATE Products SET category = REPLACE(category,'ô','o')";	if ($conn->query($sqlta226) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta227="UPDATE Products SET category = REPLACE(category,'õ','o')";	if ($conn->query($sqlta227) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta228="UPDATE Products SET category = REPLACE(category,'ö','o')";	if ($conn->query($sqlta228) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta229="UPDATE Products SET category = REPLACE(category,'ø','o')";	if ($conn->query($sqlta229) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta230="UPDATE Products SET category = REPLACE(category,'ù','u')";	if ($conn->query($sqlta230) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta231="UPDATE Products SET category = REPLACE(category,'ú','u')";	if ($conn->query($sqlta231) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta232="UPDATE Products SET category = REPLACE(category,'û','u')";	if ($conn->query($sqlta232) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta233="UPDATE Products SET category = REPLACE(category,'ý','y')";	if ($conn->query($sqlta233) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta234="UPDATE Products SET category = REPLACE(category,'ý','y')";	if ($conn->query($sqlta234) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta235="UPDATE Products SET category = REPLACE(category,'þ','b')";	if ($conn->query($sqlta235) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta236="UPDATE Products SET category = REPLACE(category,'ÿ','y')";	if ($conn->query($sqlta236) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta237="UPDATE Products SET category = REPLACE(category,'ƒ','f')";	if ($conn->query($sqlta237) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta238="UPDATE Products SET category = REPLACE(category,'ě','e')";	if ($conn->query($sqlta238) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta239="UPDATE Products SET category = REPLACE(category,'ž','z')";	if ($conn->query($sqlta239) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta240="UPDATE Products SET category = REPLACE(category,'š','s')";	if ($conn->query($sqlta240) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta241="UPDATE Products SET category = REPLACE(category,'č','c')";	if ($conn->query($sqlta241) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta242="UPDATE Products SET category = REPLACE(category,'ř','r')";	if ($conn->query($sqlta242) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta243="UPDATE Products SET category = REPLACE(category,'ď','d')";	if ($conn->query($sqlta243) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta244="UPDATE Products SET category = REPLACE(category,'ť','t')";	if ($conn->query($sqlta244) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta245="UPDATE Products SET category = REPLACE(category,'ň','n')";	if ($conn->query($sqlta245) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta246="UPDATE Products SET category = REPLACE(category,'ů','u')";	if ($conn->query($sqlta246) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta247="UPDATE Products SET category = REPLACE(category,'Ě','E')";	if ($conn->query($sqlta247) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta248="UPDATE Products SET category = REPLACE(category,'Ž','Z')";	if ($conn->query($sqlta248) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta249="UPDATE Products SET category = REPLACE(category,'Š','S')";	if ($conn->query($sqlta249) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta250="UPDATE Products SET category = REPLACE(category,'Č','C')";	if ($conn->query($sqlta250) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta251="UPDATE Products SET category = REPLACE(category,'Ř','R')";	if ($conn->query($sqlta251) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta252="UPDATE Products SET category = REPLACE(category,'Ď','D')";	if ($conn->query($sqlta252) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta253="UPDATE Products SET category = REPLACE(category,'Ť','T')";	if ($conn->query($sqlta253) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta254="UPDATE Products SET category = REPLACE(category,'Ň','N')";	if ($conn->query($sqlta254) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta255="UPDATE Products SET category = REPLACE(category,'Ů','U')";	if ($conn->query($sqlta255) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+$sqlta256="UPDATE Products set active=0 where diff_current_pay_only_lowest > 1000";	if ($conn->query($sqlta256) === TRUE) { echo "1. Products updated successfully"; } else { echo "Error updating record: " . $conn->error; }
+
+
+
+$conn->close();
+
+?>

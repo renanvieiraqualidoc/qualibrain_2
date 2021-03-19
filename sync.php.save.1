@@ -1,0 +1,96 @@
+<?php
+error_reporting(E_ALL);
+error_reporting(-1);
+ini_set('error_reporting', E_ALL);
+
+include_once("config/dbconfig.php");
+
+// DEFINE O FUSO HORARIO COMO O HORARIO DE BRASILIA
+    date_default_timezone_set('America/Sao_Paulo');
+// CRIA UMA VARIAVEL E ARMAZENA A HORA ATUAL DO FUSO-HORÀRIO DEFINIDO (BRASÍLIA)
+   echo $dataLocal = date("Y-m-d H:i:s");
+
+$updata = "UPDATE Products SET update_time = '.$dataLocal.'";
+if ($conn->query($updata) === TRUE) {
+  echo "Atualizar Data --> OK <br>";
+} else {
+  echo "Error: " . $updata . "<br>" . $conn->error;
+}
+
+
+
+$sync_insert = "INSERT IGNORE INTO fspider.Products (sku) 
+SELECT sku FROM cockpit.Products";
+
+if ($conn->query($sync_insert) === TRUE) {
+  echo "Inserir novos SKU'S --> OK <br>";
+} else {
+  echo "Error: " . $sync_insert . "<br>" . $conn->error;
+}
+
+
+$sync_update="UPDATE fspider.Products INNER JOIN cockpit.Products ON (fspider.Products.sku = cockpit.Products.sku) SET fspider.Products.current_cashback = cockpit.Products.current_cashback, fspider.Products.status_code_fk=cockpit.Products.status_code_fk,
+fspider.Products.situation_code_fk = cockpit.Products.situation_code_fk,
+fspider.Products.title = cockpit.Products.title,
+fspider.Products.active = cockpit.Products.active,
+fspider.Products.department = cockpit.Products.department,
+fspider.Products.category = cockpit.Products.category,
+fspider.Products.qty_stock = cockpit.Products.qty_stock,
+fspider.Products.qty_stock_rms = cockpit.Products.qty_stock_rms,
+fspider.Products.tabulated_price = cockpit.Products.tabulated_price,
+fspider.Products.tabulated_price_suggestion = cockpit.Products.tabulated_price_suggestion,
+fspider.Products.minimum_price = cockpit.Products.minimum_price,
+fspider.Products.maximum_price = cockpit.Products.maximum_price,
+fspider.Products.lowest_price = cockpit.Products.lowest_price,
+fspider.Products.lowest_price_competitor = cockpit.Products.lowest_price_competitor,
+fspider.Products.qty_competitors = cockpit.Products.qty_competitors,
+fspider.Products.qty_competitors_available = cockpit.Products.qty_competitors_available,
+fspider.Products.price_cost = cockpit.Products.price_cost,
+fspider.Products.margin = cockpit.Products.margin,
+fspider.Products.sale_price = cockpit.Products.sale_price,
+fspider.Products.price_pay_only = cockpit.Products.price_pay_only,
+fspider.Products.less_price_around = cockpit.Products.less_price_around,
+fspider.Products.margin_value = cockpit.Products.margin_value,
+fspider.Products.cashback = cockpit.Products.cashback,
+fspider.Products.gross_margin = cockpit.Products.gross_margin,
+fspider.Products.gross_margin_percent = cockpit.Products.gross_margin_percent,
+fspider.Products.diff_pay_only_lowest = cockpit.Products.diff_pay_only_lowest,
+fspider.Products.current_price_pay_only = cockpit.Products.current_price_pay_only,
+fspider.Products.current_less_price_around = cockpit.Products.current_less_price_around,
+fspider.Products.current_margin_value = cockpit.Products.current_margin_value,
+fspider.Products.current_cashback = cockpit.Products.current_cashback,
+fspider.Products.current_gross_margin = cockpit.Products.current_gross_margin,
+fspider.Products.current_gross_margin_percent = cockpit.Products.current_gross_margin_percent,
+fspider.Products.diff_current_pay_only_lowest = cockpit.Products.diff_current_pay_only_lowest";
+
+if ($conn->query($sync_update) === TRUE) {
+  echo "Atualizar Novos SKU's --> OK <br>";
+} else {
+  echo "Error: " . $sync_update . "<br>" . $conn->error;
+}  
+
+
+
+$uppbm= "UPDATE Products AS b INNER JOIN pbm AS g ON b.sku = g.sku SET b.pbm = 1";
+
+if ($conn->query($uppbm) === TRUE) {
+  echo "Atualizar Novos PBMs --> OK <br>";
+} else {
+  echo "Error: " . $uppbm . "<br>" . $conn->error;
+}  
+
+
+
+$upcontrolados= "UPDATE Products AS b INNER JOIN controlados AS g ON b.sku = g.sku SET b.controlled_substance = 1";
+
+if ($conn->query($upcontrolados) === TRUE) {
+  echo "Atualizar Novos Controlados --> OK <br>";
+} else {
+  echo "Error: " . $upcontrolados . "<br>" . $conn->error;
+}  
+
+
+
+$conn->close();
+
+?>

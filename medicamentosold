@@ -1,0 +1,3472 @@
+<?php
+
+// Initialize the session
+session_start();
+ 
+// Check if the user is logged in, if not then redirect him to login page
+if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
+    header("location: login.php");
+    exit;
+}
+
+
+
+error_reporting(E_ALL);
+error_reporting(-1);
+ini_set('error_reporting', E_ALL);
+
+include_once("config/dbconfig.php");
+
+
+    function get_percentage($totalp, $numberp)
+    {
+      if ( $totalp > 0 ) {
+       return round($numberp / ($totalp / 100),2);
+      } else {
+        return 0;
+      }
+    }
+
+
+
+// Função de porcentagem: N é X% de N
+function porcentagem_nx ( $parcial, $total ) {
+    return ( $parcial * 100 ) / $total;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+//***********GERAL PRODUTOS**************//
+include_once("config/dbconfig.php");
+if (isset($_GET['vpbm'])) {
+$pbma = $_GET['vpbm'];
+
+}else{
+
+$pbma = '5';
+}
+
+
+////cashback
+
+//Cashback qtd
+$select_cashback_geral = "SELECT count(1) FROM Products where current_cashback <> 0 and qty_stock_rms>0 and pbm <> $pbma and department='medicamento'";
+$resultado_cashback_geral = mysqli_query($conn,$select_cashback_geral);
+$margem_cashback_geral = mysqli_fetch_array($resultado_cashback_geral)[0];
+
+
+$consultatotalcashback = "SELECT qty_stock_rms, current_cashback from Products where current_cashback <> 0 and qty_stock_rms>0 and pbm <> $pbma and department='medicamento'";
+$res_cashback = mysqli_query($conn,$consultatotalcashback);
+        while($rowcashback = mysqli_fetch_array($res_cashback)){
+
+$valoritemcashback = $valoritemcashback + ($rowcashback[0] * $rowcashback[1]);
+
+}
+
+
+
+//tabelados
+
+
+$select_tabelados_geral = " SELECT count(1) from Products where tabulated_price <> 0 and qty_stock_rms>0 and pbm <> $pbma and department='medicamento'";
+$resultado_tabelados_geral = mysqli_query($conn,$select_tabelados_geral);
+$margem_tabelados_geral = mysqli_fetch_array($resultado_tabelados_geral)[0];
+
+
+
+
+
+
+
+//Margem Bruta Simulada Geral Consulta
+$select_margembruta_geral = "SELECT AVG(current_gross_margin_percent) FROM Products where active=1 and qty_stock_rms>'0' and pbm <> $pbma and department='medicamento'";
+$resultado_margembruta_geral = mysqli_query($conn,$select_margembruta_geral);
+$margem_bruta_geral = mysqli_fetch_array($resultado_margembruta_geral)[0];
+
+
+//Margem Bruta Simulada Geral Consulta Curva A
+$select_margembruta_geral_a = "SELECT AVG(current_gross_margin_percent)  FROM Products where active=1 and curve='A' and qty_stock_rms>'0' and pbm <> $pbma and department='medicamento'";
+$resultado_margembruta_geral_a = mysqli_query($conn,$select_margembruta_geral_a);
+$margem_bruta_geral_a = mysqli_fetch_array($resultado_margembruta_geral_a)[0];
+ 
+//Margem Bruta Simulada Geral Consulta Curva B
+$select_margembruta_geral_b = "SELECT AVG(current_gross_margin_percent)  FROM Products where active=1 and curve='B' and qty_stock_rms>'0' and pbm <> $pbma and department='medicamento'";
+$resultado_margembruta_geral_b = mysqli_query($conn,$select_margembruta_geral_b);
+$margem_bruta_geral_b = mysqli_fetch_array($resultado_margembruta_geral_b)[0];
+
+//Margem Bruta Simulada Geral Consulta Curva C
+$select_margembruta_geral_c = "SELECT AVG(current_gross_margin_percent) FROM Products where active=1 and curve='C' and qty_stock_rms>'0' and pbm <> $pbma and department='medicamento'";
+$resultado_margembruta_geral_c = mysqli_query($conn,$select_margembruta_geral_c);
+$margem_bruta_geral_c = mysqli_fetch_array($resultado_margembruta_geral_c)[0];
+
+
+
+
+//Margem Para o Menor Preco Geral Consulta
+$select_margemmenor_geral = "SELECT AVG(diff_current_pay_only_lowest) FROM Products where active=1 and qty_stock_rms>'0' and pbm <> $pbma and department='medicamento'";
+$resultado_margemmenor_geral = mysqli_query($conn,$select_margemmenor_geral);
+$margemmenor_geral = mysqli_fetch_array($resultado_margemmenor_geral)[0];
+
+//Margem Para o Menor Preco Geral Consulta Curva A
+$select_margemmenor_geral_a = "SELECT AVG(diff_current_pay_only_lowest) FROM Products where active=1 and curve='A' and qty_stock_rms>'0' and pbm <> $pbma and department='medicamento'";
+$resultado_margemmenor_geral_a = mysqli_query($conn,$select_margemmenor_geral_a);
+$margemmenor_geral_a = mysqli_fetch_array($resultado_margemmenor_geral_a)[0];
+
+//Margem Para o Menor Preco Geral Consulta Curva B
+$select_margemmenor_geral_b = "SELECT AVG(diff_current_pay_only_lowest) FROM Products where active=1 and curve='B' and qty_stock_rms>'0' and pbm <> $pbma and department='medicamento'";
+$resultado_margemmenor_geral_b = mysqli_query($conn,$select_margemmenor_geral_b);
+$margemmenor_geral_b = mysqli_fetch_array($resultado_margemmenor_geral_b)[0];
+
+
+//Margem Para o Menor Preco Geral Consulta Curva C
+$select_margemmenor_geral_c = "SELECT AVG(diff_current_pay_only_lowest) FROM Products where active=1 and curve='C' and qty_stock_rms>'0' and pbm <> $pbma and department='medicamento'";
+$resultado_margemmenor_geral_c = mysqli_query($conn,$select_margemmenor_geral_c);
+$margemmenor_geral_c = mysqli_fetch_array($resultado_margemmenor_geral_c)[0];
+
+
+//Qtd Produtos Geral
+$select_qtd_geral = "SELECT count(Products.sku) FROM Products where active=1 and qty_stock_rms > 0 and $pbma and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral = mysqli_query($conn,$select_qtd_geral);
+$qtd_geral = mysqli_fetch_array($resultado_qtd_geral)[0];
+
+//Qtd Produtos Geral Curva A
+$select_qtd_geral_a = "SELECT count(1) FROM Products where active=1 and curve='A' and qty_stock_rms > 0 and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_a = mysqli_query($conn,$select_qtd_geral_a);
+$qtd_geral_a = mysqli_fetch_array($resultado_qtd_geral_a)[0];
+
+//Qtd Produtos Geral Curva B
+$select_qtd_geral_b = "SELECT count(1) FROM Products where active=1 and curve='B'  and qty_stock_rms > 0 and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_b = mysqli_query($conn,$select_qtd_geral_b);
+$qtd_geral_b = mysqli_fetch_array($resultado_qtd_geral_b)[0];
+
+
+//Qtd Produtos Geral Curva C
+$select_qtd_geral_c = "SELECT count(1) FROM Products where active=1 and curve='C'  and qty_stock_rms > 0 and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_c = mysqli_query($conn,$select_qtd_geral_c);
+$qtd_geral_c = mysqli_fetch_array($resultado_qtd_geral_c)[0];
+
+
+
+
+//quantidade financiando
+
+
+
+$consultatotalestoquef = "SELECT SUM(qty_stock_rms)FROM Products where active=1 and current_gross_margin_percent < 0 and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_estoquef = mysqli_query($conn,$consultatotalestoquef);
+$qtd_geral_estoquef = mysqli_fetch_array($resultado_qtd_geral_estoquef)[0];
+
+$consultatotalestoquef5 = "SELECT SUM(qty_stock_rms)FROM Products where active=1 and (current_gross_margin_percent BETWEEN  -0.05001 and -0.0001) and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_estoquef5 = mysqli_query($conn,$consultatotalestoquef5);
+$qtd_geral_estoquef5 = mysqli_fetch_array($resultado_qtd_geral_estoquef5)[0];
+
+
+
+
+$consultatotalestoquef10 = "SELECT SUM(qty_stock_rms)FROM Products where active=1 and (current_gross_margin_percent BETWEEN -0.09999 and -0.05) and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_estoquef10 = mysqli_query($conn,$consultatotalestoquef10);
+$qtd_geral_estoquef10 = mysqli_fetch_array($resultado_qtd_geral_estoquef10)[0];
+
+
+$consultatotalestoquef20 = "SELECT SUM(qty_stock_rms)FROM Products where active=1 and (current_gross_margin_percent BETWEEN -0.199 and -0.10) and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_estoquef20 = mysqli_query($conn,$consultatotalestoquef20);
+$qtd_geral_estoquef20 = mysqli_fetch_array($resultado_qtd_geral_estoquef20)[0];
+
+$consultatotalestoquef30 = "SELECT SUM(qty_stock_rms)FROM Products where active=1 and (current_gross_margin_percent BETWEEN -0.299 and -0.20) and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_estoquef30 = mysqli_query($conn,$consultatotalestoquef30);
+$qtd_geral_estoquef30 = mysqli_fetch_array($resultado_qtd_geral_estoquef30)[0];
+
+$consultatotalestoquef30a = "SELECT SUM(qty_stock_rms)FROM Products where active=1 and current_gross_margin_percent < -0.30 and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_estoquef30a = mysqli_query($conn,$consultatotalestoquef30a);
+$qtd_geral_estoquef30a = mysqli_fetch_array($resultado_qtd_geral_estoquef30a)[0];
+
+$valortotalitemestoque= ($qtd_geral_estoquef30a + $qtd_geral_estoquef30 + $qtd_geral_estoquef20 + $qtd_geral_estoquef10 + $qtd_geral_estoquef5);
+
+$consultatotalpayonlyf5 = "SELECT price_pay_only, qty_stock_rms, price_cost from Products where active='1' and qty_stock_rms>0 and (current_gross_margin_percent BETWEEN  -0.05001 and -0.0001) and pbm <> $pbma and department='medicamento'";
+$res_datatotalpayonlyf5 = mysqli_query($conn,$consultatotalpayonlyf5);
+        while($row22f5 = mysqli_fetch_array($res_datatotalpayonlyf5)){
+
+$valoritempof5 = $valoritempof5 + ($row22f5[0] * $row22f5[1]);
+$valoritempof51 = $valoritempof51 + ($row22f5[2] * $row22f5[1]);
+}
+
+$valoritempof5t = ($valoritempof5 - $valoritempof51);
+
+
+$consultatotalpayonlyf10 = "SELECT price_pay_only, qty_stock_rms, price_cost from Products where active='1' and qty_stock_rms>0 and (current_gross_margin_percent BETWEEN -0.09999 and -0.05) and pbm <> $pbma and department='medicamento'";
+$res_datatotalpayonlyf10 = mysqli_query($conn,$consultatotalpayonlyf10);
+        while($row22f10 = mysqli_fetch_array($res_datatotalpayonlyf10)){
+
+$valoritempof102 = $valoritempof102 + ($row22f10[0] * $row22f10[1]);
+$valoritempof101 = $valoritempof101 + ($row22f10[2] * $row22f10[1]);
+}
+
+$valoritempof10t = ($valoritempof102 - $valoritempof101);
+
+$consultatotalpayonlyf20 = "SELECT price_pay_only, qty_stock_rms, price_cost from Products where active='1' and qty_stock_rms>0 and (current_gross_margin_percent BETWEEN -0.199 and -0.10) and pbm <> $pbma and department='medicamento'";
+$res_datatotalpayonlyf20 = mysqli_query($conn,$consultatotalpayonlyf20);
+        while($row22f20 = mysqli_fetch_array($res_datatotalpayonlyf20)){
+
+$valoritempof20 = $valoritempof20 + ($row22f20[0] * $row22f20[1]);
+$valoritempof201 = $valoritempof201 + ($row22f20[2] * $row22f20[1]);
+}
+
+$valoritempof20t = ($valoritempof20 - $valoritempof201);
+
+
+$consultatotalpayonlyf30 = "SELECT price_pay_only, qty_stock_rms, price_cost from Products where active='1' and qty_stock_rms>0 and (current_gross_margin_percent BETWEEN -0.299 and -0.20) and pbm <> $pbma and department='medicamento'";
+$res_datatotalpayonlyf30 = mysqli_query($conn,$consultatotalpayonlyf30);
+        while($row22f30 = mysqli_fetch_array($res_datatotalpayonlyf30)){
+
+$valoritempof30 = $valoritempof30 + ($row22f30[0] * $row22f30[1]);
+$valoritempof301 = $valoritempof301 + ($row22f30[2] * $row22f30[1]);
+}
+
+$valoritempof30t = ($valoritempof30 - $valoritempof301);
+
+
+
+$consultatotalpayonlyf30a = "SELECT price_pay_only, qty_stock_rms, price_cost from Products where active='1' and qty_stock_rms>0 and (current_gross_margin_percent < -0.30) and pbm <> $pbma and department='medicamento'";
+$res_datatotalpayonlyf30a = mysqli_query($conn,$consultatotalpayonlyf30a);
+        while($row22f30a = mysqli_fetch_array($res_datatotalpayonlyf30a)){
+
+$valoritempof30a = $valoritempof30a + ($row22f30a[0] * $row22f30a[1]);
+$valoritempof301a = $valoritempof301a + ($row22f30a[2] * $row22f30a[1]);
+}
+
+$valoritempof30ta = ($valoritempof30a - $valoritempof301a);
+
+
+
+
+
+$select_qtd_geral_financiando = "SELECT count(1) FROM Products where active=1 and current_gross_margin_percent < 0 and qty_stock_rms>'0' and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_financiando = mysqli_query($conn,$select_qtd_geral_financiando);
+$qtd_geral_financiando = mysqli_fetch_array($resultado_qtd_geral_financiando)[0];
+
+
+//Qtd Produtos Financiando Geral Curva A
+$select_qtd_geral_financiando_a = "SELECT count(1) FROM Products where active=1 and curve='A' and current_gross_margin_percent < 0  and qty_stock_rms>'0' and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_financiando_a = mysqli_query($conn,$select_qtd_geral_financiando_a);
+$qtd_geral_financiando_a = mysqli_fetch_array($resultado_qtd_geral_financiando_a)[0];
+
+//Qtd Produtos Financiando Geral Curva B
+$select_qtd_geral_financiando_b = "SELECT count(1) FROM Products where active=1 and curve='B' and current_gross_margin_percent < 0  and qty_stock_rms>'0' and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_financiando_b = mysqli_query($conn,$select_qtd_geral_financiando_b);
+$qtd_geral_financiando_b = mysqli_fetch_array($resultado_qtd_geral_financiando_b)[0];
+
+
+//Qtd Produtos Financiando Geral Curva C
+$select_qtd_geral_financiando_c = "SELECT count(1) FROM Products where active=1 and curve='C' and current_gross_margin_percent < 0  and qty_stock_rms>'0' and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_financiando_c = mysqli_query($conn,$select_qtd_geral_financiando_c);
+$qtd_geral_financiando_c = mysqli_fetch_array($resultado_qtd_geral_financiando_c)[0];
+
+
+
+//Financiando margens
+
+$select_qtd_geral_financiando_igual = "SELECT count(1) FROM Products where active=1 and current_gross_margin_percent = 0 and qty_stock_rms>'0' and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_financiando_igual = mysqli_query($conn,$select_qtd_geral_financiando_igual);
+$qtd_geral_financiando_igual = mysqli_fetch_array($resultado_qtd_geral_financiando_igual)[0];
+
+
+
+//Qtd Produtos Financiando entre 0 e 5
+$select_qtd_geral_financiando_cinco = "SELECT count(1) FROM Products where active=1 and (current_gross_margin_percent BETWEEN -0.05001 and -0.0001)  and qty_stock_rms>'0' and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_financiando_cinco = mysqli_query($conn,$select_qtd_geral_financiando_cinco);
+$qtd_geral_financiando_cinco = mysqli_fetch_array($resultado_qtd_geral_financiando_cinco)[0];
+
+
+
+
+
+//Qtd Produtos Financiando entre 5 e 10
+$select_qtd_geral_financiando_dez = "SELECT count(1) FROM Products where active=1 and (current_gross_margin_percent BETWEEN -0.09999 and -0.05)  and qty_stock_rms>'0' and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_financiando_dez = mysqli_query($conn,$select_qtd_geral_financiando_dez);
+$qtd_geral_financiando_dez = mysqli_fetch_array($resultado_qtd_geral_financiando_dez)[0];
+
+
+
+
+//Qtd Produtos Financiando entre 10 e 20
+$select_qtd_geral_financiando_vinte = "SELECT count(1) FROM Products where active=1 and (current_gross_margin_percent BETWEEN -0.199 and -0.10)  and qty_stock_rms>'0' and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_financiando_vinte = mysqli_query($conn,$select_qtd_geral_financiando_vinte);
+$qtd_geral_financiando_vinte = mysqli_fetch_array($resultado_qtd_geral_financiando_vinte)[0];
+
+
+
+//Qtd Produtos Financiando entre 20 e 30
+$select_qtd_geral_financiando_trinta = "SELECT count(1) FROM Products where active=1 and (current_gross_margin_percent BETWEEN -0.299 and -0.20)  and qty_stock_rms>'0' and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_financiando_trinta = mysqli_query($conn,$select_qtd_geral_financiando_trinta);
+$qtd_geral_financiando_trinta = mysqli_fetch_array($resultado_qtd_geral_financiando_trinta)[0];
+
+//Qtd Produtos Financiando acima de 30
+$select_qtd_geral_financiando_atrinta = "SELECT count(1) FROM Products where active=1  and current_gross_margin_percent < -0.30  and qty_stock_rms>'0' and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_financiando_atrinta = mysqli_query($conn,$select_qtd_geral_financiando_atrinta);
+$qtd_geral_financiando_atrinta = mysqli_fetch_array($resultado_qtd_geral_financiando_atrinta)[0];
+
+ $valortotalitemcusto = ($valoritempof51 + $valoritempof101 + $valoritempof201 + $valoritempof301 + $valoritempof301a);
+$valortotalitempa = ($valoritempof5 + $valoritempof102 + $valoritempof20 + $valoritempof30 + $valoritempof30a);
+$valortotalitemdefict = (($valoritempof5t) + ($valoritempof10t) + ($valoritempof20t) + ($valoritempof30t) + ($valoritempof30ta));
+
+//quantidade sacrificando operacao
+
+$select_qtd_geral_soperacao = "SELECT count(1) FROM Products where active=1 and situation_code_fk=4 and qty_stock_rms>'0' and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_soperacao = mysqli_query($conn,$select_qtd_geral_soperacao);
+$qtd_geral_soperacao = mysqli_fetch_array($resultado_qtd_geral_soperacao)[0];
+
+
+//Qtd Produtos  Geral Curva A
+$select_qtd_geral_soperacao_a = "SELECT count(1) FROM Products where active=1 and curve='A' and situation_code_fk=4 and qty_stock_rms>'0' and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_soperacao_a = mysqli_query($conn,$select_qtd_geral_soperacao_a);
+$qtd_geral_soperacao_a = mysqli_fetch_array($resultado_qtd_geral_soperacao_a)[0];
+
+//Qtd Produtos  Geral Curva B
+$select_qtd_geral_soperacao_b = "SELECT count(1) FROM Products where active=1 and curve='B' and situation_code_fk=4 and qty_stock_rms>'0' and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_soperacao_b = mysqli_query($conn,$select_qtd_geral_soperacao_b);
+$qtd_geral_soperacao_b = mysqli_fetch_array($resultado_qtd_geral_soperacao_b)[0];
+
+
+//Qtd Produtos Geral Curva C
+$select_qtd_geral_soperacao_c = "SELECT count(1) FROM Products where active=1 and curve='C' and situation_code_fk=4 and qty_stock_rms>'0' and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_soperacao_c = mysqli_query($conn,$select_qtd_geral_soperacao_c);
+$qtd_geral_soperacao_c = mysqli_fetch_array($resultado_qtd_geral_soperacao_c)[0];
+
+
+
+//quantidade sacrificando lucro
+
+$select_qtd_geral_slucro = "SELECT count(1) FROM Products where active=1 and situation_code_fk=5 and qty_stock_rms>'0' and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_slucro = mysqli_query($conn,$select_qtd_geral_slucro);
+$qtd_geral_slucro = mysqli_fetch_array($resultado_qtd_geral_slucro)[0];
+
+
+//Qtd Produtos  Geral Curva A
+$select_qtd_geral_slucro_a = "SELECT count(1) FROM Products where active=1 and curve='A' and situation_code_fk=5 and qty_stock_rms>'0' and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_slucro_a = mysqli_query($conn,$select_qtd_geral_slucro_a);
+$qtd_geral_slucro_a = mysqli_fetch_array($resultado_qtd_geral_slucro_a)[0];
+
+//Qtd Produtos  Geral Curva B
+$select_qtd_geral_slucro_b = "SELECT count(1) FROM Products where active=1 and curve='B' and situation_code_fk=5 and qty_stock_rms>'0' and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_slucro_b = mysqli_query($conn,$select_qtd_geral_slucro_b);
+$qtd_geral_slucro_b = mysqli_fetch_array($resultado_qtd_geral_slucro_b)[0];
+
+
+//Qtd Produtos Geral Curva C
+$select_qtd_geral_slucro_c = "SELECT count(1) FROM Products where active=1 and curve='C' and situation_code_fk=5 and qty_stock_rms>'0' and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_slucro_c = mysqli_query($conn,$select_qtd_geral_slucro_c);
+$qtd_geral_slucro_c = mysqli_fetch_array($resultado_qtd_geral_slucro_c)[0];
+
+
+
+
+
+
+
+
+//concorrente com menor preco
+
+//Qtd Produtos Drogaraia Menor
+$select_qtd_geral_concorrente_drogaraia = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogaraia.com.br' and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_concorrente_drogaraia = mysqli_query($conn,$select_qtd_geral_concorrente_drogaraia);
+$qtd_geral_concorrente_drogaraia = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogaraia)[0];
+
+//Qtd Produtos Drogaraia Menor Curva A
+$select_qtd_geral_concorrente_drogaraia_a = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogaraia.com.br' and curve='A' and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_concorrente_drogaraia_a = mysqli_query($conn,$select_qtd_geral_concorrente_drogaraia_a);
+$qtd_geral_concorrente_drogaraia_a = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogaraia_a)[0];
+
+//Qtd Produtos Drogaraia Menor Curva B
+$select_qtd_geral_concorrente_drogaraia_b = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogaraia.com.br' and curve='B' and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_concorrente_drogaraia_b = mysqli_query($conn,$select_qtd_geral_concorrente_drogaraia_b);
+$qtd_geral_concorrente_drogaraia_b = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogaraia_b)[0];
+
+//Qtd Produtos Drogaraia Menor Curva C
+$select_qtd_geral_concorrente_drogaraia_c = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogaraia.com.br' and curve='C' and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_concorrente_drogaraia_c = mysqli_query($conn,$select_qtd_geral_concorrente_drogaraia_c);
+$qtd_geral_concorrente_drogaraia_c = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogaraia_c)[0];
+
+
+
+//Qtd Produtos Drogasil Menor
+$select_qtd_geral_concorrente_drogasil = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogasil.com.br' and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_concorrente_drogasil = mysqli_query($conn,$select_qtd_geral_concorrente_drogasil);
+$qtd_geral_concorrente_drogasil = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogasil)[0];
+
+//Qtd Produtos Drogasil Menor A
+$select_qtd_geral_concorrente_drogasil_a = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogasil.com.br' and curve='A' and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_concorrente_drogasil_a = mysqli_query($conn,$select_qtd_geral_concorrente_drogasil_a);
+$qtd_geral_concorrente_drogasil_a = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogasil_a)[0];
+
+
+//Qtd Produtos Drogasil Menor B
+$select_qtd_geral_concorrente_drogasil_b = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogasil.com.br' and curve='B' and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_concorrente_drogasil_b = mysqli_query($conn,$select_qtd_geral_concorrente_drogasil_b);
+$qtd_geral_concorrente_drogasil_b = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogasil_b)[0];
+
+
+//Qtd Produtos Drogasil Menor C
+$select_qtd_geral_concorrente_drogasil_c = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogasil.com.br' and curve='C' and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_concorrente_drogasil_c = mysqli_query($conn,$select_qtd_geral_concorrente_drogasil_c);
+$qtd_geral_concorrente_drogasil_c = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogasil_c)[0];
+
+
+
+
+//Qtd Produtos Onofre Menor
+$select_qtd_geral_concorrente_onofre = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.belezanaweb.com.br' and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_concorrente_onofre = mysqli_query($conn,$select_qtd_geral_concorrente_onofre);
+$qtd_geral_concorrente_onofre = mysqli_fetch_array($resultado_qtd_geral_concorrente_onofre)[0];
+
+//Qtd Produtos Onofre Menor A
+$select_qtd_geral_concorrente_onofre_a = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.belezanaweb.com.br' and curve='A' and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_concorrente_onofre_a = mysqli_query($conn,$select_qtd_geral_concorrente_onofre_a);
+$qtd_geral_concorrente_onofre_a = mysqli_fetch_array($resultado_qtd_geral_concorrente_onofre_a)[0];
+
+
+//Qtd Produtos Onofre Menor B
+$select_qtd_geral_concorrente_onofre_b = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.belezanaweb.com.br' and curve='B' and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_concorrente_onofre_b = mysqli_query($conn,$select_qtd_geral_concorrente_onofre_b);
+$qtd_geral_concorrente_onofre_b = mysqli_fetch_array($resultado_qtd_geral_concorrente_onofre_b)[0];
+
+
+//Qtd Produtos Onofre Menor C
+$select_qtd_geral_concorrente_onofre_c = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.belezanaweb.com.br' and curve='C' and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_concorrente_onofre_c = mysqli_query($conn,$select_qtd_geral_concorrente_onofre_c);
+$qtd_geral_concorrente_onofre_c = mysqli_fetch_array($resultado_qtd_geral_concorrente_onofre_c)[0];
+
+
+
+
+
+//Qtd Produtos Drogaria SP Menor
+
+$select_qtd_geral_concorrente_drogariasp = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogariasaopaulo.com.br' and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_concorrente_drogariasp = mysqli_query($conn,$select_qtd_geral_concorrente_drogariasp);
+$qtd_geral_concorrente_drogariasp = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogariasp)[0];
+
+//Qtd Produtos Drogaria SP Menor A
+$select_qtd_geral_concorrente_drogariasp_a = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogariasaopaulo.com.br' and curve='A' and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_concorrente_drogariasp_a = mysqli_query($conn,$select_qtd_geral_concorrente_drogariasp_a);
+$qtd_geral_concorrente_drogariasp_a = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogariasp_a)[0];
+
+//Qtd Produtos Drogaria SP Menor B
+$select_qtd_geral_concorrente_drogariasp_b = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogariasaopaulo.com.br' and curve='B' and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_concorrente_drogariasp_b = mysqli_query($conn,$select_qtd_geral_concorrente_drogariasp_b);
+$qtd_geral_concorrente_drogariasp_b = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogariasp_b)[0];
+
+
+//Qtd Produtos Drogaria SP Menor C
+$select_qtd_geral_concorrente_drogariasp_c = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogariasaopaulo.com.br' and curve='C' and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_concorrente_drogariasp_c = mysqli_query($conn,$select_qtd_geral_concorrente_drogariasp_c);
+$qtd_geral_concorrente_drogariasp_c = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogariasp_c)[0];
+
+
+
+//Qtd Produtos Ultrafarma Menor
+$select_qtd_geral_concorrente_ultrafarma = "SELECT count(1) FROM Products where active=1  and qty_stock_rms>'0'and lowest_price_competitor='www.ultrafarma.com.br' and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_concorrente_ultrafarma = mysqli_query($conn,$select_qtd_geral_concorrente_ultrafarma);
+$qtd_geral_concorrente_ultrafarma = mysqli_fetch_array($resultado_qtd_geral_concorrente_ultrafarma)[0];
+
+
+//Qtd Produtos Ultrafarma Menor A
+$select_qtd_geral_concorrente_ultrafarma_a = "SELECT count(1) FROM Products where active=1  and qty_stock_rms>'0'and lowest_price_competitor='www.ultrafarma.com.br' and curve='A' and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_concorrente_ultrafarma_a = mysqli_query($conn,$select_qtd_geral_concorrente_ultrafarma_a);
+$qtd_geral_concorrente_ultrafarma_a = mysqli_fetch_array($resultado_qtd_geral_concorrente_ultrafarma_a)[0];
+
+//Qtd Produtos Ultrafarma Menor B
+$select_qtd_geral_concorrente_ultrafarma_b = "SELECT count(1) FROM Products where active=1  and qty_stock_rms>'0'and lowest_price_competitor='www.ultrafarma.com.br' and curve='B' and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_concorrente_ultrafarma_b = mysqli_query($conn,$select_qtd_geral_concorrente_ultrafarma_b);
+$qtd_geral_concorrente_ultrafarma_b = mysqli_fetch_array($resultado_qtd_geral_concorrente_ultrafarma_b)[0];
+
+//Qtd Produtos Ultrafarma Menor C
+$select_qtd_geral_concorrente_ultrafarma_c = "SELECT count(1) FROM Products where active=1  and qty_stock_rms>'0'and lowest_price_competitor='www.ultrafarma.com.br' and curve='C' and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_concorrente_ultrafarma_c = mysqli_query($conn,$select_qtd_geral_concorrente_ultrafarma_c);
+$qtd_geral_concorrente_ultrafarma_c = mysqli_fetch_array($resultado_qtd_geral_concorrente_ultrafarma_c)[0];
+
+
+//concorrente com menor preco financiando
+
+
+
+
+//Qtd Produtos Drogaraia Menor
+$select_qtd_geral_concorrente_drogaraiaf = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogaraia.com.br' and current_gross_margin_percent < 0 and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_concorrente_drogaraiaf = mysqli_query($conn,$select_qtd_geral_concorrente_drogaraiaf);
+ $qtd_geral_concorrente_drogaraiaf = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogaraiaf)[0];
+
+//Qtd Produtos Drogaraia Menor
+$select_qtd_geral_concorrente_drogaraiaf5 = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogaraia.com.br' and (current_gross_margin_percent BETWEEN -0.05 and -0.001) and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_concorrente_drogaraiaf5 = mysqli_query($conn,$select_qtd_geral_concorrente_drogaraiaf5);
+ $qtd_geral_concorrente_drogaraiaf5 = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogaraiaf5)[0];
+
+
+//Qtd Produtos Drogaraia Menor
+$select_qtd_geral_concorrente_drogaraiaf10 = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogaraia.com.br' and (current_gross_margin_percent BETWEEN -0.0999 and -0.05) and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_concorrente_drogaraiaf10 = mysqli_query($conn,$select_qtd_geral_concorrente_drogaraiaf10);
+ $qtd_geral_concorrente_drogaraiaf10 = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogaraiaf10)[0];
+
+
+//Qtd Produtos Drogaraia Menor
+$select_qtd_geral_concorrente_drogaraiaf20 = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogaraia.com.br' and (current_gross_margin_percent BETWEEN -0.1999 and -0.10) and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_concorrente_drogaraiaf20 = mysqli_query($conn,$select_qtd_geral_concorrente_drogaraiaf20);
+ $qtd_geral_concorrente_drogaraiaf20 = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogaraiaf20)[0];
+
+//Qtd Produtos Drogaraia Menor
+$select_qtd_geral_concorrente_drogaraiaf30 = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogaraia.com.br' and (current_gross_margin_percent BETWEEN -0.2999 and -0.20) and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_concorrente_drogaraiaf30 = mysqli_query($conn,$select_qtd_geral_concorrente_drogaraiaf30);
+ $qtd_geral_concorrente_drogaraiaf30 = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogaraiaf30)[0];
+
+//Qtd Produtos Drogaraia Menor
+$select_qtd_geral_concorrente_drogaraiaf30a = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogaraia.com.br' and current_gross_margin_percent < -0.30  and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_concorrente_drogaraiaf30a = mysqli_query($conn,$select_qtd_geral_concorrente_drogaraiaf30a);
+ $qtd_geral_concorrente_drogaraiaf30a = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogaraiaf30a)[0];
+
+
+//Qtd Produtos Financiando acima de 30
+//(current_gross_margin_percent BETWEEN -0.05 and -0.001)
+//(current_gross_margin_percent BETWEEN -0.0999 and -0.05)
+//(current_gross_margin_percent BETWEEN -0.1999 and -0.10)
+//(current_gross_margin_percent BETWEEN -0.2999 and -0.20)
+// current_gross_margin_percent < -0.30 
+
+
+
+
+//Qtd Produtos Drogasil Menor
+$select_qtd_geral_concorrente_drogasilf = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogasil.com.br' and current_gross_margin_percent < 0 and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_concorrente_drogasilf = mysqli_query($conn,$select_qtd_geral_concorrente_drogasilf);
+$qtd_geral_concorrente_drogasilf = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogasilf)[0];
+
+
+//Qtd Produtos Drogasil Menor
+$select_qtd_geral_concorrente_drogasilf5 = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogasil.com.br' and (current_gross_margin_percent BETWEEN -0.05 and -0.001) and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_concorrente_drogasilf5 = mysqli_query($conn,$select_qtd_geral_concorrente_drogasilf5);
+$qtd_geral_concorrente_drogasilf5 = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogasilf5)[0];
+
+
+//Qtd Produtos Drogasil Menor
+$select_qtd_geral_concorrente_drogasilf10 = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogasil.com.br' and (current_gross_margin_percent BETWEEN -0.0999 and -0.05) and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_concorrente_drogasilf10 = mysqli_query($conn,$select_qtd_geral_concorrente_drogasilf10);
+$qtd_geral_concorrente_drogasilf10 = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogasilf10)[0];
+
+//Qtd Produtos Drogasil Menor
+$select_qtd_geral_concorrente_drogasilf20 = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogasil.com.br' and (current_gross_margin_percent BETWEEN -0.1999 and -0.10) and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_concorrente_drogasilf20 = mysqli_query($conn,$select_qtd_geral_concorrente_drogasilf20);
+$qtd_geral_concorrente_drogasilf20 = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogasilf20)[0];
+
+//Qtd Produtos Drogasil Menor
+$select_qtd_geral_concorrente_drogasilf30 = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogasil.com.br' and (current_gross_margin_percent BETWEEN -0.2999 and -0.20) and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_concorrente_drogasilf30 = mysqli_query($conn,$select_qtd_geral_concorrente_drogasilf30);
+$qtd_geral_concorrente_drogasilf30 = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogasilf30)[0];
+
+//Qtd Produtos Drogasil Menor
+$select_qtd_geral_concorrente_drogasilf30a = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogasil.com.br' and current_gross_margin_percent < -0.30  and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_concorrente_drogasilf30a = mysqli_query($conn,$select_qtd_geral_concorrente_drogasilf30a);
+$qtd_geral_concorrente_drogasilf30a = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogasilf30a)[0];
+
+
+
+
+
+//Qtd Produtos Drogaria SP Menor
+
+$select_qtd_geral_concorrente_drogariaspf = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogariasaopaulo.com.br' and current_gross_margin_percent < 0 and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_concorrente_drogariaspf = mysqli_query($conn,$select_qtd_geral_concorrente_drogariaspf);
+$qtd_geral_concorrente_drogariaspf = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogariaspf)[0];
+
+
+//Qtd Produtos Drogaria SP Menor
+
+$select_qtd_geral_concorrente_drogariaspf5 = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogariasaopaulo.com.br' and (current_gross_margin_percent BETWEEN -0.05 and -0.001) and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_concorrente_drogariaspf5 = mysqli_query($conn,$select_qtd_geral_concorrente_drogariaspf5);
+$qtd_geral_concorrente_drogariaspf5 = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogariaspf5)[0];
+
+
+//Qtd Produtos Drogaria SP Menor
+
+$select_qtd_geral_concorrente_drogariaspf10 = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogariasaopaulo.com.br' and (current_gross_margin_percent BETWEEN -0.0999 and -0.05) and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_concorrente_drogariaspf10 = mysqli_query($conn,$select_qtd_geral_concorrente_drogariaspf10);
+$qtd_geral_concorrente_drogariaspf10 = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogariaspf10)[0];
+
+
+//Qtd Produtos Drogaria SP Menor
+
+$select_qtd_geral_concorrente_drogariaspf20 = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogariasaopaulo.com.br' and  (current_gross_margin_percent BETWEEN -0.1999 and -0.10) and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_concorrente_drogariaspf20 = mysqli_query($conn,$select_qtd_geral_concorrente_drogariaspf20);
+$qtd_geral_concorrente_drogariaspf20 = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogariaspf20)[0];
+
+
+//Qtd Produtos Drogaria SP Menor
+
+$select_qtd_geral_concorrente_drogariaspf30 = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogariasaopaulo.com.br' and (current_gross_margin_percent BETWEEN -0.2999 and -0.20) and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_concorrente_drogariaspf30 = mysqli_query($conn,$select_qtd_geral_concorrente_drogariaspf30);
+$qtd_geral_concorrente_drogariaspf30 = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogariaspf30)[0];
+
+
+//Qtd Produtos Drogaria SP Menor
+
+$select_qtd_geral_concorrente_drogariaspf30a = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogariasaopaulo.com.br' and current_gross_margin_percent < -0.30 and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_concorrente_drogariaspf30a = mysqli_query($conn,$select_qtd_geral_concorrente_drogariaspf30a);
+$qtd_geral_concorrente_drogariaspf30a = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogariaspf30a)[0];
+
+
+
+
+
+
+//Qtd Produtos Ultrafarma Menor
+$select_qtd_geral_concorrente_ultrafarmaf = "SELECT count(1) FROM Products where active=1  and qty_stock_rms>'0'and lowest_price_competitor='www.ultrafarma.com.br' and current_gross_margin_percent < 0 and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_concorrente_ultrafarmaf = mysqli_query($conn,$select_qtd_geral_concorrente_ultrafarmaf);
+$qtd_geral_concorrente_ultrafarmaf = mysqli_fetch_array($resultado_qtd_geral_concorrente_ultrafarmaf)[0];
+
+//Qtd Produtos Ultrafarma Menor
+$select_qtd_geral_concorrente_ultrafarmaf5 = "SELECT count(1) FROM Products where active=1  and qty_stock_rms>'0'and lowest_price_competitor='www.ultrafarma.com.br' and (current_gross_margin_percent BETWEEN -0.05 and -0.001) and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_concorrente_ultrafarmaf5 = mysqli_query($conn,$select_qtd_geral_concorrente_ultrafarmaf5);
+$qtd_geral_concorrente_ultrafarmaf5 = mysqli_fetch_array($resultado_qtd_geral_concorrente_ultrafarmaf5)[0];
+
+
+//Qtd Produtos Ultrafarma Menor
+$select_qtd_geral_concorrente_ultrafarmaf10 = "SELECT count(1) FROM Products where active=1  and qty_stock_rms>'0'and lowest_price_competitor='www.ultrafarma.com.br' and  (current_gross_margin_percent BETWEEN -0.0999 and -0.05) and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_concorrente_ultrafarmaf10 = mysqli_query($conn,$select_qtd_geral_concorrente_ultrafarmaf10);
+$qtd_geral_concorrente_ultrafarmaf10 = mysqli_fetch_array($resultado_qtd_geral_concorrente_ultrafarmaf10)[0];
+
+
+//Qtd Produtos Ultrafarma Menor
+$select_qtd_geral_concorrente_ultrafarmaf20 = "SELECT count(1) FROM Products where active=1  and qty_stock_rms>'0'and lowest_price_competitor='www.ultrafarma.com.br' and (current_gross_margin_percent BETWEEN -0.1999 and -0.10) and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_concorrente_ultrafarmaf20 = mysqli_query($conn,$select_qtd_geral_concorrente_ultrafarmaf20);
+$qtd_geral_concorrente_ultrafarmaf20 = mysqli_fetch_array($resultado_qtd_geral_concorrente_ultrafarmaf20)[0];
+
+
+//Qtd Produtos Ultrafarma Menor
+$select_qtd_geral_concorrente_ultrafarmaf30 = "SELECT count(1) FROM Products where active=1  and qty_stock_rms>'0'and lowest_price_competitor='www.ultrafarma.com.br' and (current_gross_margin_percent BETWEEN -0.2999 and -0.20) and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_concorrente_ultrafarmaf30 = mysqli_query($conn,$select_qtd_geral_concorrente_ultrafarmaf30);
+$qtd_geral_concorrente_ultrafarmaf30 = mysqli_fetch_array($resultado_qtd_geral_concorrente_ultrafarmaf30)[0];
+
+
+//Qtd Produtos Ultrafarma Menor
+$select_qtd_geral_concorrente_ultrafarmaf30a = "SELECT count(1) FROM Products where active=1  and qty_stock_rms>'0'and lowest_price_competitor='www.ultrafarma.com.br'  and current_gross_margin_percent < -0.30 and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_concorrente_ultrafarmaf30a = mysqli_query($conn,$select_qtd_geral_concorrente_ultrafarmaf30a);
+$qtd_geral_concorrente_ultrafarmaf30a = mysqli_fetch_array($resultado_qtd_geral_concorrente_ultrafarmaf30a)[0];
+
+
+
+
+
+//Qtd Produtos belezanaweb Menor
+$select_qtd_geral_concorrente_belezanawebf = "SELECT count(1) FROM Products where active=1  and qty_stock_rms>'0'and lowest_price_competitor='www.belezanaweb.com.br' and current_gross_margin_percent < 0 and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_concorrente_belezanawebf = mysqli_query($conn,$select_qtd_geral_concorrente_belezanawebf);
+$qtd_geral_concorrente_belezanawebf = mysqli_fetch_array($resultado_qtd_geral_concorrente_belezanawebf)[0];
+
+//Qtd Produtos belezanaweb Menor
+$select_qtd_geral_concorrente_belezanawebf5 = "SELECT count(1) FROM Products where active=1  and qty_stock_rms>'0'and lowest_price_competitor='www.belezanaweb.com.br' and (current_gross_margin_percent BETWEEN -0.05 and -0.001) and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_concorrente_belezanawebf5 = mysqli_query($conn,$select_qtd_geral_concorrente_belezanawebf5);
+$qtd_geral_concorrente_belezanawebf5 = mysqli_fetch_array($resultado_qtd_geral_concorrente_belezanawebf5)[0];
+
+
+//Qtd Produtos belezanaweb Menor
+$select_qtd_geral_concorrente_belezanawebf10 = "SELECT count(1) FROM Products where active=1  and qty_stock_rms>'0'and lowest_price_competitor='www.belezanaweb.com.br' and  (current_gross_margin_percent BETWEEN -0.0999 and -0.05) and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_concorrente_belezanawebf10 = mysqli_query($conn,$select_qtd_geral_concorrente_belezanawebf10);
+$qtd_geral_concorrente_belezanawebf10 = mysqli_fetch_array($resultado_qtd_geral_concorrente_belezanawebf10)[0];
+
+
+//Qtd Produtos belezanaweb Menor
+$select_qtd_geral_concorrente_belezanawebf20 = "SELECT count(1) FROM Products where active=1  and qty_stock_rms>'0'and lowest_price_competitor='www.belezanaweb.com.br' and (current_gross_margin_percent BETWEEN -0.1999 and -0.10) and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_concorrente_belezanawebf20 = mysqli_query($conn,$select_qtd_geral_concorrente_belezanawebf20);
+$qtd_geral_concorrente_belezanawebf20 = mysqli_fetch_array($resultado_qtd_geral_concorrente_belezanawebf20)[0];
+
+
+//Qtd Produtos belezanaweb Menor
+$select_qtd_geral_concorrente_belezanawebf30 = "SELECT count(1) FROM Products where active=1  and qty_stock_rms>'0'and lowest_price_competitor='www.belezanaweb.com.br' and (current_gross_margin_percent BETWEEN -0.2999 and -0.20) and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_concorrente_belezanawebf30 = mysqli_query($conn,$select_qtd_geral_concorrente_belezanawebf30);
+$qtd_geral_concorrente_belezanawebf30 = mysqli_fetch_array($resultado_qtd_geral_concorrente_belezanawebf30)[0];
+
+
+//Qtd Produtos belezanaweb Menor
+$select_qtd_geral_concorrente_belezanawebf30a = "SELECT count(1) FROM Products where active=1  and qty_stock_rms>'0'and lowest_price_competitor='www.belezanaweb.com.br'  and current_gross_margin_percent < -0.30 and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_concorrente_belezanawebf30a = mysqli_query($conn,$select_qtd_geral_concorrente_belezanawebf30a);
+$qtd_geral_concorrente_belezanawebf30a = mysqli_fetch_array($resultado_qtd_geral_concorrente_belezanawebf30a)[0];
+
+
+//////RUPTURA///////////////
+
+
+//Qtd Produtos Geral
+$select_qtd_geral_ruptura = "SELECT count(1) FROM Products where active=1 and qty_stock_rms='0' and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_ruptura = mysqli_query($conn,$select_qtd_geral_ruptura);
+$qtd_geral_ruptura = mysqli_fetch_array($resultado_qtd_geral_ruptura)[0];
+
+//Qtd Produtos Geral Curva A
+$select_qtd_geral_a_ruptura = "SELECT count(1) FROM Products where active=1 and qty_stock_rms='0' and curve='A' and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_a_ruptura = mysqli_query($conn,$select_qtd_geral_a_ruptura);
+$qtd_geral_a_ruptura = mysqli_fetch_array($resultado_qtd_geral_a_ruptura)[0];
+
+//Qtd Produtos Geral Curva B
+$select_qtd_geral_b_ruptura = "SELECT count(1) FROM Products where active=1 and qty_stock_rms='0' and curve='B' and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_b_ruptura = mysqli_query($conn,$select_qtd_geral_b_ruptura);
+$qtd_geral_b_ruptura = mysqli_fetch_array($resultado_qtd_geral_b_ruptura)[0];
+
+
+//Qtd Produtos Geral Curva C
+$select_qtd_geral_c_ruptura = "SELECT count(1) FROM Products where active=1 and qty_stock_rms='0' and curve='C' and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_c_ruptura = mysqli_query($conn,$select_qtd_geral_c_ruptura);
+$qtd_geral_c_ruptura = mysqli_fetch_array($resultado_qtd_geral_c_ruptura)[0];
+
+
+
+
+
+//////EXCLUSIVO///////////////
+
+//Qtd Produtos Geral
+$select_qtd_geral_exclusivo = "SELECT count(1) FROM Products where active=1 and qty_competitors='0' and qty_stock_rms>'0' and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_exclusivo = mysqli_query($conn,$select_qtd_geral_exclusivo);
+$qtd_geral_exclusivo = mysqli_fetch_array($resultado_qtd_geral_exclusivo)[0];
+
+//Qtd Produtos Geral Curva A
+$select_qtd_geral_a_exclusivo = "SELECT count(1) FROM Products where active=1 and qty_competitors='0' and curve='A' and qty_stock_rms>'0' and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_a_exclusivo = mysqli_query($conn,$select_qtd_geral_a_exclusivo);
+$qtd_geral_a_exclusivo = mysqli_fetch_array($resultado_qtd_geral_a_exclusivo)[0];
+
+//Qtd Produtos Geral Curva B
+$select_qtd_geral_b_exclusivo = "SELECT count(1) FROM Products where active=1 and qty_competitors='0' and curve='B' and qty_stock_rms>'0' and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_b_exclusivo = mysqli_query($conn,$select_qtd_geral_b_exclusivo);
+$qtd_geral_b_exclusivo = mysqli_fetch_array($resultado_qtd_geral_b_exclusivo)[0];
+
+
+//Qtd Produtos Geral Curva C
+$select_qtd_geral_c_exclusivo = "SELECT count(1) FROM Products where active=1 and qty_competitors='0' and curve='C' and qty_stock_rms>'0' and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_c_exclusivo = mysqli_query($conn,$select_qtd_geral_c_exclusivo);
+$qtd_geral_c_exclusivo = mysqli_fetch_array($resultado_qtd_geral_c_exclusivo)[0];
+
+
+
+
+
+$consultatotalestoque = "SELECT SUM(qty_stock_rms)FROM Products where active=1 and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_geral_estoque = mysqli_query($conn,$consultatotalestoque);
+$qtd_geral_estoque = mysqli_fetch_array($resultado_qtd_geral_estoque)[0];
+
+////CUSTO
+$consultatotalcusto = "SELECT price_cost, qty_stock_rms from Products where active='1' and qty_stock_rms>0 and pbm <> $pbma and department='medicamento'";
+$res_datatotalcusto = mysqli_query($conn,$consultatotalcusto);
+        while($row = mysqli_fetch_array($res_datatotalcusto)){
+
+$valoritem = $valoritem + ($row[0] * $row[1]);
+
+
+
+}
+
+
+////PAGUE APENEAS
+
+$consultatotalpayonly = "SELECT price_pay_only, qty_stock_rms from Products where active='1' and qty_stock_rms>0 and pbm <> $pbma and department='medicamento'";
+$res_datatotalpayonly = mysqli_query($conn,$consultatotalpayonly);
+        while($row22 = mysqli_fetch_array($res_datatotalpayonly)){
+
+$valoritempo = $valoritempo + ($row22[0] * $row22[1]);
+
+}
+
+
+////financiando
+$consultatotalpayonlyf = "SELECT price_pay_only, qty_stock_rms, price_cost from Products where active='1' and qty_stock_rms>0 and current_gross_margin_percent < 0 and pbm <> $pbma and department='medicamento'";
+$res_datatotalpayonlyf = mysqli_query($conn,$consultatotalpayonlyf);
+        while($row22f = mysqli_fetch_array($res_datatotalpayonlyf)){
+
+$valoritempof = $valoritempof + ($row22f[0] * $row22f[1]);
+$valoritempof1 = $valoritempof1 + ($row22f[2] * $row22f[1]);
+}
+
+
+
+
+
+$valoritempof10 = ($valoritempof - $valoritempof1);
+//Abaixo do Custo
+
+$consultatotalpvenda = "SELECT gross_margin, qty_stock_rms from Products where active='1' and qty_stock_rms>0 and pbm <> $pbma and department='medicamento'";
+$res_datatotalpvenda = mysqli_query($conn,$consultatotalpvenda);
+        while($row223 = mysqli_fetch_array($res_datatotalpvenda)){
+
+$valoritempv = $valoritempv + ($row223[0] * $row223[1]);
+
+}
+
+
+
+
+
+//Qtd Concorrentes 1
+$select_qtd_concorrente1 = "SELECT count(1) FROM Products where active=1 and qty_stock_rms >'0' and qty_competitors=1 and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_concorrente1 = mysqli_query($conn,$select_qtd_concorrente1);
+$qtd_concorrente1 = mysqli_fetch_array($resultado_qtd_concorrente1)[0];
+
+//Qtd Concorrentes 2
+$select_qtd_concorrente2 = "SELECT count(1) FROM Products where active=1 and qty_stock_rms >'0' and qty_competitors=2 and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_concorrente2 = mysqli_query($conn,$select_qtd_concorrente2);
+$qtd_concorrente2 = mysqli_fetch_array($resultado_qtd_concorrente2)[0];
+
+//Qtd Concorrentes 3
+$select_qtd_concorrente3 = "SELECT count(1) FROM Products where active=1 and qty_stock_rms >'0' and qty_competitors=3 and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_concorrente3 = mysqli_query($conn,$select_qtd_concorrente3);
+$qtd_concorrente3 = mysqli_fetch_array($resultado_qtd_concorrente3)[0];
+
+
+//Qtd Concorrentes 4
+$select_qtd_concorrente4 = "SELECT count(1) FROM Products where active=1 and qty_stock_rms >'0' and qty_competitors=4 and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_concorrente4 = mysqli_query($conn,$select_qtd_concorrente4);
+$qtd_concorrente4 = mysqli_fetch_array($resultado_qtd_concorrente4)[0];
+
+
+//Qtd Concorrentes 5
+$select_qtd_concorrente5 = "SELECT count(1) FROM Products where active=1 and qty_stock_rms >'0' and qty_competitors=5 and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_concorrente5 = mysqli_query($conn,$select_qtd_concorrente5);
+$qtd_concorrente5 = mysqli_fetch_array($resultado_qtd_concorrente5)[0];
+
+
+//Concorrentes em Ruptura
+
+
+
+//Qtd Concorrentes 1
+$select_qtd_concorrente1r = "SELECT count(1) FROM Products where active=1 and qty_stock_rms ='0' and qty_competitors=1 and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_concorrente1r = mysqli_query($conn,$select_qtd_concorrente1r);
+$qtd_concorrente1r = mysqli_fetch_array($resultado_qtd_concorrente1r)[0];
+
+//Qtd Concorrentes 2
+$select_qtd_concorrente2r = "SELECT count(1) FROM Products where active=1 and qty_stock_rms ='0' and qty_competitors=2 and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_concorrente2r = mysqli_query($conn,$select_qtd_concorrente2r);
+$qtd_concorrente2r = mysqli_fetch_array($resultado_qtd_concorrente2r)[0];
+
+//Qtd Concorrentes 3
+$select_qtd_concorrente3r = "SELECT count(1) FROM Products where active=1 and qty_stock_rms ='0' and qty_competitors=3 and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_concorrente3r = mysqli_query($conn,$select_qtd_concorrente3r);
+$qtd_concorrente3r = mysqli_fetch_array($resultado_qtd_concorrente3r)[0];
+
+
+//Qtd Concorrentes 4
+$select_qtd_concorrente4r = "SELECT count(1) FROM Products where active=1 and qty_stock_rms ='0' and qty_competitors=4 and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_concorrente4r = mysqli_query($conn,$select_qtd_concorrente4r);
+$qtd_concorrente4r = mysqli_fetch_array($resultado_qtd_concorrente4r)[0];
+
+
+//Qtd Concorrentes 5
+$select_qtd_concorrente5r = "SELECT count(1) FROM Products where active=1 and qty_stock_rms ='0' and qty_competitors=5 and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_concorrente5r = mysqli_query($conn,$select_qtd_concorrente5r);
+$qtd_concorrente5r = mysqli_fetch_array($resultado_qtd_concorrente5r)[0];
+
+
+//Concorrentes em Ruptura Disponiveis
+
+
+
+//Qtd Concorrentes 1
+$select_qtd_concorrente1ra = "SELECT count(1) FROM Products where active=1 and qty_stock_rms ='0' and qty_competitors_available=1 and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_concorrente1ra = mysqli_query($conn,$select_qtd_concorrente1ra);
+$qtd_concorrente1ra = mysqli_fetch_array($resultado_qtd_concorrente1ra)[0];
+
+//Qtd Concorrentes 2
+$select_qtd_concorrente2ra = "SELECT count(1) FROM Products where active=1 and qty_stock_rms ='0' and qty_competitors_available=2 and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_concorrente2ra = mysqli_query($conn,$select_qtd_concorrente2ra);
+$qtd_concorrente2ra = mysqli_fetch_array($resultado_qtd_concorrente2ra)[0];
+
+//Qtd Concorrentes 3
+$select_qtd_concorrente3ra = "SELECT count(1) FROM Products where active=1 and qty_stock_rms ='0' and qty_competitors_available=3 and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_concorrente3ra = mysqli_query($conn,$select_qtd_concorrente3ra);
+$qtd_concorrente3ra = mysqli_fetch_array($resultado_qtd_concorrente3ra)[0];
+
+
+//Qtd Concorrentes 4
+$select_qtd_concorrente4ra = "SELECT count(1) FROM Products where active=1 and qty_stock_rms ='0' and qty_competitors_available=4 and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_concorrente4ra = mysqli_query($conn,$select_qtd_concorrente4ra);
+$qtd_concorrente4ra = mysqli_fetch_array($resultado_qtd_concorrente4ra)[0];
+
+
+//Qtd Concorrentes 5
+$select_qtd_concorrente5ra = "SELECT count(1) FROM Products where active=1 and qty_stock_rms ='0' and qty_competitors_available=5 and pbm <> $pbma and department='medicamento'";
+$resultado_qtd_concorrente5ra = mysqli_query($conn,$select_qtd_concorrente5ra);
+$qtd_concorrente5ra = mysqli_fetch_array($resultado_qtd_concorrente5ra)[0];
+/* This will give an error. Note the output
+ * above, which is before the header() call */
+
+
+?>
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>QualiBrain - Qualidoc</title>
+
+  <!-- Custom fonts for this template-->
+  <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+  <link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+  <!-- Custom styles for this template-->
+  <link href="css/sb-admin-2.min.css" rel="stylesheet">
+<link href="css/sb-admin-2.min.css" rel="stylesheet">
+<link href="css/comum.css" rel="stylesheet">
+
+
+</head>
+
+<body id="page-top">
+
+  <!-- Page Wrapper -->
+  <div id="wrapper">
+
+    <!-- Sidebar -->
+    
+<?php include('sidebar.html'); ?>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+      <!-- Main Content -->
+      <div id="content">
+      <?php include('topbar.php'); ?>
+        
+        <!-- End of Topbar -->
+
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+
+          <!-- Page Heading -->
+<form name='index' id='index' method='GET'>
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">Medicamentos</h1>
+<input type=hidden value='<?php echo $vpbm;?>' name='vpbm' id='vpbm'>
+<?php 
+if ($pbma == '1'){
+
+echo '<div class="custom-control custom-switch">';
+echo  '<input type="checkbox" class="custom-control-input" id="customSwitch1" checked>';
+echo  '<label class="custom-control-label" for="customSwitch1">Cenário Sem PBM</label>';
+echo '</div>'; 
+}
+if ($pbma <> '1'){
+echo '<div class="custom-control custom-switch">';
+echo  '<input type="checkbox" class="custom-control-input" id="customSwitch1" >';
+echo  '<label class="custom-control-label" for="customSwitch1">Cenário Sem PBM</label>';
+echo '</div>'; 
+}
+?>
+
+
+  
+  <label class="" >Atualizado em: </label>
+
+
+<script>
+
+
+
+var id_switch = document.getElementById('customSwitch1');
+
+
+id_switch.addEventListener('change',function(){
+  if(this.checked == true){
+ 
+
+
+ window.location = 'medicamentos.php?vpbm=1';
+
+ }else{
+ 
+
+ window.location = 'medicamentos.php?vpbm=5';
+
+}
+});
+</script>
+            <a href="exportxls.php" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Relatorio Geral</a>
+          </div>
+         
+          <!-- Content Row -->
+          <div class="row">
+
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Produtos Abaixo do Custo(SKU)</div>
+                      
+                    
+<div class="h5 mb-0 font-weight-bold text-primary"><font size=3px> (-5% / -0,1%)-  </font><a href='#'><font color='black' size=3px><?php echo $qtd_geral_financiando_cinco;?> </font></b></a></div>
+     <div class="h5 mb-0 font-weight-bold text-warning"><font size=3px>(-10% / -5%)- </font> <a href='#'><font color='black' size=3px><?php echo $qtd_geral_financiando_dez;?> </font></b></a></div>
+<div class="h5 mb-0 font-weight-bold text-danger"><font size=3px>(-20% / -10%)- </font> <a href='#'><font color='black' size=3px><?php echo $qtd_geral_financiando_vinte;?></font></b></a></div>
+<div class="h5 mb-0 font-weight-bold text-danger"><font size=3px>(-30% / -20%)- </font> <a href='#'><font color='black' size=3px><?php echo $qtd_geral_financiando_trinta;?></font></b></a></div>
+<div class="h5 mb-0 font-weight-bold text-danger"><font size=3px>(< -30% )-  </font><a href='#'><font color='black' size=3px><?php echo $qtd_geral_financiando_atrinta;?> </font></a> </div>
+<div class="h5 mb-0 font-weight-bold text-danger"><font size=3px>R$ <?php echo  number_format($valortotalitemdefict, 0, ',', '.') ;?></font><font size=1px></font></div> 
+
+
+                    </div>
+                    <div class="col-auto">
+
+                      <i class="fas fa-sort-amount-down fa-2x text-gray-300"></i>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+
+
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Demonstração financeira</div>
+        <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo  number_format($qtd_geral_estoque, 0, ',', '.') ;?><font size=2px>(estoque)</font></div>
+
+
+<div class="h5 mb-0 font-weight-bold text-primary"><font size=3px>R$ <?php echo  number_format($valoritem, 0, ',', '.') ;?></font><font size=2px>(custo)</font></div>
+     <div class="h5 mb-0 font-weight-bold text-warning"><font size=3px>R$ <?php echo  number_format($valoritempo, 0, ',', '.') ;?></font><font size=2px>(receita)</font></div>
+<div class="h5 mb-0 font-weight-bold text-success"><font size=3px>R$ <?php echo  number_format($valoritempv, 0, ',', '.') ;?></font><font size=2px>(lucro bruto)</font></div>  
+<div class="h5 mb-0 font-weight-bold text-info"><font size=3px>R$ <?php echo  number_format($valoritemcashback, 0, ',', '.') ;?></font><font size=2px>(cashback)</font></div>  
+
+
+</div>
+                    <div class="col-auto">
+                      <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+      <!-- Pending Requests Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Média Margem de Operação</div>
+                     
+ <div class="row no-gutters align-items-center">
+                        <div class="col-auto">
+                          <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800"><?php $margem_bruta_geral1=($margem_bruta_geral * 100); echo  number_format($margem_bruta_geral1, 2, ',', '.') . '%';?></div>
+ 
+                        </div>
+                        <div class="col">
+                          <div class="progress progress-sm mr-2">
+                            <div class="progress-bar bg-info" role="progressbar" style="width: <?php echo round((float)$margem_bruta_geral * 100 ) . '%';?>" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+            </div>
+
+                      </div>
+ <div class="row no-gutters align-items-center">
+                        <div class="col-auto">
+                          <div class="h5 mb-0 font-weight-bold text-primary"><font size=3px><?php $margem_bruta_geral1_a=($margem_bruta_geral_a * 100); echo  number_format($margem_bruta_geral1_a, 2, ',', '.') . '%';?>&nbsp;&nbsp;</font></div>
+ 
+                        </div>
+                        <div class="col">
+                          <div class="progress progress-sm mr-2">
+                            <div class="progress-bar bg-info" role="progressbar" style="width: <?php echo round((float)$margem_bruta_geral_a * 100 ) . '%';?>" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+            </div>
+
+                      </div>
+
+<div class="row no-gutters align-items-center">
+                        <div class="col-auto">
+                          <div class="h5 mb-0 font-weight-bold text-warning"><font size=3px><?php $margem_bruta_geral1b=($margem_bruta_geral_b * 100); echo  number_format($margem_bruta_geral1b, 2, ',', '.') . '%';?>&nbsp;&nbsp;</font></div>
+ 
+                        </div>
+                        <div class="col">
+                          <div class="progress progress-sm mr-2">
+                            <div class="progress-bar bg-info" role="progressbar" style="width: <?php echo round((float)$margem_bruta_geral_b * 100 ) . '%';?>" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+            </div>
+
+                      </div>
+ <div class="row no-gutters align-items-center">
+                        <div class="col-auto">
+                          <div class="h5 mb-0 font-weight-bold text-danger"><font size=3px><?php $margem_bruta_geral1c=($margem_bruta_geral_c * 100); echo  number_format($margem_bruta_geral1c, 2, ',', '.') . '%';?>&nbsp;&nbsp;</font></div>
+ 
+                        </div>
+                        <div class="col">
+                          <div class="progress progress-sm mr-2">
+                            <div class="progress-bar bg-info" role="progressbar" style="width: <?php echo round((float)$margem_bruta_geral_c * 100 ) . '%';?>" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+            </div>
+
+                      </div>
+
+
+                    </div>
+                    <div class="col-auto">
+                      <i class="fa fa-percent fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Pending Requests Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Margem Dif. Menor Preço</div>
+                     
+ <div class="row no-gutters align-items-center">
+                        <div class="col-auto">
+                          <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800"><?php $margemmenor_geral1=($margemmenor_geral * 100); echo  number_format($margemmenor_geral1, 2, ',', '.') . '%';?></div>
+ 
+                        </div>
+                        <div class="col">
+                          <div class="progress progress-sm mr-2">
+                            <div class="progress-bar bg-info" role="progressbar" style="width: <?php echo round((float)$margemmenor_geral * 100 ) . '%';?>" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+            </div>
+
+                      </div>
+ <div class="row no-gutters align-items-center">
+                        <div class="col-auto">
+                          <div class="h5 mb-0 font-weight-bold text-primary"><font size=3px><?php $margemmenor_geral1a=($margemmenor_geral_a * 100); echo  number_format($margemmenor_geral1a, 2, ',', '.') . '%';?>&nbsp;&nbsp;</font></div>
+ 
+                        </div>
+                        <div class="col">
+                          <div class="progress progress-sm mr-2">
+                            <div class="progress-bar bg-info" role="progressbar" style="width: <?php echo round((float)$margemmenor_geral_a * 100 ) . '%';?>" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+            </div>
+
+                      </div>
+
+<div class="row no-gutters align-items-center">
+                        <div class="col-auto">
+                          <div class="h5 mb-0 font-weight-bold text-warning"><font size=3px><?php $margemmenor_geral1b=($margemmenor_geral_b * 100); echo  number_format($margemmenor_geral1b, 2, ',', '.') . '%';?>&nbsp;&nbsp;</font></div>
+ 
+                        </div>
+                        <div class="col">
+                          <div class="progress progress-sm mr-2">
+                            <div class="progress-bar bg-info" role="progressbar" style="width: <?php echo round((float)$margemmenor_geral_b * 100 ) . '%';?>" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+            </div>
+
+                      </div>
+ <div class="row no-gutters align-items-center">
+                        <div class="col-auto">
+                          <div class="h5 mb-0 font-weight-bold text-danger"><font size=3px><?php $margemmenor_geral1c=($margemmenor_geral_c * 100); echo  number_format($margemmenor_geral1c, 2, ',', '.') . '%';?>&nbsp;&nbsp;</font></div>
+ 
+                        </div>
+                        <div class="col">
+                          <div class="progress progress-sm mr-2">
+                            <div class="progress-bar bg-info" role="progressbar" style="width: <?php echo round((float)$margemmenor_geral_c * 100 ) . '%';?>" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+            </div>
+
+                      </div>
+
+
+                    </div>
+                    <div class="col-auto">
+                      <i class="fa fa-percent fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+   <div class="col-xl-12 col-md-6 mb-4">
+  <div class="row">
+    <div class="col-sm">
+<div class="alert alert-success" role="alert">
+  Total SKUs <a href="#" class="alert-link" data-toggle="modal" data-target="#totalprodutosmodal"><?php echo  number_format($qtd_geral, 0, ',', '.');?></a>
+</div>
+    </div>
+ <div class="col-sm">
+<div class="alert alert-success" role="alert">
+  Total Curva A <a href="#" class="alert-link"><?php echo  number_format($qtd_geral_a, 0, ',', '.');?></a>
+</div>
+
+
+
+    </div>
+
+    <div class="col-sm">
+<div class="alert alert-success" role="alert">
+  Total Curva B <a href="#" class="alert-link"><?php echo  number_format($qtd_geral_b, 0, ',', '.');?></a>
+</div>
+    </div>
+    <div class="col-sm">
+<div class="alert alert-success" role="alert">
+  Total Curva C <a href="#" class="alert-link"><?php echo  number_format($qtd_geral_c, 0, ',', '.');?></a>
+</div>
+    </div>
+
+
+
+	                      	
+  </div><div class="col mr-2">
+<a href="#"><span class="badge badge-warning cachbackicon" style="" data-toggle="modal" data-target="#cashbackmodal">Cashback: <?php echo number_format($margem_cashback_geral, 0, ',', '.');?> </span></a>
+<a href="#"><span class="badge badge-danger cachbackicon" style="" data-toggle="modal" data-target="#tabeladomodal">Tabelados: <?php echo number_format($margem_tabelados_geral, 0, ',', '.');?> </span></a>
+</div></div>
+   <div class="col-xl-12 col-md-6 mb-4">
+<h4 class="m-0 small font-weight-bold text-danger">PRODUTOS EM RUPTURA</h4>
+  <div class="row">
+    <div class="col-sm">
+
+<div class="alert alert-danger" role="alert">
+  Total SKUs <a href="#" class="alert-link" data-toggle="modal" data-target="#rupturamodal"> <?php echo  number_format($qtd_geral_ruptura, 0, ',', '.');?></a>
+</div>
+    </div>
+ <div class="col-sm">
+<div class="alert alert-danger" role="alert">
+  Total Curva A <a href="#" class="alert-link"> <?php echo  number_format($qtd_geral_a_ruptura, 0, ',', '.');?></a>
+</div>
+    </div>
+    <div class="col-sm">
+<div class="alert alert-danger" role="alert">
+  Total Curva B <a href="#" class="alert-link"> <?php echo  number_format($qtd_geral_b_ruptura, 0, ',', '.');?></a>
+</div>
+    </div>
+    <div class="col-sm">
+<div class="alert alert-danger" role="alert">
+  Total Curva C <a href="#" class="alert-link"> <?php echo  number_format($qtd_geral_c_ruptura, 0, ',', '.');?></a>
+</div>
+    </div>
+
+  </div>
+
+</div>
+<div class="col-xl-12 col-md-6 mb-4">
+<h4 class="m-0 small font-weight-bold text-danger">PRODUTOS ABAIXO DO CUSTO</h4>
+  <div class="row">
+    <div class="col-sm">
+
+<div class="alert alert-danger" role="alert">
+  Total SKUs <a href="#" data-toggle="modal" data-target="#financiandomodal" class="alert-link"> <?php echo  number_format($qtd_geral_financiando, 0, ',', '.');?></a>
+</div>
+    </div>
+ <div class="col-sm">
+<div class="alert alert-danger" role="alert">
+  Total Curva A <a href="#" class="alert-link"> <?php echo  number_format($qtd_geral_financiando_a, 0, ',', '.');?></a>
+</div>
+    </div>
+    <div class="col-sm">
+<div class="alert alert-danger" role="alert">
+  Total Curva B <a href="#" class="alert-link"> <?php echo  number_format($qtd_geral_financiando_b, 0, ',', '.');?></a>
+</div>
+    </div>
+    <div class="col-sm">
+<div class="alert alert-danger" role="alert">
+  Total Curva C <a href="#" class="alert-link"> <?php echo  number_format($qtd_geral_financiando_c, 0, ',', '.');?></a>
+</div>
+    </div>
+
+
+ 
+   <div class="col-xl-12 col-md-6 mb-4">
+<h4 class="m-0 small font-weight-bold text-danger">PRODUTOS COM ESTOQUE EXCLUSIVO</h4>
+  <div class="row">
+    <div class="col-sm">
+
+<div class="alert alert-info" role="alert">
+  Total SKUs <a href="#" class="alert-link" data-toggle="modal" data-target="#exclusivomodal"> <?php echo  number_format($qtd_geral_exclusivo, 0, ',', '.');?></a>
+</div>
+    </div>
+ <div class="col-sm">
+<div class="alert alert-info" role="alert">
+  Total Curva A <a href="#" class="alert-link"> <?php echo  number_format($qtd_geral_a_exclusivo, 0, ',', '.');?></a>
+</div>
+    </div>
+    <div class="col-sm">
+<div class="alert alert-info" role="alert">
+  Total Curva B <a href="#" class="alert-link"> <?php echo  number_format($qtd_geral_b_exclusivo, 0, ',', '.');?></a>
+</div>
+    </div>
+    <div class="col-sm">
+<div class="alert alert-info" role="alert">
+  Total Curva C <a href="#" class="alert-link"> <?php echo  number_format($qtd_geral_c_exclusivo, 0, ',', '.');?></a>
+</div>
+    </div>
+
+  </div>
+
+</div>
+<div class="container">
+ <div class="row">
+    <div class="col-12">
+     <!-- Collapsable Card Example -->
+              <div class="card shadow mb-4">
+                <!-- Card Header - Accordion -->
+                <a href="#collapseCardExample2" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseCardExample">
+                  <h6 class="m-0 font-weight-bold text-primary">Marca </h6><div class="alert alert-light" role="alert"><b>Custo:</b> R$ <?php echo number_format($medicamento_custo_geral, 2, ',', '.');?> - <b>Receita:</b> R$ <?php echo number_format($preco_pagueapenas_medicamento, 2, ',', '.');?> - <b>Lucro Bruto:</b> R$ <?php echo number_format($preco_venda_medicamento, 2, ',', '.');?> - <b>Margem Op.:</b> <?php $margem_bruta_medicamento = $margem_bruta_medicamento * 100; echo number_format($margem_bruta_medicamento, 2, ',', '.'). '%';?> - <b>Média Diferença Menor Preco:</b> <?php $margemmenor_medicamento = $margemmenor_medicamento * 100; echo number_format($margemmenor_medicamento, 2, ',', '.'). '%';?> - <b>Qtd de SKUs:</b> <?php echo number_format($qtd_medicamento, 0, ',', '.');?> - <b>Estoque:</b> <?php echo number_format($qtd_geral_estoquem, 0, ',', '.');?> - <b>Qtd SKUs Ruptura:</b> <?php echo number_format($qtd_geral_ruptura_medicamentos, 0, ',', '.');?> - <b>Qtd SKUs Abaixo do Custo:</b> <?php echo number_format($qtd_geral_financiandom, 0, ',', '.');?>  - <b>Déficit Abaixo do Custo:</b><font color=red> R$ <?php echo number_format($valoritempofm10, 2, ',', '.');?></font> </div>
+                </a>
+                <!-- Card Content - Collapse -->
+                <div class="collapse" id="collapseCardExample2">
+                  <div class="card-body">
+                   
+ <div class="row">
+    <div class="col-sm">
+<center><p><b>Curva #A</b></p></center>
+<table  class="table table-striped">
+
+  <tbody>
+    <tr>
+      <th scope="row">Custo:</th>
+      <td>R$ <?php echo number_format($medicamento_custo_geral_a, 2, ',', '.');?></td>
+
+
+    </tr>
+    <tr>
+      <th scope="row">Receita:</th>
+    
+      <td>R$ <?php echo number_format($preco_pagueapenas_medicamento_a, 2, ',', '.');?></td>
+    </tr>
+    <tr>
+      <th scope="row">Lucro Bruto:</th>
+
+      <td>R$ <?php echo number_format($preco_venda_medicamento_a, 2, ',', '.');?></td>
+    </tr>
+<tr>
+      <th scope="row">Média Margem Op.:</th>
+
+      <td><?php $margem_bruta_medicamento_a = $margem_bruta_medicamento_a * 100; echo number_format($margem_bruta_medicamento_a, 2, ',', '.'). '%';?></td>
+    </tr>
+<tr>
+      <th scope="row">Média Diferença Menor Preço:</th>
+
+      <td><?php $margemmenor_medicamento_a = $margemmenor_medicamento_a * 100; echo number_format($margemmenor_medicamento_a, 2, ',', '.'). '%';?></td>
+    </tr>
+<tr>
+      <th scope="row">Qtd de SKUs:</th>
+
+      <td><?php echo number_format($qtd_medicamento_a, 0, ',', '.');?></td>
+    </tr>
+<tr>
+      <th scope="row">Estoque:</th>
+
+      <td><?php echo number_format($qtd_geral_estoquem_a, 0, ',', '.');?></td>
+    </tr>
+<tr>
+      <th scope="row">Qtd Ruptura:</th>
+
+      <td><?php echo number_format($qtd_geral_a_ruptura_medicamentos, 0, ',', '.');?></td>
+    </tr>
+
+<tr>
+      <th scope="row">SKUs Abaixo do Custo:</th>
+
+      <td><?php echo number_format($qtd_geral_financiandom_a, 0, ',', '.');?></td>
+    </tr>
+<tr>
+      <th scope="row">Déficit:</th>
+
+      <td><font color=red>R$ <?php echo number_format($valoritempofm10_a, 0, ',', '.');?></font></td>
+    </tr>
+
+  </tbody>
+</table>
+    </div>
+    <div class="col-sm">
+<center><p><b>Curva #B</b></p></center>
+<table  class="table table-striped">
+
+  <tbody>
+    <tr>
+      <th scope="row">Custo:</th>
+      <td>R$ <?php echo number_format($medicamento_custo_geral_b, 2, ',', '.');?></td>
+
+
+    </tr>
+    <tr>
+      <th scope="row">Receita:</th>
+    
+      <td>R$ <?php echo number_format($preco_pagueapenas_medicamento_b, 2, ',', '.');?></td>
+    </tr>
+    <tr>
+      <th scope="row">Lucro Bruto:</th>
+
+      <td>R$ <?php echo number_format($preco_venda_medicamento_b, 2, ',', '.');?></td>
+    </tr>
+<tr>
+      <th scope="row">Média Margem Op.:</th>
+
+      <td><?php $margem_bruta_medicamento_b = $margem_bruta_medicamento_b * 100; echo number_format($margem_bruta_medicamento_b, 2, ',', '.'). '%';?></td>
+    </tr>
+<tr>
+      <th scope="row">Média Diferença Menor Preço:</th>
+
+      <td><?php $margemmenor_medicamento_b = $margemmenor_medicamento_b * 100; echo number_format($margemmenor_medicamento_b, 2, ',', '.'). '%';?></td>
+    </tr>
+<tr>
+      <th scope="row">Qtd de SKUs:</th>
+
+      <td><?php echo number_format($qtd_medicamento_b, 0, ',', '.');?></td>
+    </tr>
+<tr>
+      <th scope="row">Estoque:</th>
+
+      <td><?php echo number_format($qtd_geral_estoquem_b, 0, ',', '.');?></td>
+    </tr>
+<tr>
+      <th scope="row">Qtd Ruptura:</th>
+
+      <td><?php echo number_format($qtd_geral_b_ruptura_medicamentos, 0, ',', '.');?></td>
+    </tr>
+
+<tr>
+      <th scope="row">SKUs Abaixo do Custo:</th>
+
+      <td><?php echo number_format($qtd_geral_financiandom_b, 0, ',', '.');?></td>
+    </tr>
+<tr>
+      <th scope="row">Déficit:</th>
+
+      <td><font color=red>R$ <?php echo number_format($valoritempofm10_b, 0, ',', '.');?></font></td>
+    </tr>
+
+  </tbody>
+</table>
+    </div>
+    <div class="col-sm">
+<center><p><b>Curva #C</b></p></center>
+<table  class="table table-striped">
+
+  <tbody>
+    <tr>
+      <th scope="row">Custo:</th>
+      <td>R$ <?php echo number_format($medicamento_custo_geral_c, 2, ',', '.');?></td>
+
+
+    </tr>
+    <tr>
+      <th scope="row">Receita:</th>
+    
+      <td>R$ <?php echo number_format($preco_pagueapenas_medicamento_c, 2, ',', '.');?></td>
+    </tr>
+    <tr>
+      <th scope="row">Lucro Bruto:</th>
+
+      <td>R$ <?php echo number_format($preco_venda_medicamento_c, 2, ',', '.');?></td>
+    </tr>
+<tr>
+      <th scope="row">Média Margem Op.:</th>
+
+      <td><?php $margem_bruta_medicamento_c = $margem_bruta_medicamento_c * 100; echo number_format($margem_bruta_medicamento_c, 2, ',', '.'). '%';?></td>
+    </tr>
+<tr>
+      <th scope="row">Média Diferença Menor Preço:</th>
+
+      <td><?php $margemmenor_medicamento_c = $margemmenor_medicamento_c * 100; echo number_format($margemmenor_medicamento_c, 2, ',', '.'). '%';?></td>
+    </tr>
+<tr>
+      <th scope="row">Qtd de SKUs:</th>
+
+      <td><?php echo number_format($qtd_medicamento_c, 0, ',', '.');?></td>
+    </tr>
+<tr>
+      <th scope="row">Estoque:</th>
+
+      <td><?php echo number_format($qtd_geral_estoquem_c, 0, ',', '.');?></td>
+    </tr>
+<tr>
+      <th scope="row">Qtd Ruptura:</th>
+
+      <td><?php echo number_format($qtd_geral_c_ruptura_medicamentos, 0, ',', '.');?></td>
+    </tr>
+
+<tr>
+      <th scope="row">SKUs Abaixo do Custo:</th>
+
+      <td><?php echo number_format($qtd_geral_financiandom_c, 0, ',', '.');?></td>
+    </tr>
+<tr>
+      <th scope="row">Déficit:</th>
+
+      <td><font color=red>R$ <?php echo number_format($valoritempofm10_c, 0, ',', '.');?></font></td>
+    </tr>
+
+  </tbody>
+</table>
+    </div>
+
+  </div>
+<div style="float:right"><a href="medicamentos.php" class="btn btn-secondary btn-icon-split">
+                    <span class="icon text-white-50">
+                      <i class="fas fa-arrow-right" ></i>
+                    </span>
+                    <span class="text"  data-toggle="modal" >Detalhar</span>
+                  </a></div><br>
+</div>
+                  </div>
+                </div>
+              </div>
+  </div>
+</div>
+<div class="container">
+ <div class="row">
+    <div class="col-12">
+     <!-- Collapsable Card Example -->
+              <div class="card shadow mb-4">
+                <!-- Card Header - Accordion -->
+                <a href="#collapseCardExample1" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseCardExample1">
+                  <h6 class="m-0 font-weight-bold text-primary">Genérico</h6><div class="alert alert-light" role="alert"><b>Custo:</b> R$ <?php echo number_format($naomedicamento_custo_geral, 2, ',', '.');?> - <b>Receita:</b> R$ <?php echo number_format($preco_pagueapenas_naomedicamento, 2, ',', '.');?> - <b>Lucro Bruto:</b> R$ <?php echo number_format($preco_venda_naomedicamento, 2, ',', '.');?> - <b>Margem Op.:</b> <?php $margem_bruta_naomedicamento = $margem_bruta_naomedicamento * 100; echo number_format($margem_bruta_naomedicamento, 2, ',', '.'). '%';?> - <b>Média Diferença Menor Preco:</b> <?php $margemmenor_naomedicamento = $margemmenor_naomedicamento * 100; echo number_format($margemmenor_naomedicamento, 2, ',', '.'). '%';?> - <b>Qtd de SKUs:</b> <?php  echo number_format($qtd_naomedicamento, 0, ',', '.');?> - <b>Estoque:</b> <?php echo number_format($qtd_geral_estoquenm, 0, ',', '.');?> - <b>Qtd SKUs Ruptura:</b> <?php echo number_format($qtd_geral_ruptura_naomedicamento, 0, ',', '.');?> - <b>Qtd SKUs Abaixo do Custo:</b> <?php echo number_format($qtd_geral_financiandonm, 0, ',', '.');?>  - <b>Déficit Abaixo do Custo:</b><font color=red> R$ <?php echo number_format($valoritempofnm10, 2, ',', '.');?></font> </div>
+                </a>
+                <!-- Card Content - Collapse -->
+                <div class="collapse" id="collapseCardExample1">
+                                    <div class="card-body">
+                   
+ <div class="row">
+    <div class="col-sm">
+<center><p><b>Curva #A</b></p></center>
+<table  class="table table-striped">
+
+  <tbody>
+    <tr>
+      <th scope="row">Custo:</th>
+      <td>R$ <?php echo number_format($naomedicamento_custo_geral_a, 2, ',', '.');?></td>
+
+
+    </tr>
+    <tr>
+      <th scope="row">Receita:</th>
+    
+      <td>R$ <?php echo number_format($preco_pagueapenas_naomedicamento_a, 2, ',', '.');?></td>
+    </tr>
+    <tr>
+      <th scope="row">Lucro Bruto:</th>
+
+      <td>R$ <?php echo number_format($preco_venda_naomedicamento_a, 2, ',', '.');?></td>
+    </tr>
+<tr>
+      <th scope="row">Média Margem Op.:</th>
+
+      <td><?php $margem_bruta_naomedicamento_a = $margem_bruta_naomedicamento_a * 100; echo number_format($margem_bruta_naomedicamento_a, 2, ',', '.').'%';?></td>
+    </tr>
+<tr>
+      <th scope="row">Média Diferença Menor Preço:</th>
+
+      <td><?php $margemmenor_naomedicamento_a = $margemmenor_naomedicamento_a * 100; echo number_format($margemmenor_naomedicamento_a, 2, ',', '.') .'%';?></td>
+    </tr>
+<tr>
+      <th scope="row">Qtd de SKUs:</th>
+
+      <td><?php echo number_format($qtd_naomedicamento_a, 0, ',', '.');?></td>
+    </tr>
+<tr>
+      <th scope="row">Estoque:</th>
+
+      <td><?php echo number_format($qtd_geral_estoquenm_a, 0, ',', '.');?></td>
+    </tr>
+<tr>
+      <th scope="row">Qtd Ruptura:</th>
+
+      <td><?php echo number_format($qtd_geral_a_ruptura_naomedicamentos, 0, ',', '.');?></td>
+    </tr>
+
+<tr>
+      <th scope="row">SKUs Abaixo do Custo:</th>
+
+      <td><?php echo number_format($qtd_geral_financiandonm_a, 0, ',', '.');?></td>
+    </tr>
+<tr>
+      <th scope="row">Déficit:</th>
+
+      <td><font color=red>R$ <?php echo number_format($valoritempofnm10_a, 0, ',', '.');?></font></td>
+    </tr>
+
+  </tbody>
+</table>
+    </div>
+    <div class="col-sm">
+<center><p><b>Curva #B</b></p></center>
+<table  class="table table-striped">
+
+  <tbody>
+    <tr>
+      <th scope="row">Custo:</th>
+      <td>R$ <?php echo number_format($naomedicamento_custo_geral_b, 2, ',', '.');?></td>
+
+
+    </tr>
+    <tr>
+      <th scope="row">Receita:</th>
+    
+      <td>R$ <?php echo number_format($preco_pagueapenas_naomedicamento_b, 2, ',', '.');?></td>
+    </tr>
+    <tr>
+      <th scope="row">Lucro Bruto:</th>
+
+      <td>R$ <?php echo number_format($preco_venda_naomedicamento_b, 2, ',', '.');?></td>
+    </tr>
+<tr>
+      <th scope="row">Média Margem Op.:</th>
+
+      <td><?php $margem_bruta_naomedicamento_b = $margem_bruta_naomedicamento_b * 100; echo number_format($margem_bruta_naomedicamento_b, 2, ',', '.').'%';?></td>
+    </tr>
+<tr>
+      <th scope="row">Média Diferença Menor Preço:</th>
+
+      <td><?php $margemmenor_naomedicamento_b = $margemmenor_naomedicamento_b * 100; echo number_format($margemmenor_naomedicamento_b, 2, ',', '.') .'%';?></td>
+    </tr>
+<tr>
+      <th scope="row">Qtd de SKUs:</th>
+
+      <td><?php echo number_format($qtd_naomedicamento_b, 0, ',', '.');?></td>
+    </tr>
+<tr>
+      <th scope="row">Estoque:</th>
+
+      <td><?php echo number_format($qtd_geral_estoquenm_b, 0, ',', '.');?></td>
+    </tr>
+<tr>
+      <th scope="row">Qtd Ruptura:</th>
+
+      <td><?php echo number_format($qtd_geral_b_ruptura_naomedicamentos, 0, ',', '.');?></td>
+    </tr>
+
+<tr>
+      <th scope="row">SKUs Abaixo do Custo:</th>
+
+      <td><?php echo number_format($qtd_geral_financiandonm_b, 0, ',', '.');?></td>
+    </tr>
+<tr>
+      <th scope="row">Déficit:</th>
+
+      <td><font color=red>R$ <?php echo number_format($valoritempofnm10_b, 0, ',', '.');?></font></td>
+    </tr>
+
+  </tbody>
+</table>
+    </div>
+    <div class="col-sm">
+<center><p><b>Curva #C</b></p></center>
+<table  class="table table-striped">
+
+  <tbody>
+    <tr>
+      <th scope="row">Custo:</th>
+      <td>R$ <?php echo number_format($naomedicamento_custo_geral_c, 2, ',', '.');?></td>
+
+
+    </tr>
+    <tr>
+      <th scope="row">Receita:</th>
+    
+      <td>R$ <?php echo number_format($preco_pagueapenas_naomedicamento_c, 2, ',', '.');?></td>
+    </tr>
+    <tr>
+      <th scope="row">Lucro Bruto:</th>
+
+      <td>R$ <?php echo number_format($preco_venda_naomedicamento_c, 2, ',', '.');?></td>
+    </tr>
+<tr>
+      <th scope="row">Média Margem Op.:</th>
+
+      <td><?php $margem_bruta_naomedicamento_c = $margem_bruta_naomedicamento_c * 100; echo number_format($margem_bruta_naomedicamento_c, 2, ',', '.').'%';?></td>
+    </tr>
+<tr>
+      <th scope="row">Média Diferença Menor Preço:</th>
+
+      <td><?php $margemmenor_naomedicamento_c = $margemmenor_naomedicamento_c * 100; echo number_format($margemmenor_naomedicamento_c, 2, ',', '.') .'%';?></td>
+    </tr>
+<tr>
+      <th scope="row">Qtd de SKUs:</th>
+
+      <td><?php echo number_format($qtd_naomedicamento_c, 0, ',', '.');?></td>
+    </tr>
+<tr>
+      <th scope="row">Estoque:</th>
+
+      <td><?php echo number_format($qtd_geral_estoquenm_c, 0, ',', '.');?></td>
+    </tr>
+<tr>
+      <th scope="row">Qtd Ruptura:</th>
+
+      <td><?php echo number_format($qtd_geral_c_ruptura_naomedicamento, 0, ',', '.');?></td>
+    </tr>
+
+<tr>
+      <th scope="row">SKUs Abaixo do Custo:</th>
+
+      <td><?php echo number_format($qtd_geral_financiandonm_c, 0, ',', '.');?></td>
+    </tr>
+<tr>
+      <th scope="row">Déficit:</th>
+
+      <td><font color=red>R$ <?php echo number_format($valoritempofnm10_c, 0, ',', '.');?></font></td>
+    </tr>
+
+  </tbody>
+</table>
+    </div>
+
+  </div>
+<div style="float:right"><a href="naomedicamentos.php" class="btn btn-secondary btn-icon-split">
+                    <span class="icon text-white-50">
+                      <i class="fas fa-arrow-right"></i>
+                    </span>
+                    <span class="text">Detalhar</span>
+                  </a></div><br>
+</div>
+
+                  </div>
+                </div>
+              </div>
+  </div>
+</div>
+
+<div class="container">
+ <div class="row">
+    <div class="col-12">
+     <!-- Collapsable Card Example -->
+              <div class="card shadow mb-4">
+                <!-- Card Header - Accordion -->
+                <a href="#collapseCardExample" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseCardExample">
+                       <h6 class="m-0 font-weight-bold text-primary">Similar </h6><div class="alert alert-light" role="alert"><b>Custo:</b> R$ <?php echo number_format($perfumaria_custo_geral, 2, ',', '.');?> - <b>Receita:</b> R$ <?php echo number_format($preco_pagueapenas_perfumaria, 2, ',', '.');?> - <b>Lucro Bruto:</b> R$ <?php echo number_format($preco_venda_perfumaria, 2, ',', '.');?> - <b>Margem Op.:</b> <?php $margem_bruta_perfumaria = $margem_bruta_perfumaria * 100; echo number_format($margem_bruta_perfumaria, 2, ',', '.'). '%';?> - <b>Média Diferença Menor Preco:</b> <?php $margemmenor_perfumaria = $margemmenor_perfumaria * 100; echo number_format($margemmenor_perfumaria, 2, ',', '.'). '%';?> - <b>Qtd de SKUs:</b> <?php echo number_format($qtd_perfumaria, 0, ',', '.');?> - <b>Estoque:</b> <?php echo number_format($qtd_geral_estoquef, 0, ',', '.');?> - <b>Qtd SKUs Ruptura:</b> <?php echo number_format($qtd_geral_ruptura_perfumaria, 0, ',', '.');?> - <b>Qtd SKUs Abaixo do Custo:</b> <?php echo number_format($qtd_geral_financiandof, 0, ',', '.');?>  - <b>Déficit Abaixo do Custo:</b><font color=red> R$ <?php echo number_format($valoritempoff10, 2, ',', '.');?></font> </div>
+                </a>
+                <!-- Card Content - Collapse -->
+                <div class="collapse" id="collapseCardExample">
+                  <div class="card-body">
+                   
+ <div class="row">
+    <div class="col-sm">
+<center><p><b>Curva #A</b></p></center>
+<table  class="table table-striped">
+
+  <tbody>
+    <tr>
+      <th scope="row">Custo:</th>
+      <td>R$ <?php echo number_format($perfumaria_custo_geral_a, 2, ',', '.');?></td>
+
+
+    </tr>
+    <tr>
+      <th scope="row">Receita:</th>
+    
+      <td>R$ <?php echo number_format($preco_pagueapenas_perfumaria_a, 2, ',', '.');?></td>
+    </tr>
+    <tr>
+      <th scope="row">Lucro Bruto:</th>
+
+      <td>R$ <?php echo number_format($preco_venda_perfumaria_a, 2, ',', '.');?></td>
+    </tr>
+<tr>
+      <th scope="row">Média Margem Op.:</th>
+
+      <td><?php $margem_bruta_perfumaria_a = $margem_bruta_perfumaria_a * 100; echo number_format($margem_bruta_perfumaria_a, 2, ',', '.'). '%';?></td>
+    </tr>
+<tr>
+      <th scope="row">Média Diferença Menor Preço:</th>
+
+      <td><?php $margemmenor_perfumaria_a = $margemmenor_perfumaria_a * 100; echo number_format($margemmenor_perfumaria_a, 2, ',', '.'). '%';?></td>
+    </tr>
+<tr>
+      <th scope="row">Qtd de SKUs:</th>
+
+      <td><?php echo number_format($qtd_perfumaria_a, 0, ',', '.');?></td>
+    </tr>
+<tr>
+      <th scope="row">Estoque:</th>
+
+      <td><?php echo number_format($qtd_geral_estoquef_a, 0, ',', '.');?></td>
+    </tr>
+<tr>
+      <th scope="row">Qtd Ruptura:</th>
+
+      <td><?php echo number_format($qtd_geral_a_ruptura_perfumaria, 0, ',', '.');?></td>
+    </tr>
+
+<tr>
+      <th scope="row">SKUs Abaixo do Custo:</th>
+
+      <td><?php echo number_format($qtd_geral_financiandof_a, 0, ',', '.');?></td>
+    </tr>
+<tr>
+      <th scope="row">Déficit:</th>
+
+      <td><font color=red>R$ <?php echo number_format($valoritempoff10_a, 0, ',', '.');?></font></td>
+    </tr>
+
+  </tbody>
+</table>
+    </div>
+    <div class="col-sm">
+<center><p><b>Curva #B</b></p></center>
+<table  class="table table-striped">
+
+  <tbody>
+    <tr>
+      <th scope="row">Custo:</th>
+      <td>R$ <?php echo number_format($perfumaria_custo_geral_b, 2, ',', '.');?></td>
+
+
+    </tr>
+    <tr>
+      <th scope="row">Receita:</th>
+    
+      <td>R$ <?php echo number_format($preco_pagueapenas_perfumaria_b, 2, ',', '.');?></td>
+    </tr>
+    <tr>
+      <th scope="row">Lucro Bruto:</th>
+
+      <td>R$ <?php echo number_format($preco_venda_perfumaria_b, 2, ',', '.');?></td>
+    </tr>
+<tr>
+      <th scope="row">Média Margem Op.:</th>
+
+      <td><?php $margem_bruta_perfumaria_b = $margem_bruta_perfumaria_b * 100; echo number_format($margem_bruta_perfumaria_b, 2, ',', '.'). '%';?></td>
+    </tr>
+<tr>
+      <th scope="row">Média Diferença Menor Preço:</th>
+
+      <td><?php $margemmenor_perfumaria_b = $margemmenor_perfumaria_b * 100; echo number_format($margemmenor_perfumaria_b, 2, ',', '.'). '%';?></td>
+    </tr>
+<tr>
+      <th scope="row">Qtd de SKUs:</th>
+
+      <td><?php echo number_format($qtd_perfumaria_b, 0, ',', '.');?></td>
+    </tr>
+<tr>
+      <th scope="row">Estoque:</th>
+
+      <td><?php echo number_format($qtd_geral_estoquef_b, 0, ',', '.');?></td>
+    </tr>
+<tr>
+      <th scope="row">Qtd Ruptura:</th>
+
+      <td><?php echo number_format($qtd_geral_b_ruptura_perfumaria, 0, ',', '.');?></td>
+    </tr>
+
+<tr>
+      <th scope="row">SKUs Abaixo do Custo:</th>
+
+      <td><?php echo number_format($qtd_geral_financiandof_b, 0, ',', '.');?></td>
+    </tr>
+<tr>
+      <th scope="row">Déficit:</th>
+
+      <td><font color=red>R$ <?php echo number_format($valoritempoff10_b, 0, ',', '.');?></font></td>
+    </tr>
+
+  </tbody>
+</table>
+    </div>
+    <div class="col-sm">
+<center><p><b>Curva #C</b></p></center>
+<table  class="table table-striped">
+
+  <tbody>
+    <tr>
+      <th scope="row">Custo:</th>
+      <td>R$ <?php echo number_format($perfumaria_custo_geral_c, 2, ',', '.');?></td>
+
+
+    </tr>
+    <tr>
+      <th scope="row">Receita:</th>
+    
+      <td>R$ <?php echo number_format($preco_pagueapenas_perfumaria_c, 2, ',', '.');?></td>
+    </tr>
+    <tr>
+      <th scope="row">Lucro Bruto:</th>
+
+      <td>R$ <?php echo number_format($preco_venda_perfumaria_c, 2, ',', '.');?></td>
+    </tr>
+<tr>
+      <th scope="row">Média Margem Op.:</th>
+
+      <td><?php $margem_bruta_perfumaria_c = $margem_bruta_perfumaria_c * 100; echo number_format($margem_bruta_perfumaria_c, 2, ',', '.'). '%';?></td>
+    </tr>
+<tr>
+      <th scope="row">Média Diferença Menor Preço:</th>
+
+      <td><?php $margemmenor_perfumaria_c = $margemmenor_perfumaria_c * 100; echo number_format($margemmenor_perfumaria_c, 2, ',', '.'). '%';?></td>
+    </tr>
+<tr>
+      <th scope="row">Qtd de SKUs:</th>
+
+      <td><?php echo number_format($qtd_perfumaria_c, 0, ',', '.');?></td>
+    </tr>
+<tr>
+      <th scope="row">Estoque:</th>
+
+      <td><?php echo number_format($qtd_geral_estoquef_c, 0, ',', '.');?></td>
+    </tr>
+<tr>
+      <th scope="row">Qtd Ruptura:</th>
+
+      <td><?php echo number_format($qtd_geral_c_ruptura_perfumaria, 0, ',', '.');?></td>
+    </tr>
+
+<tr>
+      <th scope="row">SKUs Abaixo do Custo:</th>
+
+      <td><?php echo number_format($qtd_geral_financiandof_c, 0, ',', '.');?></td>
+    </tr>
+<tr>
+      <th scope="row">Déficit:</th>
+
+      <td><font color=red>R$ <?php echo number_format($valoritempoff10_c, 0, ',', '.');?></font></td>
+    </tr>
+
+  </tbody>
+</table>
+    </div>
+
+  </div>
+<div style="float:right"><a href="perfumarias.php" class="btn btn-secondary btn-icon-split">
+                    <span class="icon text-white-50">
+                      <i class="fas fa-arrow-right" ></i>
+                    </span>
+                    <span class="text"  data-toggle="modal" >Detalhar</span>
+                  </a></div><br>
+</div>
+                  </div>
+                </div>
+              </div>
+  </div>
+</div>
+  
+<div class="container">
+ <div class="row">
+    <div class="col-12">
+     <!-- Collapsable Card Example -->
+              <div class="card shadow mb-4">
+                <!-- Card Header - Accordion -->
+                <a href="#collapseCardExample5" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseCardExample">
+                       <h6 class="m-0 font-weight-bold text-primary">Autocuidado </h6><div class="alert alert-light" role="alert"><b>Custo:</b> R$ <?php echo number_format($perfumaria_custo_geral, 2, ',', '.');?> - <b>Receita:</b> R$ <?php echo number_format($preco_pagueapenas_perfumaria, 2, ',', '.');?> - <b>Lucro Bruto:</b> R$ <?php echo number_format($preco_venda_perfumaria, 2, ',', '.');?> - <b>Margem Op.:</b> <?php $margem_bruta_perfumaria = $margem_bruta_perfumaria * 100; echo number_format($margem_bruta_perfumaria, 2, ',', '.'). '%';?> - <b>Média Diferença Menor Preco:</b> <?php $margemmenor_perfumaria = $margemmenor_perfumaria * 100; echo number_format($margemmenor_perfumaria, 2, ',', '.'). '%';?> - <b>Qtd de SKUs:</b> <?php echo number_format($qtd_perfumaria, 0, ',', '.');?> - <b>Estoque:</b> <?php echo number_format($qtd_geral_estoquef, 0, ',', '.');?> - <b>Qtd SKUs Ruptura:</b> <?php echo number_format($qtd_geral_ruptura_perfumaria, 0, ',', '.');?> - <b>Qtd SKUs Abaixo do Custo:</b> <?php echo number_format($qtd_geral_financiandof, 0, ',', '.');?>  - <b>Déficit Abaixo do Custo:</b><font color=red> R$ <?php echo number_format($valoritempoff10, 2, ',', '.');?></font> </div>
+                </a>
+                <!-- Card Content - Collapse -->
+                <div class="collapse" id="collapseCardExample5">
+                  <div class="card-body">
+                   
+ <div class="row">
+    <div class="col-sm">
+<center><p><b>Curva #A</b></p></center>
+<table  class="table table-striped">
+
+  <tbody>
+    <tr>
+      <th scope="row">Custo:</th>
+      <td>R$ <?php echo number_format($perfumaria_custo_geral_a, 2, ',', '.');?></td>
+
+
+    </tr>
+    <tr>
+      <th scope="row">Receita:</th>
+    
+      <td>R$ <?php echo number_format($preco_pagueapenas_perfumaria_a, 2, ',', '.');?></td>
+    </tr>
+    <tr>
+      <th scope="row">Lucro Bruto:</th>
+
+      <td>R$ <?php echo number_format($preco_venda_perfumaria_a, 2, ',', '.');?></td>
+    </tr>
+<tr>
+      <th scope="row">Média Margem Op.:</th>
+
+      <td><?php $margem_bruta_perfumaria_a = $margem_bruta_perfumaria_a * 100; echo number_format($margem_bruta_perfumaria_a, 2, ',', '.'). '%';?></td>
+    </tr>
+<tr>
+      <th scope="row">Média Diferença Menor Preço:</th>
+
+      <td><?php $margemmenor_perfumaria_a = $margemmenor_perfumaria_a * 100; echo number_format($margemmenor_perfumaria_a, 2, ',', '.'). '%';?></td>
+    </tr>
+<tr>
+      <th scope="row">Qtd de SKUs:</th>
+
+      <td><?php echo number_format($qtd_perfumaria_a, 0, ',', '.');?></td>
+    </tr>
+<tr>
+      <th scope="row">Estoque:</th>
+
+      <td><?php echo number_format($qtd_geral_estoquef_a, 0, ',', '.');?></td>
+    </tr>
+<tr>
+      <th scope="row">Qtd Ruptura:</th>
+
+      <td><?php echo number_format($qtd_geral_a_ruptura_perfumaria, 0, ',', '.');?></td>
+    </tr>
+
+<tr>
+      <th scope="row">SKUs Abaixo do Custo:</th>
+
+      <td><?php echo number_format($qtd_geral_financiandof_a, 0, ',', '.');?></td>
+    </tr>
+<tr>
+      <th scope="row">Déficit:</th>
+
+      <td><font color=red>R$ <?php echo number_format($valoritempoff10_a, 0, ',', '.');?></font></td>
+    </tr>
+
+  </tbody>
+</table>
+    </div>
+    <div class="col-sm">
+<center><p><b>Curva #B</b></p></center>
+<table  class="table table-striped">
+
+  <tbody>
+    <tr>
+      <th scope="row">Custo:</th>
+      <td>R$ <?php echo number_format($perfumaria_custo_geral_b, 2, ',', '.');?></td>
+
+
+    </tr>
+    <tr>
+      <th scope="row">Receita:</th>
+    
+      <td>R$ <?php echo number_format($preco_pagueapenas_perfumaria_b, 2, ',', '.');?></td>
+    </tr>
+    <tr>
+      <th scope="row">Lucro Bruto:</th>
+
+      <td>R$ <?php echo number_format($preco_venda_perfumaria_b, 2, ',', '.');?></td>
+    </tr>
+<tr>
+      <th scope="row">Média Margem Op.:</th>
+
+      <td><?php $margem_bruta_perfumaria_b = $margem_bruta_perfumaria_b * 100; echo number_format($margem_bruta_perfumaria_b, 2, ',', '.'). '%';?></td>
+    </tr>
+<tr>
+      <th scope="row">Média Diferença Menor Preço:</th>
+
+      <td><?php $margemmenor_perfumaria_b = $margemmenor_perfumaria_b * 100; echo number_format($margemmenor_perfumaria_b, 2, ',', '.'). '%';?></td>
+    </tr>
+<tr>
+      <th scope="row">Qtd de SKUs:</th>
+
+      <td><?php echo number_format($qtd_perfumaria_b, 0, ',', '.');?></td>
+    </tr>
+<tr>
+      <th scope="row">Estoque:</th>
+
+      <td><?php echo number_format($qtd_geral_estoquef_b, 0, ',', '.');?></td>
+    </tr>
+<tr>
+      <th scope="row">Qtd Ruptura:</th>
+
+      <td><?php echo number_format($qtd_geral_b_ruptura_perfumaria, 0, ',', '.');?></td>
+    </tr>
+
+<tr>
+      <th scope="row">SKUs Abaixo do Custo:</th>
+
+      <td><?php echo number_format($qtd_geral_financiandof_b, 0, ',', '.');?></td>
+    </tr>
+<tr>
+      <th scope="row">Déficit:</th>
+
+      <td><font color=red>R$ <?php echo number_format($valoritempoff10_b, 0, ',', '.');?></font></td>
+    </tr>
+
+  </tbody>
+</table>
+    </div>
+    <div class="col-sm">
+<center><p><b>Curva #C</b></p></center>
+<table  class="table table-striped">
+
+  <tbody>
+    <tr>
+      <th scope="row">Custo:</th>
+      <td>R$ <?php echo number_format($perfumaria_custo_geral_c, 2, ',', '.');?></td>
+
+
+    </tr>
+    <tr>
+      <th scope="row">Receita:</th>
+    
+      <td>R$ <?php echo number_format($preco_pagueapenas_perfumaria_c, 2, ',', '.');?></td>
+    </tr>
+    <tr>
+      <th scope="row">Lucro Bruto:</th>
+
+      <td>R$ <?php echo number_format($preco_venda_perfumaria_c, 2, ',', '.');?></td>
+    </tr>
+<tr>
+      <th scope="row">Média Margem Op.:</th>
+
+      <td><?php $margem_bruta_perfumaria_c = $margem_bruta_perfumaria_c * 100; echo number_format($margem_bruta_perfumaria_c, 2, ',', '.'). '%';?></td>
+    </tr>
+<tr>
+      <th scope="row">Média Diferença Menor Preço:</th>
+
+      <td><?php $margemmenor_perfumaria_c = $margemmenor_perfumaria_c * 100; echo number_format($margemmenor_perfumaria_c, 2, ',', '.'). '%';?></td>
+    </tr>
+<tr>
+      <th scope="row">Qtd de SKUs:</th>
+
+      <td><?php echo number_format($qtd_perfumaria_c, 0, ',', '.');?></td>
+    </tr>
+<tr>
+      <th scope="row">Estoque:</th>
+
+      <td><?php echo number_format($qtd_geral_estoquef_c, 0, ',', '.');?></td>
+    </tr>
+<tr>
+      <th scope="row">Qtd Ruptura:</th>
+
+      <td><?php echo number_format($qtd_geral_c_ruptura_perfumaria, 0, ',', '.');?></td>
+    </tr>
+
+<tr>
+      <th scope="row">SKUs Abaixo do Custo:</th>
+
+      <td><?php echo number_format($qtd_geral_financiandof_c, 0, ',', '.');?></td>
+    </tr>
+<tr>
+      <th scope="row">Déficit:</th>
+
+      <td><font color=red>R$ <?php echo number_format($valoritempoff10_c, 0, ',', '.');?></font></td>
+    </tr>
+
+  </tbody>
+</table>
+    </div>
+
+  </div>
+<div style="float:right"><a href="perfumarias.php" class="btn btn-secondary btn-icon-split">
+                    <span class="icon text-white-50">
+                      <i class="fas fa-arrow-right" ></i>
+                    </span>
+                    <span class="text"  data-toggle="modal" >Detalhar</span>
+                  </a></div><br>
+</div>
+                  </div>
+                </div>
+              </div>
+  </div>
+</div>
+
+        <!-- Content Row -->
+
+
+<div class="container">
+  <div class="row">
+    <div class="col">
+
+
+   
+           
+       
+        <!-- /.container-fluid -->
+
+      </div>
+      <!-- End of Main Content -->
+
+      <!-- Footer -->
+   <?php include('footer.html')?>;
+      <!-- End of Footer -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+  </div>
+  <!-- End of Page Wrapper -->
+
+  <!-- Scroll to Top Button-->
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+  <!-- Logout Modal-->
+  <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog " role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Deseja Mesmo Sair?</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">Selecione Sair Caso Queira Mesmo Sair.</div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+          <a class="btn btn-primary" href="logoff.php">Sair</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+
+<!-- Ruptura Modal-->
+
+  <div class="modal fade" id="rupturamodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel1">Produtos em Ruptura</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm">
+<div class="card-header">
+                 Quantidade de Produtos Por Curva
+                </div>
+<div class="chart-pie pt-4 pb-2">
+<canvas id="rupturaChart"></canvas>
+
+</div>
+    </div>
+    <div class="col-sm">
+<div class="card-header">
+                 Rupturas Disponíveis Nos Concorrentes 
+                </div>
+
+<table class="table table-sm">
+   <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">N. Concorrentes</th>
+      <th scope="col">Disponíveis</th>
+
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">1 Concorrente</th>
+      <td><?php echo $qtd_concorrente1ra?></td>
+       <td><?php echo $qtd_concorrente1r?></td>
+    </tr>
+    <tr>
+      <th scope="row">2 Concorrentes</th>
+      <td><?php echo $qtd_concorrente2r?></td>
+       <td><?php echo $qtd_concorrente2ra?></td>
+    </tr>
+    <tr>
+      <th scope="row">3 Concorrentes</th>
+      <td><?php echo $qtd_concorrente3r?></td>
+      <td><?php echo $qtd_concorrente3ra?></td>
+    </tr>
+<tr>
+      <th scope="row">4 Concorrentes</th>
+      <td ><?php echo $qtd_concorrente4r?></td>
+      <td ><?php echo $qtd_concorrente4ra?></td>
+    </tr>
+<tr>
+      <th scope="row">5 Concorrentes</th>
+      <td ><?php echo $qtd_concorrente5r?></td>
+      <td ><?php echo $qtd_concorrente5ra?></td>
+    </tr>
+  </tbody>
+</table>
+   
+</div>
+
+  </div>
+</div>
+
+<div class="dropdown-divider"></div>
+ <table class="display table table-bordered table-sm table-hover" id="" width="100%" cellspacing="0">
+                  <thead class="thead-dark">
+                    <tr>
+                      
+                             <th>SKU</th>
+                      <th>TITULO</th>
+                      <th>DEPARTAMENTO</th>
+
+                      <th>CATEGORIA</th>
+                      <th>CUSTO</th>
+
+                      <th>VALOR VENDA</th>
+                      <th>PAGUE APENAS</th>
+<th>MENOR PRECO</th>
+
+
+
+                      <th>CONCORRENTE</th>
+<th>MARGEM OP.</th>
+<th>DIF. MENOR PRECO</th>
+
+                      <th>CURVA</th>
+<th>CONCORRENTES</th>
+
+<th>MARCA</th>
+
+                    </tr>
+                  </thead>
+                  <tfoot class="thead-dark">
+                  
+  <tr>
+                                        <th>SKU</th>
+                      <th>TITULO</th>
+                      <th>DEPARTAMENTO</th>
+
+                      <th>CATEGORIA</th>
+                      <th>CUSTO</th>
+
+                      <th>VALOR VENDA</th>
+                      <th>PAGUE APENAS</th>
+<th>MENOR PRECO</th>
+
+
+
+                      <th>CONCORRENTE</th>
+<th>MARGEM OP.</th>
+<th>DIF. MENOR PRECO</th>
+
+                      <th>CURVA</th>
+<th>CONCORRENTES</th>
+
+<th>MARCA</th>
+
+                    </tr>
+                  </tfoot>
+                  <tbody>
+
+<?php
+  
+
+$consultatotalprodutosruptura = "SELECT sku, title, department, category, price_cost, sale_price, current_price_pay_only, current_less_price_around, lowest_price_competitor, current_gross_margin_percent, diff_current_pay_only_lowest, curve, marca,qty_competitors from Products where active='1' and qty_stock_rms=0  and pbm <> $pbma";
+$res_datatotalruptura = mysqli_query($conn,$consultatotalprodutosruptura);
+        while($rowr = mysqli_fetch_array($res_datatotalruptura)){
+     
+                echo    '<tr>';
+                    echo  '<td>'.$rowr[0].'</td>';
+                    echo  '<td>'.utf8_encode($rowr[1]).'</td>';
+ echo  '<td>'.utf8_encode($rowr[2]).'</td>';
+ echo  '<td>'.utf8_encode($rowr[3]).'</td>';
+ echo  '<td>'.$rowr[4].'</td>';
+echo  '<td>'.$rowr[5].'</td>';
+echo  '<td>'.$rowr[6].'</td>';
+echo  '<td>'.$rowr[7].'</td>';
+echo  '<td>'.$rowr[8].'</td>';
+echo  '<td>'.round((float)$rowr[9] * 100).'%</td>';
+echo  '<td>'.round((float)$rowr[10] * 100).'%</td>';
+echo  '<td>'.$rowr[11].'</td>';
+echo  "<td>". number_format($rowr[13], 0, ',', '.') ."</td>";
+echo  '<td>'.$rowr[12].'</td>';
+echo  '</tr>';
+ 
+}
+?>               
+                  </tbody>
+                </table></div>
+        <div class="modal-footer">
+
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+<!-- Abaixo do Custo Modal-->
+
+
+
+
+  <div class="modal fade" id="financiandomodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabe2l">Produtos Abaixo do Custo</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+         <div class="modal-body">
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm">
+<div class="card-header">
+                 Porcentagem Negativa de Margem Por SKU
+                </div>
+<div class="chart-pie pt-4 pb-2">
+<canvas id="financiandoChart"></canvas>
+
+</div>
+              <span class="mr-2">     
+  <table class="table table-sm">
+
+
+
+<tr>
+
+<th>#</th><th>Custo</th><th>Valor Venda</th><th>Déficit</th><th>Estoque</th>
+</th>
+</tr>
+<tr>
+
+
+<th>-5%/-1%</th><td>R$ <?php echo number_format($valoritempof51, 0, ',', '.');?> </td><td>R$ <?php echo number_format($valoritempof5, 0, ',', '.');?></td><td><font color='red'>R$ <?php echo number_format($valoritempof5t, 0, ',', '.');?></font></td><td><?php echo number_format($qtd_geral_estoquef5, 0, ',', '.');?></td>
+</th>
+</tr>
+<th>-10%/-5%</th><td>R$ <?php echo number_format($valoritempof101, 0, ',', '.');?> </td><td>R$ <?php echo number_format($valoritempof102, 0, ',', '.');?></td><td><font color='red'>R$ <?php echo number_format($valoritempof10t, 0, ',', '.');?></font></td><td><?php echo number_format($qtd_geral_estoquef10, 0, ',', '.');?></td></td>
+</th>
+</tr>
+<th>-20%/-10%</th><td>R$ <?php echo number_format($valoritempof201, 0, ',', '.');?> </td><td>R$ <?php echo number_format($valoritempof20, 0, ',', '.');?></td><td><font color='red'>R$ <?php echo number_format($valoritempof20t, 0, ',', '.');?></font></td><td><?php echo number_format($qtd_geral_estoquef20, 0, ',', '.');?></td>
+</th>
+</tr>
+<th>-30%/-20%</th><td>R$ <?php echo number_format($valoritempof301, 0, ',', '.');?> </td><td>R$ <?php echo number_format($valoritempof30, 0, ',', '.');?></td><td><font color='red'>R$ <?php echo number_format($valoritempof30t, 0, ',', '.');?></font></font></td><td><?php echo number_format($qtd_geral_estoquef30, 0, ',', '.');?></td>
+
+</th>
+</tr>
+
+<th>≤-30%</th><td>R$ <?php echo number_format($valoritempof301a, 0, ',', '.');?> </td><td>R$ <?php echo number_format($valoritempof30a, 0, ',', '.');?></td><td><font color='red'>R$ <?php echo number_format($valoritempof30ta, 0, ',', '.');?></font></td><td><?php echo number_format($qtd_geral_estoquef30a, 0, ',', '.');?></td>
+
+
+</th>
+</tr>
+<th>Total</th><td>R$ <?php echo number_format($valortotalitemcusto, 0, ',', '.');?> </td><td>R$ <?php echo number_format($valortotalitempa, 0, ',', '.');?></td><td><font color='red'><b>R$ <?php echo number_format($valortotalitemdefict, 0, ',', '.');?></b></font></td><td><?php echo number_format($valortotalitemestoque, 0, ',', '.');?></td></b>
+
+
+</th>
+</tr>
+
+<!--<th>Total</th><td><?php echo $qtd_geral_estoquef;?> </td> -->
+
+</table>
+</span>
+    </div>
+    <div class="col-sm">
+<div class="card-header">
+Concorrentes Com Menor Preço
+                </div>
+   
+<div class="chart-pie pt-4 pb-2">
+<canvas id="financiandoChartc"></canvas>
+
+</div>
+
+</div>
+
+  </div>
+</div>
+
+<div class="dropdown-divider"></div>
+ <table class="display table table-bordered table-sm table-hover" id="" width="100%" cellspacing="0">
+                  <thead class="thead-dark">
+                    <tr>
+                      
+                             <th>SKU</th>
+                      <th>TITULO</th>
+                      <th>DEPARTAMENTO</th>
+
+                      <th>CATEGORIA</th>
+                      <th>CUSTO</th>
+
+                      <th>VALOR VENDA</th>
+                      <th>PAGUE APENAS</th>
+<th>MENOR PRECO</th>
+
+
+
+                      <th>CONCORRENTE</th>
+<th>MARGEM OP.</th>
+<th>DIF. MENOR PRECO</th>
+
+                      <th>CURVA</th>
+<th>ESTOQUE</th>
+
+<th>MARCA</th>
+
+                    </tr>
+                  </thead>
+                  <tfoot class="thead-dark">
+                  
+  <tr>
+                                        <th>SKU</th>
+                      <th>TITULO</th>
+                      <th>DEPARTAMENTO</th>
+
+                      <th>CATEGORIA</th>
+                      <th>CUSTO</th>
+
+                      <th>VALOR VENDA</th>
+                      <th>PAGUE APENAS</th>
+<th>MENOR PRECO</th>
+
+
+
+                      <th>CONCORRENTE</th>
+<th>MARGEM OP.</th>
+<th>DIF. MENOR PRECO</th>
+
+                      <th>CURVA</th>
+<th>ESTOQUE</th>
+
+<th>MARCA</th>
+
+                    </tr>
+                  </tfoot>
+                  <tbody>
+
+<?php
+
+
+$consultatotalprodutosfinanciando = "SELECT sku, title, department, category, price_cost, sale_price, current_price_pay_only, current_less_price_around, lowest_price_competitor, current_gross_margin_percent, diff_current_pay_only_lowest, curve, marca, qty_stock_rms from Products where active='1' and current_gross_margin_percent < 0 and qty_stock_rms > 0 and pbm <> $pbma";
+$res_datatotalfinanciando = mysqli_query($conn,$consultatotalprodutosfinanciando);
+        while($rowf = mysqli_fetch_array($res_datatotalfinanciando)){
+     
+                echo    '<tr>';
+                    echo  '<td>'.$rowf[0].'</td>';
+                    echo  '<td>'.utf8_encode($rowf[1]).'</td>';
+ echo  '<td>'.utf8_encode($rowf[2]).'</td>';
+ echo  '<td>'.utf8_encode($rowf[3]).'</td>';
+ echo  '<td>'.$rowf[4].'</td>';
+echo  '<td>'.$rowf[5].'</td>';
+echo  '<td>'.$rowf[6].'</td>';
+echo  '<td>'.$rowf[7].'</td>';
+echo  '<td>'.$rowf[8].'</td>';
+echo  '<td>'.round((float)$rowf[9] * 100).'%</td>';
+echo  '<td>'.round((float)$rowf[10] * 100).'%</td>';
+echo  '<td>'.$rowf[11].'</td>';
+echo  "<td>". number_format($rowf[13], 0, ',', '.') ."</td>";
+echo  '<td>'.$rowf[12].'</td>';
+echo  '</tr>';
+ 
+}
+?>               
+                  </tbody>
+                </table></div>
+        <div class="modal-footer">
+
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+<!-- CashBack Modal-->
+
+  <div class="modal fade" id="cashbackmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel1">Produtos Com CashBack</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body"><div class="dropdown-divider"></div>
+ <table class="display table table-bordered table-sm table-hover" id="" width="100%" cellspacing="0">
+                  <thead class="thead-dark">
+                    <tr>
+                      
+                             <th>SKU</th>
+                      <th>TITULO</th>
+                      <th>DEPARTAMENTO</th>
+
+                      <th>CATEGORIA</th>
+                      <th>CUSTO</th>
+
+                      <th>VALOR VENDA</th>
+                      <th>PAGUE APENAS</th>
+<th>MENOR PRECO</th>
+
+
+
+                      <th>CONCORRENTE</th>
+<th>MARGEM OP.</th>
+<th>DIF. MENOR PRECO</th>
+
+                      <th>CURVA</th>
+<th>ESTOQUE</th>
+
+<th>CASHBACK</th>
+
+                    </tr>
+                  </thead>
+                  <tfoot class="thead-dark">
+                  
+  <tr>
+                                        <th>SKU</th>
+                      <th>TITULO</th>
+                      <th>DEPARTAMENTO</th>
+
+                      <th>CATEGORIA</th>
+                      <th>CUSTO</th>
+
+                      <th>VALOR VENDA</th>
+                      <th>PAGUE APENAS</th>
+<th>MENOR PRECO</th>
+
+
+
+                      <th>CONCORRENTE</th>
+<th>MARGEM OP.</th>
+<th>DIF. MENOR PRECO</th>
+
+                      <th>CURVA</th>
+<th>ESTOQUE</th>
+
+<th>CASHBACK</th>
+
+                    </tr>
+                  </tfoot>
+                  <tbody>
+
+<?php
+  
+
+$consultatotalcashback = "SELECT sku, title, department, category, price_cost, sale_price, current_price_pay_only, current_less_price_around, lowest_price_competitor, current_gross_margin_percent, diff_current_pay_only_lowest, curve, current_cashback,qty_stock_rms from Products where active='1' and qty_stock_rms > '0' and current_cashback>'0' and pbm <> $pbma  and department='medicamento'";
+$res_datacashbackt = mysqli_query($conn,$consultatotalcashback);
+        while($rowcb = mysqli_fetch_array($res_datacashbackt)){
+     
+                echo    '<tr>';
+                    echo  '<td>'.$rowcb[0].'</td>';
+                    echo  '<td>'.utf8_encode($rowcb[1]).'</td>';
+ echo  '<td>'.utf8_encode($rowcb[2]).'</td>';
+ echo  '<td>'.utf8_encode($rowcb[3]).'</td>';
+ echo  '<td>'.$rowcb[4].'</td>';
+echo  '<td>'.$rowcb[5].'</td>';
+echo  '<td>'.$rowcb[6].'</td>';
+echo  '<td>'.$rowcb[7].'</td>';
+echo  '<td>'.$rowcb[8].'</td>';
+echo  '<td>'.round((float)$rowcb[9] * 100).'%</td>';
+echo  '<td>'.round((float)$rowcb[10] * 100).'%</td>';
+echo  '<td>'.$rowcb[11].'</td>';
+echo  "<td>". number_format($rowcb[13], 0, ',', '.') ."</td>";
+echo  '<td>'.$rowcb[12].'</td>';
+echo  '</tr>';
+ 
+}
+?>               
+                  </tbody>
+                </table></div>
+        <div class="modal-footer">
+
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Tabelados Modal-->
+
+  <div class="modal fade" id="tabeladomodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel1">Produtos Tabelados</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body"><div class="dropdown-divider"></div>
+ <table class="display table table-bordered table-sm table-hover" id="" width="100%" cellspacing="0">
+                  <thead class="thead-dark">
+                    <tr>
+                      
+                             <th>SKU</th>
+                      <th>TITULO</th>
+                      <th>DEPARTAMENTO</th>
+
+                      <th>CATEGORIA</th>
+                      <th>CUSTO</th>
+
+                      <th>VALOR VENDA</th>
+                      <th>PAGUE APENAS</th>
+<th>MENOR PRECO</th>
+
+
+
+                      <th>CONCORRENTE</th>
+<th>MARGEM OP.</th>
+<th>DIF. MENOR PRECO</th>
+
+                      <th>CURVA</th>
+<th>ESTOQUE</th>
+
+<th>TABELADO</th>
+
+                    </tr>
+                  </thead>
+                  <tfoot class="thead-dark">
+                  
+  <tr>
+                                        <th>SKU</th>
+                      <th>TITULO</th>
+                      <th>DEPARTAMENTO</th>
+
+                      <th>CATEGORIA</th>
+                      <th>CUSTO</th>
+
+                      <th>VALOR VENDA</th>
+                      <th>PAGUE APENAS</th>
+<th>MENOR PRECO</th>
+
+
+
+                      <th>CONCORRENTE</th>
+<th>MARGEM OP.</th>
+<th>DIF. MENOR PRECO</th>
+
+                      <th>CURVA</th>
+<th>ESTOQUE</th>
+
+<th>TABELADO</th>
+
+                    </tr>
+                  </tfoot>
+                  <tbody>
+
+<?php
+  
+
+$consultatotalcashback = "SELECT sku, title, department, category, price_cost, sale_price, current_price_pay_only, current_less_price_around, lowest_price_competitor, current_gross_margin_percent, diff_current_pay_only_lowest, curve, tabulated_price,qty_stock_rms from Products where active='1' and qty_stock_rms > '0' and tabulated_price >'0' and pbm <> $pbma  and department='medicamento'";
+$res_datacashbackt = mysqli_query($conn,$consultatotalcashback);
+        while($rowcb = mysqli_fetch_array($res_datacashbackt)){
+     
+                echo    '<tr>';
+                    echo  '<td>'.$rowcb[0].'</td>';
+                    echo  '<td>'.utf8_encode($rowcb[1]).'</td>';
+ echo  '<td>'.utf8_encode($rowcb[2]).'</td>';
+ echo  '<td>'.utf8_encode($rowcb[3]).'</td>';
+ echo  '<td>'.$rowcb[4].'</td>';
+echo  '<td>'.$rowcb[5].'</td>';
+echo  '<td>'.$rowcb[6].'</td>';
+echo  '<td>'.$rowcb[7].'</td>';
+echo  '<td>'.$rowcb[8].'</td>';
+echo  '<td>'.round((float)$rowcb[9] * 100).'%</td>';
+echo  '<td>'.round((float)$rowcb[10] * 100).'%</td>';
+echo  '<td>'.$rowcb[11].'</td>';
+echo  "<td>". number_format($rowcb[13], 0, ',', '.') ."</td>";
+echo  '<td>'.$rowcb[12].'</td>';
+echo  '</tr>';
+ 
+}
+?>               
+                  </tbody>
+                </table></div>
+        <div class="modal-footer">
+
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+<!-- Estoque Exclusivo Modal-->
+
+  <div class="modal fade" id="exclusivomodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel1">Produtos Estoque Exclusivo</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body"><div class="dropdown-divider"></div>
+ <table class="display table table-bordered table-sm table-hover" id="" width="100%" cellspacing="0">
+                  <thead class="thead-dark">
+                    <tr>
+                      
+                             <th>SKU</th>
+                      <th>TITULO</th>
+                      <th>DEPARTAMENTO</th>
+
+                      <th>CATEGORIA</th>
+                      <th>CUSTO</th>
+
+                      <th>VALOR VENDA</th>
+                      <th>PAGUE APENAS</th>
+<th>MENOR PRECO</th>
+
+
+
+                      <th>CONCORRENTE</th>
+<th>MARGEM OP.</th>
+<th>DIF. MENOR PRECO</th>
+
+                      <th>CURVA</th>
+<th>ESTOQUE</th>
+
+<th>STATUS</th>
+
+                    </tr>
+                  </thead>
+                  <tfoot class="thead-dark">
+                  
+  <tr>
+                                        <th>SKU</th>
+                      <th>TITULO</th>
+                      <th>DEPARTAMENTO</th>
+
+                      <th>CATEGORIA</th>
+                      <th>CUSTO</th>
+
+                      <th>VALOR VENDA</th>
+                      <th>PAGUE APENAS</th>
+<th>MENOR PRECO</th>
+
+
+
+                      <th>CONCORRENTE</th>
+<th>MARGEM OP.</th>
+<th>DIF. MENOR PRECO</th>
+
+                      <th>CURVA</th>
+<th>ESTOQUE</th>
+
+<th>STATUS</th>
+
+                    </tr>
+                  </tfoot>
+                  <tbody>
+
+<?php
+  
+
+$consultatotalprodutosexclusivo = "SELECT sku, title, department, category, price_cost, sale_price, current_price_pay_only, current_less_price_around, lowest_price_competitor, current_gross_margin_percent, diff_current_pay_only_lowest, curve, situation_code_fk,qty_stock_rms from Products where active='1' and qty_stock_rms > '0' and qty_competitors='0' and pbm <> $pbma  and department='medicamento'";
+$res_datatotalexclusivo = mysqli_query($conn,$consultatotalprodutosexclusivo);
+        while($rowe = mysqli_fetch_array($res_datatotalexclusivo)){
+     
+                echo    '<tr>';
+                    echo  '<td>'.$rowe[0].'</td>';
+                    echo  '<td>'.utf8_encode($rowe[1]).'</td>';
+ echo  '<td>'.utf8_encode($rowe[2]).'</td>';
+ echo  '<td>'.utf8_encode($rowe[3]).'</td>';
+ echo  '<td>'.$rowe[4].'</td>';
+echo  '<td>'.$rowe[5].'</td>';
+echo  '<td>'.$rowe[6].'</td>';
+echo  '<td>'.$rowe[7].'</td>';
+echo  '<td>'.$rowe[8].'</td>';
+echo  '<td>'.round((float)$rowe[9] * 100).'%</td>';
+echo  '<td>'.round((float)$rowe[10] * 100).'%</td>';
+echo  '<td>'.$rowe[11].'</td>';
+echo  "<td>". number_format($rowe[13], 0, ',', '.') ."</td>";
+echo  '<td>'.$rowe[12].'</td>';
+echo  '</tr>';
+ 
+}
+?>               
+                  </tbody>
+                </table></div>
+        <div class="modal-footer">
+
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+
+
+<!-- Modal -->
+<!-- myModal PRODUTOS NOSSOS -->
+<div id="totalprodutosmodal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+               <h4>Total Medicamentos</h4> <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+            </div>
+            <div class="modal-body">
+
+
+
+<!----------TOTAL PRODUTOS-------------->
+
+
+
+
+
+<div class="container">
+<br>
+  <div class="row">
+    <div class="col-sm">
+
+<div class="card mb-4">
+
+                <div class="card-header">
+                Medicamentos Por Curva e Situação
+                </div>
+
+ <div class="chart-area">
+<canvas id="totalChart" height=200 ></canvas>
+
+
+                  </div>
+  <div class="mt-4 text-center small">
+                    <span class="mr-2">
+                   <table border=1>
+
+
+
+<tr>
+<th>Curva</th><th>Ruptura</th><th>Abaixo/Igual Custo</th><th>Sacrificando Margem OP.</th><th>Sacrificando Margem Lucro</th><th>Estoque Exclusivo</th>
+</th>
+</tr>
+<tr>
+<th>A</th><td><?php echo $qtd_geral_a_ruptura;?> </td><td><?php echo $qtd_geral_financiando_a;?></td><td><?php echo $qtd_geral_soperacao_a;?></td><td><?php echo $qtd_geral_slucro_a;?></td><td><?php echo $qtd_geral_a_exclusivo;?></td>
+</th>
+</tr>
+<tr>
+<th>B</th><td><?php echo $qtd_geral_b_ruptura;?> </td><td><?php echo $qtd_geral_financiando_b;?></td><td><?php echo $qtd_geral_soperacao_b;?></td><td><?php echo $qtd_geral_slucro_b;?></td><td><?php echo $qtd_geral_b_exclusivo;?></td>
+</th>
+</tr>
+<tr>
+<th>C</th><td><?php echo $qtd_geral_c_ruptura;?> </td><td><?php echo $qtd_geral_financiando_c;?></td><td><?php echo $qtd_geral_soperacao_c;?></td><td><?php echo $qtd_geral_slucro_c;?></td><td><?php echo $qtd_geral_c_exclusivo;?></td>
+</th>
+</tr>
+<tr>
+<th>TOTAL</th><td><?php echo $qtd_geral_ruptura;?> </td><td><?php echo $qtd_geral_financiando;?></td><td><?php echo $qtd_geral_soperacao;?></td><td><?php echo $qtd_geral_slucro;?></td><td><?php echo $qtd_geral_exclusivo;?></td>
+</th>
+</tr>
+</table>
+<?php 
+
+
+?> 
+<table border=1>
+<tr>
+<th>Estoque total - </th><td ><b><font color=red><?php echo number_format($qtd_geral_estoque, 0, ',', '.');?></font></b> </td><th>Custo Total</th><td><b><font color=red>R$ <?php echo number_format($valoritem, 2, ',', '.');?></font></b> </td></th>
+<th>Pague Apenas</th><td><b><font color=red>R$ <?php echo number_format($valoritempo, 2, ',', '.');?></font></b> </td></th>
+<th>Margem Bruta</th><td><b><font color=red>R$ <?php echo number_format($valoritempv, 2, ',', '.');?></font></b> </td></th>
+</tr>
+</table>
+                    </span>
+                  </div>
+
+    </div></div>
+      <div class="col-sm">
+
+<div class="card mb-4">
+
+                <div class="card-header">
+Ranking de Menor Preço por Concorrente 
+                </div>
+<div class="chart-pie pt-4 pb-2">
+                    <canvas id="menorconcorrenteChart"></canvas>
+                  </div>  <div class="mt-4 text-center ">
+              <span class="mr-2">     
+  <table class="table table-sm">
+
+
+
+<tr>
+<th>Concorrente</th><th>Curva A</th><th>Curva B</th><th>Curva C</th><th>Total</th>
+</th>
+</tr>
+<tr>
+<th>Drogaraia</th><td><?php echo $qtd_geral_concorrente_drogaraia_a;?> </td><td><?php echo $qtd_geral_concorrente_drogaraia_b;?></td><td><?php echo $qtd_geral_concorrente_drogaraia_c;?></td><td><?php echo $qtd_geral_concorrente_drogaraia;?></td>
+</th>
+</tr>
+<th>Drogasil</th><td><?php echo  $qtd_geral_concorrente_drogasil_a;?> </td><td><?php echo  $qtd_geral_concorrente_drogasil_b;?></td><td><?php echo  $qtd_geral_concorrente_drogasil_c;?></td><td><?php echo $qtd_geral_concorrente_drogasil;?></td>
+</th>
+</tr>
+<th>BelezaNaWeb</th><td><?php echo $qtd_geral_concorrente_onofre_a;?> </td><td><?php echo $qtd_geral_concorrente_onofre_b;?></td><td><?php echo $qtd_geral_concorrente_onofre_c;?></td><td><?php echo $qtd_geral_concorrente_onofre;?></td>
+</th>
+</tr>
+<th>DrogariaSP</th><td><?php echo $qtd_geral_concorrente_drogariasp_a;?> </td><td><?php echo $qtd_geral_concorrente_drogariasp_b;?></td><td><?php echo $qtd_geral_concorrente_drogariasp_c;?></td><td><?php echo $qtd_geral_concorrente_drogariasp;?></td>
+
+</th>
+</tr>
+<th>Ultrafarma</th><td><?php echo $qtd_geral_concorrente_ultrafarma_a;?> </td><td><?php echo $qtd_geral_concorrente_ultrafarma_b;?></td><td><?php echo $qtd_geral_concorrente_ultrafarma_c;?></td><td><?php echo $qtd_geral_concorrente_ultrafarma;?></td>
+</th>
+
+</tr>
+
+</table>
+
+<table class="table" border=1>
+ <thead style="font-size:11px">
+<tr>
+<th>1 Concorrente</th><th>2 Concorrentes</th><th>3 Concorrentes</th><th>4 Concorrentes</th><th>5 Concorrentes</th>
+</tr>
+</thead>
+<tbody style="font-size:12px; font-color:red; font-weight: bold;">
+<td><?php echo $qtd_concorrente1;?></td><td><?php echo $qtd_concorrente2;?></td><td><?php echo $qtd_concorrente3;?></td><td><?php echo $qtd_concorrente4;?></td><td><?php echo $qtd_concorrente5;?></td>
+</tr>
+</tbody>
+</table>
+                    </span>
+                  </div>
+
+    </div></div>
+
+  </div>
+</div>
+
+
+                       <div class="dropdown-divider"></div>
+ <table class="display table table-bordered table-sm table-hover" id="" width="100%" cellspacing="0">
+                  <thead class="thead-dark">
+                    <tr>
+                      
+                             <th>SKU</th>
+                      <th>TITULO</th>
+                      <th>DEPARTAMENTO</th>
+
+                      <th>CATEGORIA</th>
+                      <th>CUSTO</th>
+
+                      <th>VALOR VENDA</th>
+                      <th>PAGUE APENAS</th>
+<th>MENOR PRECO</th>
+
+
+
+                      <th>CONCORRENTE</th>
+<th>MARGEM OP.</th>
+<th>DIF. MENOR PRECO</th>
+
+                      <th>CURVA</th>
+<th>ESTOQUE</th>
+
+<th>Concorrentes</th>
+<th>Marca</th>
+
+                    </tr>
+                  </thead>
+                  <tfoot class="thead-dark">
+                  
+  <tr>
+                                        <th>SKU</th>
+                      <th>TITULO</th>
+                      <th>DEPARTAMENTO</th>
+
+                      <th>CATEGORIA</th>
+                      <th>CUSTO</th>
+
+                      <th>VALOR VENDA</th>
+                      <th>PAGUE APENAS</th>
+<th>MENOR PRECO</th>
+
+
+
+                      <th>CONCORRENTE</th>
+<th>MARGEM OP.</th>
+<th>DIF. MENOR PRECO</th>
+
+                      <th>CURVA</th>
+<th>ESTOQUE</th>
+
+<th>Concorrentes</th>
+<th>Marca</th>
+
+                    </tr>
+                  </tfoot>
+                  <tbody>
+
+<?php
+  
+
+$consultatotalprodutos = "SELECT sku, title, department, category, price_cost, sale_price, current_price_pay_only, current_less_price_around, lowest_price_competitor, current_gross_margin_percent, diff_current_pay_only_lowest, curve, qty_stock_rms, qty_competitors, marca  from Products where active='1' and pbm <> $pbma  and department='medicamento'";
+$res_datatotal = mysqli_query($conn,$consultatotalprodutos);
+        while($row = mysqli_fetch_array($res_datatotal)){
+     
+                echo    '<tr>';
+                    echo  '<td>'.$row[0].'</td>';
+                    echo  '<td>'.utf8_encode($row[1]).'</td>';
+ echo  '<td>'.utf8_encode($row[2]).'</td>';
+ echo  '<td>'.utf8_encode($row[3]).'</td>';
+ echo  '<td>'.$row[4].'</td>';
+echo  '<td>'.$row[5].'</td>';
+echo  '<td>'.$row[6].'</td>';
+echo  '<td>'.$row[7].'</td>';
+echo  '<td>'.$row[8].'</td>';
+echo  '<td>'.round((float)$row[9] * 100).'%</td>';
+echo  '<td>'.round((float)$row[10] * 100).'%</td>';
+echo  '<td>'.$row[11].'</td>';
+echo  "<td>". number_format($row[13], 0, ',', '.') ."</td>";
+echo  '<td>'.$row[13].'</td>';
+echo  '<td>'.$row[14].'</td>';
+
+echo  '</tr>';
+ 
+}
+?>               
+                  </tbody>
+                </table>
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <!-- Bootstrap core JavaScript-->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Core plugin JavaScript-->
+  <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+  <!-- Custom scripts for all pages-->
+  <script src="js/sb-admin-2.min.js"></script>
+
+  <!-- Page level plugins -->
+  <script src="vendor/chart.js/Chart.min.js"></script>
+
+  <!-- Page level custom scripts -->
+  <script src="js/demo/chart-area-demo.js"></script>
+  <script src="js/demo/chart-pie-demo.js"></script>
+
+
+  <!-- Page level plugins -->
+  <script src="vendor/datatables/jquery.dataTables.min.js"></script>
+  <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
+  <!-- Page level custom scripts -->
+  <script src="js/demo/datatables-demo.js"></script>
+
+
+
+</body>
+<script>
+
+$(document).ready(function() {
+    $('table.display').DataTable();
+} );
+
+var colors = ['#007bff','#28a745','#333333','#c3e6cb','#dc3545','#6c757d'];
+
+
+var totalRuptura = <?php echo $qtd_geral_ruptura;?>;
+var totalRupturaA = <?php echo $qtd_geral_a_ruptura;?>;
+var totalRupturaB = <?php echo $qtd_geral_b_ruptura;?>;
+var totalRupturaC = <?php echo $qtd_geral_c_ruptura;?>;
+
+
+var totalp = <?php echo $qtd_geral;?>;
+var totalpA = <?php echo $qtd_geral_a;?>;
+var totalpB = <?php echo $qtd_geral_b;?>;
+var totalpC = <?php echo $qtd_geral_c;?>;
+var financiando =<?php echo $qtd_geral_financiando;?>;
+var financiandoA =<?php echo $qtd_geral_financiando_a;?>;
+var financiandoB =<?php echo $qtd_geral_financiando_b;?>;
+var financiandoC =<?php echo $qtd_geral_financiando_c;?>;
+
+var sacrificandomo =<?php echo $qtd_geral_soperacao;?>;
+var sacrificandomoA =<?php echo $qtd_geral_soperacao_a;?>;
+var sacrificandomoB =<?php echo $qtd_geral_soperacao_b;?>;
+var sacrificandomoC =<?php echo $qtd_geral_soperacao_c;?>;
+
+var sacrificandoml =<?php echo $qtd_geral_slucro;?>;
+var sacrificandomlA =<?php echo $qtd_geral_slucro_a;?>;
+var sacrificandomlB =<?php echo $qtd_geral_slucro_b;?>;
+var sacrificandomlC =<?php echo $qtd_geral_slucro_c;?>;
+
+var estoqueexclusivo =<?php echo $qtd_geral_exclusivo;?>;
+var estoqueexclusivoA =<?php echo $qtd_geral_a_exclusivo;?>;
+var estoqueexclusivoB =<?php echo $qtd_geral_b_exclusivo;?>;
+var estoqueexclusivoC =<?php echo $qtd_geral_c_exclusivo;?>;
+
+var concorrenteUltra=<?php echo $qtd_geral_concorrente_ultrafarma;?>;
+
+var concorrenteRaia=<?php echo $qtd_geral_concorrente_drogaraia;?>;
+
+var concorrenteSil=<?php echo $qtd_geral_concorrente_drogasil;?>;
+
+var concorrenteDSP=<?php echo $qtd_geral_concorrente_drogariasp;?>;
+
+var concorrenteOnofre=<?php echo $qtd_geral_concorrente_onofre;?>;
+
+
+
+
+/* bar chart */
+var ctx = document.getElementById("totalChart").getContext("2d");
+
+var data = {
+  labels: ["TOTAL", "CURVA A", "CURVA B","CURVA C" ],
+  datasets: [{
+    label: "Total Produtos",
+    backgroundColor: "blue",
+    data: [totalp, totalpA, totalpB, totalpC]
+  }, {
+    label: "Ruptura",
+    backgroundColor: "gray",
+    data: [totalRuptura, totalRupturaA, totalRupturaB, totalRupturaC]
+
+ }, {
+    label: "Abaixo/Igual Custo",
+    backgroundColor: "red",
+    data: [financiando, financiandoA, financiandoB, financiandoC]
+  
+ }, {
+label: "Sacrificando Margem de OP.",
+    backgroundColor: "green",
+    data: [sacrificandomo,sacrificandomoA,sacrificandomoB,sacrificandomoC]
+  
+ }, {
+    label: "Sacrificando Margem Lucro",
+    backgroundColor: "purple",
+    data: [sacrificandoml, sacrificandomlA, sacrificandomlB, sacrificandomlC]
+ 
+ }, {
+    label: "Estoque Exclusivo",
+    backgroundColor: "black",
+    data: [estoqueexclusivo, estoqueexclusivoA, estoqueexclusivoB, estoqueexclusivoC]
+ }]
+
+};
+
+var myBarChart = new Chart(ctx, {
+  type: 'bar',
+  data: data,
+  options: {
+    barValueSpacing: 6,
+    scales: {
+      yAxes: [{
+        ticks: {
+          min: 0,
+
+        }
+      }]
+    }
+  }
+});
+
+
+
+
+
+/* 3 donut charts */
+var donutOptions = {
+  cutoutPercentage: 85, 
+  legend: {position:'bottom', padding:5, labels: {pointStyle:'circle', usePointStyle:true}}
+};
+
+
+
+
+
+// donut 3
+var chDonutDataMC = {
+    labels: ['Drogaraia', 'Drogasil', 'BelezaNaWeb', 'DrogariaSP', 'Ultrafarma'],
+    datasets: [
+      {
+        backgroundColor: colors.slice(0,5),
+        borderWidth: 0,
+        data: [concorrenteRaia, concorrenteSil, concorrenteOnofre, concorrenteDSP, concorrenteUltra]
+      }
+    ]
+};
+var menorconcorrenteChart = document.getElementById("menorconcorrenteChart");
+if (menorconcorrenteChart) {
+  new Chart(menorconcorrenteChart, {
+      type: 'pie',
+      data: chDonutDataMC,
+      options: donutOptions
+  });
+}
+
+
+
+
+// donut 3
+var chDonutDataMC1 = {
+    labels: ['Curva A', 'Curva B', 'Curva C'],
+    datasets: [
+      {
+        backgroundColor: colors.slice(0,5),
+        borderWidth: 0,
+        data: [totalRupturaA, totalRupturaB, totalRupturaC]
+      }
+    ]
+};
+var rupturaChart = document.getElementById("rupturaChart");
+if (rupturaChart) {
+  new Chart(rupturaChart, {
+      type: 'pie',
+      data: chDonutDataMC1,
+      options: donutOptions
+  });
+}
+
+var financiando5=<?php echo $qtd_geral_financiando_cinco;?>;
+var financiando10=<?php echo $qtd_geral_financiando_dez;?>;
+var financiando20=<?php echo $qtd_geral_financiando_vinte;?>;
+var financiando30=<?php echo $qtd_geral_financiando_trinta;?>;
+var financiando30a=<?php echo $qtd_geral_financiando_atrinta;?>;
+
+
+
+
+// donut 3
+var chDonutDataMC12 = {
+    labels: ['(-5% / -1%)', '(-10% / -5%)', '(-20% / -10%)','(-30% / -20%)','(≤ -30% )' ],
+    datasets: [
+      {
+        backgroundColor: colors.slice(0,5),
+        borderWidth: 0,
+        data: [financiando5, financiando10, financiando20, financiando30, financiando30a],
+          render: 'percentage',      
+}
+    ]
+};
+var financiandoChart = document.getElementById("financiandoChart");
+if (financiandoChart) {
+  new Chart(financiandoChart, {
+      type: 'pie',
+      data: chDonutDataMC12,
+      options: donutOptions
+  });
+}
+var cfultra=<?php echo $qtd_geral_concorrente_ultrafarmaf;?>;                  
+var cfraia=<?php echo $qtd_geral_concorrente_drogaraiaf;?>;                  
+var cfsil=<?php echo $qtd_geral_concorrente_drogasilf;?>;                  
+var cfsp=<?php echo $qtd_geral_concorrente_drogariaspf;?>;                  
+
+var cfultra5=<?php echo $qtd_geral_concorrente_ultrafarmaf5;?>;                  
+var cfraia5=<?php echo $qtd_geral_concorrente_drogaraiaf5;?>;                  
+var cfsil5=<?php echo $qtd_geral_concorrente_drogasilf5;?>;                  
+var cfsp5=<?php echo $qtd_geral_concorrente_drogariaspf5;?>;                  
+
+var cfultra10=<?php echo $qtd_geral_concorrente_ultrafarmaf10;?>;                  
+var cfraia10=<?php echo $qtd_geral_concorrente_drogaraiaf10;?>;                  
+var cfsil10=<?php echo $qtd_geral_concorrente_drogasilf10;?>;                  
+var cfsp10=<?php echo $qtd_geral_concorrente_drogariaspf10;?>;                  
+
+var cfultra20=<?php echo $qtd_geral_concorrente_ultrafarmaf20;?>;                  
+var cfraia20=<?php echo $qtd_geral_concorrente_drogaraiaf20;?>;                  
+var cfsil20=<?php echo $qtd_geral_concorrente_drogasilf20;?>;                  
+var cfsp20=<?php echo $qtd_geral_concorrente_drogariaspf20;?>;                  
+
+var cfultra30=<?php echo $qtd_geral_concorrente_ultrafarmaf30;?>;                  
+var cfraia30=<?php echo $qtd_geral_concorrente_drogaraiaf30;?>;                  
+var cfsil30=<?php echo $qtd_geral_concorrente_drogasilf30;?>;                  
+var cfsp30=<?php echo $qtd_geral_concorrente_drogariaspf30;?>;                  
+
+var cfultra30a=<?php echo $qtd_geral_concorrente_ultrafarmaf30a;?>;                  
+var cfraia30a=<?php echo $qtd_geral_concorrente_drogaraiaf30a;?>;                  
+var cfsil30a=<?php echo $qtd_geral_concorrente_drogasilf30a;?>;                  
+var cfsp30a=<?php echo $qtd_geral_concorrente_drogariaspf30a;?>;                  
+
+var cfbnw=<?php echo $qtd_geral_concorrente_belezanawebf;?>;    
+var cfbnw5=<?php echo $qtd_geral_concorrente_belezanawebf5;?>;                  
+var cfbnw10=<?php echo $qtd_geral_concorrente_belezanawebf10;?>;                  
+var cfbnw20=<?php echo $qtd_geral_concorrente_belezanawebf20;?>;                  
+var cfbnw30=<?php echo $qtd_geral_concorrente_belezanawebf30;?>;                  
+var cfbnw30a=<?php echo $qtd_geral_concorrente_belezanawebf30a;?>;                  
+
+/* bar chart */
+var ctxfc = document.getElementById("financiandoChartc").getContext("2d");
+
+var data1 = {
+  labels: ["(Total)", "(-5% / -1%)", "(-10% / -5%)", "(-20% / -10%)", "(-30% / -20%)", "(≤-30%)"],
+  datasets: [{
+    label: "DROGARAIA",
+    backgroundColor: "blue",
+    data: [cfraia, cfraia5, cfraia10, cfraia20, cfraia30, cfraia30a]
+  }, {
+    label: "DROGASIL",
+    backgroundColor: "red",
+    data: [cfsil, cfsil5, cfsil10, cfsil20, cfsil30, cfsil30a]
+}, {
+    label: "ULTRAFARMA",
+    backgroundColor: "green",
+    data: [cfultra, cfultra5, cfultra10, cfultra20, cfultra30, cfultra30a]
+}, {
+    label: "DROGARIASAOPAULO",
+    backgroundColor: "gray",
+    data: [cfsp, cfsp5, cfsp10, cfsp20, cfsp30, cfsp30a]
+}, {
+    label: "BELEZANAWEB",
+    backgroundColor: "yellow",
+    data: [cfbnw, cfbnw5, cfbnw10, cfbnw20, cfbnw30, cfbnw30a]
+
+ }]
+
+};
+var myBarChart = new Chart(ctxfc, {
+  type: 'bar',
+  data: data1,
+  options: {
+    barValueSpacing: 6,
+    scales: {
+      yAxes: [{
+        ticks: {
+          min: 0,
+
+        }
+      }]
+    }
+  }
+});
+
+
+
+</script>
+</html>

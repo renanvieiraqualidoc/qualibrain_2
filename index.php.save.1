@@ -1,0 +1,1416 @@
+
+<?php
+
+header('Content-Type: text/html; charset=utf-8');
+
+// Initialize the session
+session_start();
+ 
+// Check if the user is logged in, if not then redirect him to login page
+if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
+    header("location: login.php");
+    exit;
+}
+
+
+
+error_reporting(E_ALL);
+error_reporting(-1);
+ini_set('error_reporting', E_ALL);
+
+include_once("config/dbconfig.php");
+
+
+    function get_percentage($totalp, $numberp)
+    {
+      if ( $totalp > 0 ) {
+       return round($numberp / ($totalp / 100),2);
+      } else {
+        return 0;
+      }
+    }
+
+
+
+// Função de porcentagem: N é X% de N
+function porcentagem_nx ( $parcial, $total ) {
+    return ( $parcial * 100 ) / $total;
+
+}
+
+//pbm
+$select_pbmc = "SELECT count(1) FROM Products where active='1' and qty_stock_rms>0 and pbm='1'";
+$resultado_pbmc = mysqli_query($conn,$select_pbmc);
+$total_pbmc = mysqli_fetch_array($resultado_pbmc)[0];
+
+//Promo
+$select_promo = "SELECT count(1) From promo";
+$resultado_promo = mysqli_query($conn,$select_promo);
+$total_promo = mysqli_fetch_array($resultado_promo)[0];
+
+
+header('Content-Type: text/html; charset=utf-8');
+//***********Sortimentos Monitorados**************//
+
+//Drogaraia
+$select_drogaraia = "SELECT count(1) FROM drogaraia_products where sku_quali=''";
+$resultado_drogaraia = mysqli_query($conn,$select_drogaraia);
+$total_drogaraia = mysqli_fetch_array($resultado_drogaraia)[0];
+
+
+$select_drogaraia_a = "SELECT count(1) FROM drogaraia_products where sku_quali='' and curva='A'";
+$resultado_drogaraia_a = mysqli_query($conn,$select_drogaraia_a);
+$total_drogaraia_a = mysqli_fetch_array($resultado_drogaraia_a)[0];
+
+
+$select_drogaraia_b = "SELECT count(1) FROM drogaraia_products where sku_quali='' and curva='B'";
+$resultado_drogaraia_b = mysqli_query($conn,$select_drogaraia_b);
+$total_drogaraia_b = mysqli_fetch_array($resultado_drogaraia_b)[0];
+
+$select_drogaraia_c = "SELECT count(1) FROM drogaraia_products where sku_quali='' and curva='C'";
+$resultado_drogaraia_c = mysqli_query($conn,$select_drogaraia_c);
+$total_drogaraia_c = mysqli_fetch_array($resultado_drogaraia_c)[0];
+
+$select_drogaraia_d = "SELECT count(1) FROM drogaraia_products where sku_quali='' and curva='N/A'";
+$resultado_drogaraia_d = mysqli_query($conn,$select_drogaraia_d);
+$total_drogaraia_d = mysqli_fetch_array($resultado_drogaraia_d)[0];
+
+
+$select_drogaraia_temos = "SELECT count(1) FROM drogaraia_products where sku_quali<>''";
+$resultado_drogaraia_temos = mysqli_query($conn,$select_drogaraia_temos);
+$total_drogaraia_temos = mysqli_fetch_array($resultado_drogaraia_temos)[0];
+
+
+$select_drogaraia_total = "SELECT count(1) FROM drogaraia_products";
+$resultado_drogaraia_total = mysqli_query($conn,$select_drogaraia_total);
+$total_drogaraia_total = mysqli_fetch_array($resultado_drogaraia_total)[0];
+
+
+$select_drogaraia_indisponiveis = "select count(1) from drogaraia_products where valor='' and valor_p='' and sku_quali=''";
+$resultado_drogaraia_indisponiveis = mysqli_query($conn,$select_drogaraia_indisponiveis);
+$total_drogaraia_indisponiveis = mysqli_fetch_array($resultado_drogaraia_indisponiveis)[0];
+
+
+$select_drogaraia_indisponiveis_temos = "select count(1) from drogaraia_products where valor='' and valor_p='' and sku_quali<>''";
+$resultado_drogaraia_indisponiveis_temos = mysqli_query($conn,$select_drogaraia_indisponiveis_temos);
+$total_drogaraia_indisponiveis_temos = mysqli_fetch_array($resultado_drogaraia_indisponiveis_temos)[0];
+
+
+
+
+
+//Drogasil
+$select_drogasil = "SELECT count(1) FROM drogasil_products where sku_quali=''";
+$resultado_drogasil = mysqli_query($conn,$select_drogasil);
+$total_drogasil = mysqli_fetch_array($resultado_drogasil)[0];
+
+
+
+$select_drogasil_a = "SELECT count(1) FROM drogasil_products where sku_quali='' and curva='A'";
+$resultado_drogasil_a = mysqli_query($conn,$select_drogasil_a);
+$total_drogasil_a = mysqli_fetch_array($resultado_drogasil_a)[0];
+
+
+$select_drogasil_b = "SELECT count(1) FROM drogasil_products where sku_quali='' and curva='B'";
+$resultado_drogasil_b = mysqli_query($conn,$select_drogasil_b);
+$total_drogasil_b = mysqli_fetch_array($resultado_drogasil_b)[0];
+
+$select_drogasil_c = "SELECT count(1) FROM drogasil_products where sku_quali='' and curva='C'";
+$resultado_drogasil_c = mysqli_query($conn,$select_drogasil_c);
+$total_drogasil_c = mysqli_fetch_array($resultado_drogasil_c)[0];
+
+$select_drogasil_d = "SELECT count(1) FROM drogasil_products where sku_quali='' and curva='N/A'";
+$resultado_drogasil_d = mysqli_query($conn,$select_drogasil_d);
+$total_drogasil_d = mysqli_fetch_array($resultado_drogasil_d)[0];
+
+
+
+$select_drogasil_total = "SELECT count(1) FROM drogasil_products";
+$resultado_drogasil_total = mysqli_query($conn,$select_drogasil_total);
+$total_drogasil_total = mysqli_fetch_array($resultado_drogasil_total)[0];
+
+$select_drogasil_temos = "SELECT count(1) FROM drogasil_products where sku_quali<>''";
+$resultado_drogasil_temos = mysqli_query($conn,$select_drogasil_temos);
+$total_drogasil_temos = mysqli_fetch_array($resultado_drogasil_temos)[0];
+
+
+$select_drogasil_indisponiveis = "select count(1) from drogasil_products where valor='' and valor_p='' and sku_quali=''";
+$resultado_drogasil_indisponiveis = mysqli_query($conn,$select_drogasil_indisponiveis);
+$total_drogasil_indisponiveis = mysqli_fetch_array($resultado_drogasil_indisponiveis)[0];
+
+
+$select_drogasil_indisponiveis_temos = "select count(1) from drogasil_products where valor='' and valor_p='' and sku_quali<>''";
+$resultado_drogasil_indisponiveis_temos = mysqli_query($conn,$select_drogasil_indisponiveis_temos);
+$total_drogasil_indisponiveis_temos = mysqli_fetch_array($resultado_drogasil_indisponiveis_temos)[0];
+
+
+
+//Onofre
+$select_onofre = "SELECT count(1) FROM onofre_products where sku_quali=''";
+$resultado_onofre = mysqli_query($conn,$select_onofre);
+$total_onofre = mysqli_fetch_array($resultado_onofre)[0];
+
+$select_onofre_a = "SELECT count(1) FROM onofre_products where sku_quali='' and curva='A'";
+$resultado_onofre_a = mysqli_query($conn,$select_onofre_a);
+$total_onofre_a = mysqli_fetch_array($resultado_onofre_a)[0];
+
+
+$select_onofre_b = "SELECT count(1) FROM onofre_products where sku_quali='' and curva='B'";
+$resultado_onofre_b = mysqli_query($conn,$select_onofre_b);
+$total_onofre_b = mysqli_fetch_array($resultado_onofre_b)[0];
+
+$select_onofre_c = "SELECT count(1) FROM onofre_products where sku_quali='' and curva='C'";
+$resultado_onofre_c = mysqli_query($conn,$select_onofre_c);
+$total_onofre_c = mysqli_fetch_array($resultado_onofre_c)[0];
+
+$select_onofre_d = "SELECT count(1) FROM onofre_products where sku_quali='' and curva='N/A'";
+$resultado_onofre_d = mysqli_query($conn,$select_onofre_d);
+$total_onofre_d = mysqli_fetch_array($resultado_onofre_d)[0];
+
+
+$select_onofre_total = "SELECT count(1) FROM onofre_products";
+$resultado_onofre_total = mysqli_query($conn,$select_onofre_total);
+$total_onofre_total = mysqli_fetch_array($resultado_onofre_total)[0];
+
+$select_onofre_temos = "SELECT count(1) FROM onofre_products where sku_quali<>''";
+$resultado_onofre_temos = mysqli_query($conn,$select_onofre_temos);
+$total_onofre_temos = mysqli_fetch_array($resultado_onofre_temos)[0];
+
+
+
+$select_onofre_indisponiveis = "select count(1) from onofre_products where valor='' and valor_p='' and sku_quali=''";
+$resultado_onofre_indisponiveis = mysqli_query($conn,$select_onofre_indisponiveis);
+$total_onofre_indisponiveis = mysqli_fetch_array($resultado_onofre_indisponiveis)[0];
+
+
+$select_onofre_indisponiveis_temos = "select count(1) from onofre_products where valor='' and valor_p='' and sku_quali<>''";
+$resultado_onofre_indisponiveis_temos = mysqli_query($conn,$select_onofre_indisponiveis_temos);
+$total_onofre_indisponiveis_temos = mysqli_fetch_array($resultado_onofre_indisponiveis_temos)[0];
+
+
+
+
+//Ultrafarma
+$select_ultrafarma = "SELECT count(1) FROM ultrafarma_products where sku_quali=''";
+$resultado_ultrafarma = mysqli_query($conn,$select_ultrafarma);
+$total_ultrafarma = mysqli_fetch_array($resultado_ultrafarma)[0];
+
+$select_ultrafarma_total = "SELECT count(1) FROM ultrafarma_products";
+$resultado_ultrafarma_total = mysqli_query($conn,$select_ultrafarma_total);
+$total_ultrafarma_total = mysqli_fetch_array($resultado_ultrafarma_total)[0];
+
+
+
+$select_ultrafarma_temos = "SELECT count(1) FROM ultrafarma_products where sku_quali<>''";
+$resultado_ultrafarma_temos = mysqli_query($conn,$select_ultrafarma_temos);
+$total_ultrafarma_temos = mysqli_fetch_array($resultado_ultrafarma_temos)[0];
+
+
+
+$select_ultrafarma_indisponiveis = "select count(1) from ultrafarma_products where valor='' and valor_p='' and sku_quali=''";
+$resultado_ultrafarma_indisponiveis = mysqli_query($conn,$select_ultrafarma_indisponiveis);
+$total_ultrafarma_indisponiveis = mysqli_fetch_array($resultado_ultrafarma_indisponiveis)[0];
+
+
+$select_ultrafarma_indisponiveis_temos = "select count(1) from ultrafarma_products where valor='' and valor_p='' and sku_quali<>''";
+$resultado_ultrafarma_indisponiveis_temos = mysqli_query($conn,$select_ultrafarma_indisponiveis_temos);
+$total_ultrafarma_indisponiveis_temos = mysqli_fetch_array($resultado_ultrafarma_indisponiveis_temos)[0];
+
+
+$select_ultrafarma_a = "SELECT count(1) FROM ultrafarma_products where sku_quali='' and curva='A'";
+$resultado_ultrafarma_a = mysqli_query($conn,$select_drogasil_a);
+$total_ultrafarma_a = mysqli_fetch_array($resultado_ultrafarma_a)[0];
+
+
+$select_ultrafarma_b = "SELECT count(1) FROM ultrafarma_products where sku_quali='' and curva='B'";
+$resultado_ultrafarma_b = mysqli_query($conn,$select_ultrafarma_b);
+$total_ultrafarma_b = mysqli_fetch_array($resultado_ultrafarma_b)[0];
+
+$select_ultrafarma_c = "SELECT count(1) FROM ultrafarma_products where sku_quali='' and curva='C'";
+$resultado_ultrafarma_c = mysqli_query($conn,$select_ultrafarma_c);
+$total_ultrafarma_c = mysqli_fetch_array($resultado_ultrafarma_c)[0];
+
+$select_ultrafarma_d = "SELECT count(1) FROM ultrafarma_products where sku_quali='' and curva='N/A'";
+$resultado_ultrafarma_d = mysqli_query($conn,$select_ultrafarma_d);
+$total_ultrafarma_d = mysqli_fetch_array($resultado_ultrafarma_d)[0];
+
+
+
+//DrogariaSP
+$select_drogariasp = "SELECT count(1) FROM drogariasp_products where sku_quali=''";
+$resultado_drogariasp = mysqli_query($conn,$select_drogariasp);
+$total_drogariasp = mysqli_fetch_array($resultado_drogariasp)[0];
+
+
+$select_drogariasp_a = "SELECT count(1) FROM drogariasp_products where sku_quali='' and curva='A'";
+$resultado_drogariasp_a = mysqli_query($conn,$select_drogariasp_a);
+$total_drogariasp_a = mysqli_fetch_array($resultado_drogariasp_a)[0];
+
+
+$select_drogariasp_b = "SELECT count(1) FROM drogariasp_products where sku_quali='' and curva='B'";
+$resultado_drogariasp_b = mysqli_query($conn,$select_drogariasp_b);
+$total_drogariasp_b = mysqli_fetch_array($resultado_drogariasp_b)[0];
+
+$select_drogariasp_c = "SELECT count(1) FROM drogariasp_products where sku_quali='' and curva='C'";
+$resultado_drogariasp_c = mysqli_query($conn,$select_drogariasp_c);
+$total_drogariasp_c = mysqli_fetch_array($resultado_drogariasp_c)[0];
+
+$select_drogariasp_d = "SELECT count(1) FROM drogariasp_products where sku_quali='' and curva='N/A'";
+$resultado_drogariasp_d = mysqli_query($conn,$select_drogariasp_d);
+$total_drogariasp_d = mysqli_fetch_array($resultado_drogariasp_d)[0];
+
+
+
+
+
+
+$select_drogariasp_total = "SELECT count(1) FROM drogariasp_products";
+$resultado_drogariasp_total = mysqli_query($conn,$select_drogariasp_total);
+ $total_drogariasp_total = mysqli_fetch_array($resultado_drogariasp_total)[0];
+
+
+
+
+$select_drogariasp_temos = "SELECT count(1) FROM drogariasp_products where sku_quali<>''";
+$resultado_drogariasp_temos = mysqli_query($conn,$select_drogariasp_temos);
+ $total_drogariasp_temos = mysqli_fetch_array($resultado_drogariasp_temos)[0];
+
+
+
+$select_drogariasp_indisponiveis = "select count(1) from drogariasp_products where valor='' and valor_p='' and sku_quali=''";
+$resultado_drogariasp_indisponiveis = mysqli_query($conn,$select_drogariasp_indisponiveis);
+ $total_drogariasp_indisponiveis = mysqli_fetch_array($resultado_drogariasp_indisponiveis)[0];
+
+
+$select_drogariasp_indisponiveis_temos = "select count(1) from drogariasp_products where valor='' and valor_p='' and sku_quali<>''";
+$resultado_drogariasp_indisponiveis_temos = mysqli_query($conn,$select_drogariasp_indisponiveis_temos);
+ $total_drogariasp_indisponiveis_temos = mysqli_fetch_array($resultado_drogariasp_indisponiveis_temos)[0];
+
+
+
+//BELEZANAWEB
+$select_belezanaweb = "SELECT count(1) FROM belezanaweb_products where sku_quali=''";
+$resultado_belezanaweb = mysqli_query($conn,$select_belezanaweb);
+$total_belezanaweb = mysqli_fetch_array($resultado_belezanaweb)[0];
+
+
+$select_belezanaweb_a = "SELECT count(1) FROM belezanaweb_products where sku_quali='' and curva='A'";
+$resultado_belezanaweb_a = mysqli_query($conn,$select_belezanaweb_a);
+$total_belezanaweb_a = mysqli_fetch_array($resultado_belezanaweb_a)[0];
+
+
+$select_belezanaweb_b = "SELECT count(1) FROM belezanaweb_products where sku_quali='' and curva='B'";
+$resultado_belezanaweb_b = mysqli_query($conn,$select_belezanaweb_b);
+$total_belezanaweb_b = mysqli_fetch_array($resultado_belezanaweb_b)[0];
+
+$select_belezanaweb_c = "SELECT count(1) FROM belezanaweb_products where sku_quali='' and curva='C'";
+$resultado_belezanaweb_c = mysqli_query($conn,$select_belezanaweb_c);
+$total_belezanaweb_c = mysqli_fetch_array($resultado_belezanaweb_c)[0];
+
+$select_belezanaweb_d = "SELECT count(1) FROM belezanaweb_products where sku_quali='' and curva='N/A'";
+$resultado_belezanaweb_d = mysqli_query($conn,$select_belezanaweb_d);
+$total_belezanaweb_d = mysqli_fetch_array($resultado_belezanaweb_d)[0];
+
+
+
+
+
+
+$select_belezanaweb_total = "SELECT count(1) FROM belezanaweb_products";
+$resultado_belezanaweb_total = mysqli_query($conn,$select_belezanaweb_total);
+ $total_belezanaweb_total = mysqli_fetch_array($resultado_belezanaweb_total)[0];
+
+
+
+
+$select_belezanaweb_temos = "SELECT count(1) FROM belezanaweb_products where sku_quali<>''";
+$resultado_belezanaweb_temos = mysqli_query($conn,$select_belezanaweb_temos);
+ $total_belezanaweb_temos = mysqli_fetch_array($resultado_belezanaweb_temos)[0];
+
+
+
+$select_belezanaweb_indisponiveis = "select count(1) from belezanaweb_products where valor='' and valor_p='' and sku_quali=''";
+$resultado_belezanaweb_indisponiveis = mysqli_query($conn,$select_belezanaweb_indisponiveis);
+ $total_belezanaweb_indisponiveis = mysqli_fetch_array($resultado_belezanaweb_indisponiveis)[0];
+
+
+$select_belezanaweb_indisponiveis_temos = "select count(1) from belezanaweb_products where valor='' and valor_p='' and sku_quali<>''";
+$resultado_belezanaweb_indisponiveis_temos = mysqli_query($conn,$select_belezanaweb_indisponiveis_temos);
+$total_belezanaweb_indisponiveis_temos = mysqli_fetch_array($resultado_belezanaweb_indisponiveis_temos)[0];
+
+
+
+
+
+//***********GERAL PRODUTOS**************//
+
+if (isset($_GET['vpbm'])) {
+$pbma = $_GET['vpbm'];
+
+}else{
+
+$pbma = '5';
+}
+
+
+
+////cashback
+
+//Cashback qtd
+$select_cashback_geral = "SELECT count(1) FROM Products where active=1 and current_cashback > 0 and qty_stock_rms>0 and pbm <> $pbma";
+$resultado_cashback_geral = mysqli_query($conn,$select_cashback_geral);
+$margem_cashback_geral = mysqli_fetch_array($resultado_cashback_geral)[0];
+
+
+$consultatotalcashback = "SELECT qty_stock_rms, current_cashback from Products where active=1 and current_cashback > 0 and qty_stock_rms>0 and pbm <> $pbma";
+$res_cashback = mysqli_query($conn,$consultatotalcashback);
+        while($rowcashback = mysqli_fetch_array($res_cashback)){
+
+$valoritemcashback = $valoritemcashback + ($rowcashback[0] * $rowcashback[1]);
+
+}
+
+
+
+//tabelados
+
+
+$select_tabelados_geral = " SELECT count(1) from Products where active=1 and tabulated_price > 0 and qty_stock_rms>0 and pbm <> $pbma";
+$resultado_tabelados_geral = mysqli_query($conn,$select_tabelados_geral);
+$margem_tabelados_geral = mysqli_fetch_array($resultado_tabelados_geral)[0];
+
+
+
+
+
+
+
+//Margem Bruta Simulada Geral Consulta
+$select_margembruta_geral = "SELECT AVG(current_gross_margin_percent) FROM Products where active=1 and qty_stock_rms>'0' and pbm <> $pbma";
+$resultado_margembruta_geral = mysqli_query($conn,$select_margembruta_geral);
+$margem_bruta_geral = mysqli_fetch_array($resultado_margembruta_geral)[0];
+
+
+//Margem Bruta Simulada Geral Consulta Curva A
+$select_margembruta_geral_a = "SELECT AVG(current_gross_margin_percent)  FROM Products where active=1 and curve='A' and qty_stock_rms>'0' and pbm <> $pbma";
+$resultado_margembruta_geral_a = mysqli_query($conn,$select_margembruta_geral_a);
+$margem_bruta_geral_a = mysqli_fetch_array($resultado_margembruta_geral_a)[0];
+ 
+//Margem Bruta Simulada Geral Consulta Curva B
+$select_margembruta_geral_b = "SELECT AVG(current_gross_margin_percent)  FROM Products where active=1 and curve='B' and qty_stock_rms>'0' and pbm <> $pbma";
+$resultado_margembruta_geral_b = mysqli_query($conn,$select_margembruta_geral_b);
+$margem_bruta_geral_b = mysqli_fetch_array($resultado_margembruta_geral_b)[0];
+
+//Margem Bruta Simulada Geral Consulta Curva C
+$select_margembruta_geral_c = "SELECT AVG(current_gross_margin_percent) FROM Products where active=1 and curve='C' and qty_stock_rms>'0' and pbm <> $pbma";
+$resultado_margembruta_geral_c = mysqli_query($conn,$select_margembruta_geral_c);
+$margem_bruta_geral_c = mysqli_fetch_array($resultado_margembruta_geral_c)[0];
+
+
+
+
+//Margem Para o Menor Preco Geral Consulta
+$select_margemmenor_geral = "SELECT AVG(diff_current_pay_only_lowest) FROM Products where active=1 and qty_stock_rms>'0' and pbm <> $pbma";
+$resultado_margemmenor_geral = mysqli_query($conn,$select_margemmenor_geral);
+$margemmenor_geral = mysqli_fetch_array($resultado_margemmenor_geral)[0];
+
+//Margem Para o Menor Preco Geral Consulta Curva A
+$select_margemmenor_geral_a = "SELECT AVG(diff_current_pay_only_lowest) FROM Products where active=1 and curve='A' and qty_stock_rms>'0' and pbm <> $pbma";
+$resultado_margemmenor_geral_a = mysqli_query($conn,$select_margemmenor_geral_a);
+$margemmenor_geral_a = mysqli_fetch_array($resultado_margemmenor_geral_a)[0];
+
+//Margem Para o Menor Preco Geral Consulta Curva B
+$select_margemmenor_geral_b = "SELECT AVG(diff_current_pay_only_lowest) FROM Products where active=1 and curve='B' and qty_stock_rms>'0' and pbm <> $pbma";
+$resultado_margemmenor_geral_b = mysqli_query($conn,$select_margemmenor_geral_b);
+$margemmenor_geral_b = mysqli_fetch_array($resultado_margemmenor_geral_b)[0];
+
+
+//Margem Para o Menor Preco Geral Consulta Curva C
+$select_margemmenor_geral_c = "SELECT AVG(diff_current_pay_only_lowest) FROM Products where active=1 and curve='C' and qty_stock_rms>'0' and pbm <> $pbma";
+$resultado_margemmenor_geral_c = mysqli_query($conn,$select_margemmenor_geral_c);
+$margemmenor_geral_c = mysqli_fetch_array($resultado_margemmenor_geral_c)[0];
+
+
+//Qtd Produtos Geral
+$select_qtd_geral = "SELECT count(Products.sku) FROM Products where active=1 and qty_stock_rms > 0 and pbm <> $pbma";
+$resultado_qtd_geral = mysqli_query($conn,$select_qtd_geral);
+$qtd_geral = mysqli_fetch_array($resultado_qtd_geral)[0];
+
+//Qtd Produtos Geral Curva A
+$select_qtd_geral_a = "SELECT count(1) FROM Products where active=1 and curve='A' and qty_stock_rms > 0 and pbm <> $pbma";
+$resultado_qtd_geral_a = mysqli_query($conn,$select_qtd_geral_a);
+$qtd_geral_a = mysqli_fetch_array($resultado_qtd_geral_a)[0];
+
+//Qtd Produtos Geral Curva B
+$select_qtd_geral_b = "SELECT count(1) FROM Products where active=1 and curve='B'  and qty_stock_rms > 0 and pbm <> $pbma";
+$resultado_qtd_geral_b = mysqli_query($conn,$select_qtd_geral_b);
+$qtd_geral_b = mysqli_fetch_array($resultado_qtd_geral_b)[0];
+
+
+//Qtd Produtos Geral Curva C
+$select_qtd_geral_c = "SELECT count(1) FROM Products where active=1 and curve='C'  and qty_stock_rms > 0 and pbm <> $pbma";
+$resultado_qtd_geral_c = mysqli_query($conn,$select_qtd_geral_c);
+$qtd_geral_c = mysqli_fetch_array($resultado_qtd_geral_c)[0];
+
+
+
+
+
+
+$consultatotalestoquef = "SELECT SUM(qty_stock_rms)FROM Products where active=1 and current_gross_margin_percent < 0 and pbm <> $pbma";
+$resultado_qtd_geral_estoquef = mysqli_query($conn,$consultatotalestoquef);
+$qtd_geral_estoquef = mysqli_fetch_array($resultado_qtd_geral_estoquef)[0];
+
+$consultatotalestoquef5 = "SELECT SUM(qty_stock_rms)FROM Products where active=1 and (current_gross_margin_percent  BETWEEN -0.05 and -0.001) and pbm <> $pbma";
+$resultado_qtd_geral_estoquef5 = mysqli_query($conn,$consultatotalestoquef5);
+$qtd_geral_estoquef5 = mysqli_fetch_array($resultado_qtd_geral_estoquef5)[0];
+
+
+
+
+$consultatotalestoquef10 = "SELECT SUM(qty_stock_rms)FROM Products where active=1 and (current_gross_margin_percent BETWEEN -0.10 and -0.04999) and pbm <> $pbma";
+$resultado_qtd_geral_estoquef10 = mysqli_query($conn,$consultatotalestoquef10);
+$qtd_geral_estoquef10 = mysqli_fetch_array($resultado_qtd_geral_estoquef10)[0];
+
+
+$consultatotalestoquef20 = "SELECT SUM(qty_stock_rms)FROM Products where active=1 and (current_gross_margin_percent BETWEEN -0.20 and -0.0999) and pbm <> $pbma";
+$resultado_qtd_geral_estoquef20 = mysqli_query($conn,$consultatotalestoquef20);
+$qtd_geral_estoquef20 = mysqli_fetch_array($resultado_qtd_geral_estoquef20)[0];
+
+$consultatotalestoquef30 = "SELECT SUM(qty_stock_rms)FROM Products where active=1 and (current_gross_margin_percent BETWEEN  -0.30 and -0.19999) and pbm <> $pbma";
+$resultado_qtd_geral_estoquef30 = mysqli_query($conn,$consultatotalestoquef30);
+$qtd_geral_estoquef30 = mysqli_fetch_array($resultado_qtd_geral_estoquef30)[0];
+
+$consultatotalestoquef30a = "SELECT SUM(qty_stock_rms)FROM Products where active=1 and current_gross_margin_percent < -0.30 and pbm <> $pbma";
+$resultado_qtd_geral_estoquef30a = mysqli_query($conn,$consultatotalestoquef30a);
+$qtd_geral_estoquef30a = mysqli_fetch_array($resultado_qtd_geral_estoquef30a)[0];
+
+
+//registered_at/////
+
+$consulregister = "SELECT MAX(updated_at) from Products where active='1' and qty_stock_rms>0 limit 1";
+$res_dataregister = mysqli_query($conn,$consulregister);
+        while($rowreg = mysqli_fetch_array($res_dataregister)){
+$register_at=$rowreg[0];
+
+
+}
+
+
+//quantidade financiando
+//Qtd Produtos Financiando acima de 30
+//(current_gross_margin_percent BETWEEN -0.05 and -0.001)
+//(current_gross_margin_percent BETWEEN -0.10 and -0.04999)
+//(current_gross_margin_percent BETWEEN -0.20 and -0.0999)
+//(current_gross_margin_percent BETWEEN -0.30 and -0.19999)
+// current_gross_margin_percent < -0.30 
+
+$valortotalitemestoque= ($qtd_geral_estoquef30a + $qtd_geral_estoquef30 + $qtd_geral_estoquef20 + $qtd_geral_estoquef10 + $qtd_geral_estoquef5);
+
+$consultatotalpayonlyf5 = "SELECT price_pay_only, qty_stock_rms, price_cost from Products where active='1' and qty_stock_rms>0 and (current_gross_margin_percent BETWEEN  -0.05 and -0.001) and pbm <> $pbma";
+$res_datatotalpayonlyf5 = mysqli_query($conn,$consultatotalpayonlyf5);
+        while($row22f5 = mysqli_fetch_array($res_datatotalpayonlyf5)){
+
+$valoritempof5 = $valoritempof5 + ($row22f5[0] * $row22f5[1]);
+$valoritempof51 = $valoritempof51 + ($row22f5[2] * $row22f5[1]);
+}
+
+$valoritempof5t = ($valoritempof5 - $valoritempof51);
+
+
+$consultatotalpayonlyf10 = "SELECT price_pay_only, qty_stock_rms, price_cost from Products where active='1' and qty_stock_rms>0 and (current_gross_margin_percent BETWEEN -0.10 and -0.04999) and pbm <> $pbma";
+$res_datatotalpayonlyf10 = mysqli_query($conn,$consultatotalpayonlyf10);
+        while($row22f10 = mysqli_fetch_array($res_datatotalpayonlyf10)){
+
+$valoritempof102 = $valoritempof102 + ($row22f10[0] * $row22f10[1]);
+$valoritempof101 = $valoritempof101 + ($row22f10[2] * $row22f10[1]);
+}
+
+$valoritempof10t = ($valoritempof102 - $valoritempof101);
+
+$consultatotalpayonlyf20 = "SELECT price_pay_only, qty_stock_rms, price_cost from Products where active='1' and qty_stock_rms>0 and (current_gross_margin_percent BETWEEN -0.20 and -0.0999) and pbm <> $pbma";
+$res_datatotalpayonlyf20 = mysqli_query($conn,$consultatotalpayonlyf20);
+        while($row22f20 = mysqli_fetch_array($res_datatotalpayonlyf20)){
+
+$valoritempof20 = $valoritempof20 + ($row22f20[0] * $row22f20[1]);
+$valoritempof201 = $valoritempof201 + ($row22f20[2] * $row22f20[1]);
+}
+
+$valoritempof20t = ($valoritempof20 - $valoritempof201);
+
+
+$consultatotalpayonlyf30 = "SELECT price_pay_only, qty_stock_rms, price_cost from Products where active='1' and qty_stock_rms>0 and (current_gross_margin_percent BETWEEN  -0.30 and -0.19999) and pbm <> $pbma";
+$res_datatotalpayonlyf30 = mysqli_query($conn,$consultatotalpayonlyf30);
+        while($row22f30 = mysqli_fetch_array($res_datatotalpayonlyf30)){
+
+$valoritempof30 = $valoritempof30 + ($row22f30[0] * $row22f30[1]);
+$valoritempof301 = $valoritempof301 + ($row22f30[2] * $row22f30[1]);
+}
+
+$valoritempof30t = ($valoritempof30 - $valoritempof301);
+
+
+
+$consultatotalpayonlyf30a = "SELECT price_pay_only, qty_stock_rms, price_cost from Products where active='1' and qty_stock_rms>0 and (current_gross_margin_percent < -0.30) and pbm <> $pbma";
+$res_datatotalpayonlyf30a = mysqli_query($conn,$consultatotalpayonlyf30a);
+        while($row22f30a = mysqli_fetch_array($res_datatotalpayonlyf30a)){
+
+$valoritempof30a = $valoritempof30a + ($row22f30a[0] * $row22f30a[1]);
+$valoritempof301a = $valoritempof301a + ($row22f30a[2] * $row22f30a[1]);
+}
+
+$valoritempof30ta = ($valoritempof30a - $valoritempof301a);
+
+
+
+
+
+$select_qtd_geral_financiando = "SELECT count(1) FROM Products where active=1 and current_gross_margin_percent < 0 and qty_stock_rms>'0' and pbm <> $pbma";
+$resultado_qtd_geral_financiando = mysqli_query($conn,$select_qtd_geral_financiando);
+$qtd_geral_financiando = mysqli_fetch_array($resultado_qtd_geral_financiando)[0];
+
+
+//Qtd Produtos Financiando Geral Curva A
+$select_qtd_geral_financiando_a = "SELECT count(1) FROM Products where active=1 and curve='A' and current_gross_margin_percent < 0  and qty_stock_rms>'0' and pbm <> $pbma";
+$resultado_qtd_geral_financiando_a = mysqli_query($conn,$select_qtd_geral_financiando_a);
+$qtd_geral_financiando_a = mysqli_fetch_array($resultado_qtd_geral_financiando_a)[0];
+
+//Qtd Produtos Financiando Geral Curva B
+$select_qtd_geral_financiando_b = "SELECT count(1) FROM Products where active=1 and curve='B' and current_gross_margin_percent < 0  and qty_stock_rms>'0' and pbm <> $pbma";
+$resultado_qtd_geral_financiando_b = mysqli_query($conn,$select_qtd_geral_financiando_b);
+$qtd_geral_financiando_b = mysqli_fetch_array($resultado_qtd_geral_financiando_b)[0];
+
+
+//Qtd Produtos Financiando Geral Curva C
+$select_qtd_geral_financiando_c = "SELECT count(1) FROM Products where active=1 and curve='C' and current_gross_margin_percent < 0  and qty_stock_rms>'0' and pbm <> $pbma";
+$resultado_qtd_geral_financiando_c = mysqli_query($conn,$select_qtd_geral_financiando_c);
+$qtd_geral_financiando_c = mysqli_fetch_array($resultado_qtd_geral_financiando_c)[0];
+
+
+
+//Financiando margens
+
+$select_qtd_geral_financiando_igual = "SELECT count(1) FROM Products where active=1 and current_gross_margin_percent = 0 and qty_stock_rms>'0' and pbm <> $pbma";
+$resultado_qtd_geral_financiando_igual = mysqli_query($conn,$select_qtd_geral_financiando_igual);
+$qtd_geral_financiando_igual = mysqli_fetch_array($resultado_qtd_geral_financiando_igual)[0];
+
+
+
+//Qtd Produtos Financiando entre 0 e 5
+$select_qtd_geral_financiando_cinco = "SELECT count(1) FROM Products where active=1 and (current_gross_margin_percent BETWEEN -0.05 and -0.0001)  and qty_stock_rms>'0' and pbm <> $pbma";
+$resultado_qtd_geral_financiando_cinco = mysqli_query($conn,$select_qtd_geral_financiando_cinco);
+$qtd_geral_financiando_cinco = mysqli_fetch_array($resultado_qtd_geral_financiando_cinco)[0];
+
+
+
+
+
+//Qtd Produtos Financiando entre 5 e 10
+$select_qtd_geral_financiando_dez = "SELECT count(1) FROM Products where active=1 and (current_gross_margin_percent BETWEEN -0.10 and -0.04999)  and qty_stock_rms>'0' and pbm <> $pbma";
+$resultado_qtd_geral_financiando_dez = mysqli_query($conn,$select_qtd_geral_financiando_dez);
+$qtd_geral_financiando_dez = mysqli_fetch_array($resultado_qtd_geral_financiando_dez)[0];
+
+
+
+
+//Qtd Produtos Financiando entre 10 e 20
+$select_qtd_geral_financiando_vinte = "SELECT count(1) FROM Products where active=1 and (current_gross_margin_percent BETWEEN -0.20 and -0.09999)  and qty_stock_rms>'0' and pbm <> $pbma";
+$resultado_qtd_geral_financiando_vinte = mysqli_query($conn,$select_qtd_geral_financiando_vinte);
+$qtd_geral_financiando_vinte = mysqli_fetch_array($resultado_qtd_geral_financiando_vinte)[0];
+
+
+
+//Qtd Produtos Financiando entre 20 e 30
+$select_qtd_geral_financiando_trinta = "SELECT count(1) FROM Products where active=1 and (current_gross_margin_percent BETWEEN -0.30 and -0.19999)  and qty_stock_rms>'0' and pbm <> $pbma";
+$resultado_qtd_geral_financiando_trinta = mysqli_query($conn,$select_qtd_geral_financiando_trinta);
+$qtd_geral_financiando_trinta = mysqli_fetch_array($resultado_qtd_geral_financiando_trinta)[0];
+
+//Qtd Produtos Financiando acima de 30
+$select_qtd_geral_financiando_atrinta = "SELECT count(1) FROM Products where active=1  and current_gross_margin_percent < -0.30  and qty_stock_rms>'0' and pbm <> $pbma";
+$resultado_qtd_geral_financiando_atrinta = mysqli_query($conn,$select_qtd_geral_financiando_atrinta);
+$qtd_geral_financiando_atrinta = mysqli_fetch_array($resultado_qtd_geral_financiando_atrinta)[0];
+
+ $valortotalitemcusto = ($valoritempof51 + $valoritempof101 + $valoritempof201 + $valoritempof301 + $valoritempof301a);
+$valortotalitempa = ($valoritempof5 + $valoritempof102 + $valoritempof20 + $valoritempof30 + $valoritempof30a);
+$valortotalitemdefict = (($valoritempof5t) + ($valoritempof10t) + ($valoritempof20t) + ($valoritempof30t) + ($valoritempof30ta));
+
+//quantidade sacrificando operacao
+
+$select_qtd_geral_soperacao = "SELECT count(1) FROM Products where active=1 and situation_code_fk=4 and qty_stock_rms>'0' and pbm <> $pbma";
+$resultado_qtd_geral_soperacao = mysqli_query($conn,$select_qtd_geral_soperacao);
+$qtd_geral_soperacao = mysqli_fetch_array($resultado_qtd_geral_soperacao)[0];
+
+
+//Qtd Produtos  Geral Curva A
+$select_qtd_geral_soperacao_a = "SELECT count(1) FROM Products where active=1 and curve='A' and situation_code_fk=4 and qty_stock_rms>'0' and pbm <> $pbma";
+$resultado_qtd_geral_soperacao_a = mysqli_query($conn,$select_qtd_geral_soperacao_a);
+$qtd_geral_soperacao_a = mysqli_fetch_array($resultado_qtd_geral_soperacao_a)[0];
+
+//Qtd Produtos  Geral Curva B
+$select_qtd_geral_soperacao_b = "SELECT count(1) FROM Products where active=1 and curve='B' and situation_code_fk=4 and qty_stock_rms>'0' and pbm <> $pbma";
+$resultado_qtd_geral_soperacao_b = mysqli_query($conn,$select_qtd_geral_soperacao_b);
+$qtd_geral_soperacao_b = mysqli_fetch_array($resultado_qtd_geral_soperacao_b)[0];
+
+
+//Qtd Produtos Geral Curva C
+$select_qtd_geral_soperacao_c = "SELECT count(1) FROM Products where active=1 and curve='C' and situation_code_fk=4 and qty_stock_rms>'0' and pbm <> $pbma";
+$resultado_qtd_geral_soperacao_c = mysqli_query($conn,$select_qtd_geral_soperacao_c);
+$qtd_geral_soperacao_c = mysqli_fetch_array($resultado_qtd_geral_soperacao_c)[0];
+
+
+
+//quantidade sacrificando lucro
+
+$select_qtd_geral_slucro = "SELECT count(1) FROM Products where active=1 and situation_code_fk=5 and qty_stock_rms>'0' and pbm <> $pbma";
+$resultado_qtd_geral_slucro = mysqli_query($conn,$select_qtd_geral_slucro);
+$qtd_geral_slucro = mysqli_fetch_array($resultado_qtd_geral_slucro)[0];
+
+
+//Qtd Produtos  Geral Curva A
+$select_qtd_geral_slucro_a = "SELECT count(1) FROM Products where active=1 and curve='A' and situation_code_fk=5 and qty_stock_rms>'0' and pbm <> $pbma";
+$resultado_qtd_geral_slucro_a = mysqli_query($conn,$select_qtd_geral_slucro_a);
+$qtd_geral_slucro_a = mysqli_fetch_array($resultado_qtd_geral_slucro_a)[0];
+
+//Qtd Produtos  Geral Curva B
+$select_qtd_geral_slucro_b = "SELECT count(1) FROM Products where active=1 and curve='B' and situation_code_fk=5 and qty_stock_rms>'0' and pbm <> $pbma";
+$resultado_qtd_geral_slucro_b = mysqli_query($conn,$select_qtd_geral_slucro_b);
+$qtd_geral_slucro_b = mysqli_fetch_array($resultado_qtd_geral_slucro_b)[0];
+
+
+//Qtd Produtos Geral Curva C
+$select_qtd_geral_slucro_c = "SELECT count(1) FROM Products where active=1 and curve='C' and situation_code_fk=5 and qty_stock_rms>'0' and pbm <> $pbma";
+$resultado_qtd_geral_slucro_c = mysqli_query($conn,$select_qtd_geral_slucro_c);
+$qtd_geral_slucro_c = mysqli_fetch_array($resultado_qtd_geral_slucro_c)[0];
+
+
+
+
+
+
+
+
+//concorrente com menor preco
+
+//Qtd Produtos Drogaraia Menor
+$select_qtd_geral_concorrente_drogaraia = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogaraia.com.br' and pbm <> $pbma";
+$resultado_qtd_geral_concorrente_drogaraia = mysqli_query($conn,$select_qtd_geral_concorrente_drogaraia);
+$qtd_geral_concorrente_drogaraia = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogaraia)[0];
+
+//Qtd Produtos Drogaraia Menor Curva A
+$select_qtd_geral_concorrente_drogaraia_a = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogaraia.com.br' and curve='A' and pbm <> $pbma";
+$resultado_qtd_geral_concorrente_drogaraia_a = mysqli_query($conn,$select_qtd_geral_concorrente_drogaraia_a);
+$qtd_geral_concorrente_drogaraia_a = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogaraia_a)[0];
+
+//Qtd Produtos Drogaraia Menor Curva B
+$select_qtd_geral_concorrente_drogaraia_b = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogaraia.com.br' and curve='B' and pbm <> $pbma";
+$resultado_qtd_geral_concorrente_drogaraia_b = mysqli_query($conn,$select_qtd_geral_concorrente_drogaraia_b);
+$qtd_geral_concorrente_drogaraia_b = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogaraia_b)[0];
+
+//Qtd Produtos Drogaraia Menor Curva C
+$select_qtd_geral_concorrente_drogaraia_c = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogaraia.com.br' and curve='C' and pbm <> $pbma";
+$resultado_qtd_geral_concorrente_drogaraia_c = mysqli_query($conn,$select_qtd_geral_concorrente_drogaraia_c);
+$qtd_geral_concorrente_drogaraia_c = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogaraia_c)[0];
+
+
+
+//Qtd Produtos Drogasil Menor
+$select_qtd_geral_concorrente_drogasil = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogasil.com.br' and pbm <> $pbma";
+$resultado_qtd_geral_concorrente_drogasil = mysqli_query($conn,$select_qtd_geral_concorrente_drogasil);
+$qtd_geral_concorrente_drogasil = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogasil)[0];
+
+//Qtd Produtos Drogasil Menor A
+$select_qtd_geral_concorrente_drogasil_a = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogasil.com.br' and curve='A' and pbm <> $pbma";
+$resultado_qtd_geral_concorrente_drogasil_a = mysqli_query($conn,$select_qtd_geral_concorrente_drogasil_a);
+$qtd_geral_concorrente_drogasil_a = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogasil_a)[0];
+
+
+//Qtd Produtos Drogasil Menor B
+$select_qtd_geral_concorrente_drogasil_b = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogasil.com.br' and curve='B' and pbm <> $pbma";
+$resultado_qtd_geral_concorrente_drogasil_b = mysqli_query($conn,$select_qtd_geral_concorrente_drogasil_b);
+$qtd_geral_concorrente_drogasil_b = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogasil_b)[0];
+
+
+//Qtd Produtos Drogasil Menor C
+$select_qtd_geral_concorrente_drogasil_c = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogasil.com.br' and curve='C' and pbm <> $pbma";
+$resultado_qtd_geral_concorrente_drogasil_c = mysqli_query($conn,$select_qtd_geral_concorrente_drogasil_c);
+$qtd_geral_concorrente_drogasil_c = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogasil_c)[0];
+
+
+
+
+//Qtd Produtos Onofre Menor
+$select_qtd_geral_concorrente_onofre = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.belezanaweb.com.br' and pbm <> $pbma";
+$resultado_qtd_geral_concorrente_onofre = mysqli_query($conn,$select_qtd_geral_concorrente_onofre);
+$qtd_geral_concorrente_onofre = mysqli_fetch_array($resultado_qtd_geral_concorrente_onofre)[0];
+
+//Qtd Produtos Onofre Menor A
+$select_qtd_geral_concorrente_onofre_a = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.belezanaweb.com.br' and curve='A' and pbm <> $pbma";
+$resultado_qtd_geral_concorrente_onofre_a = mysqli_query($conn,$select_qtd_geral_concorrente_onofre_a);
+$qtd_geral_concorrente_onofre_a = mysqli_fetch_array($resultado_qtd_geral_concorrente_onofre_a)[0];
+
+
+//Qtd Produtos Onofre Menor B
+$select_qtd_geral_concorrente_onofre_b = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.belezanaweb.com.br' and curve='B' and pbm <> $pbma";
+$resultado_qtd_geral_concorrente_onofre_b = mysqli_query($conn,$select_qtd_geral_concorrente_onofre_b);
+$qtd_geral_concorrente_onofre_b = mysqli_fetch_array($resultado_qtd_geral_concorrente_onofre_b)[0];
+
+
+//Qtd Produtos Onofre Menor C
+$select_qtd_geral_concorrente_onofre_c = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.belezanaweb.com.br' and curve='C' and pbm <> $pbma";
+$resultado_qtd_geral_concorrente_onofre_c = mysqli_query($conn,$select_qtd_geral_concorrente_onofre_c);
+$qtd_geral_concorrente_onofre_c = mysqli_fetch_array($resultado_qtd_geral_concorrente_onofre_c)[0];
+
+
+
+
+
+//Qtd Produtos Drogaria SP Menor
+
+$select_qtd_geral_concorrente_drogariasp = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogariasaopaulo.com.br' and pbm <> $pbma";
+$resultado_qtd_geral_concorrente_drogariasp = mysqli_query($conn,$select_qtd_geral_concorrente_drogariasp);
+$qtd_geral_concorrente_drogariasp = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogariasp)[0];
+
+//Qtd Produtos Drogaria SP Menor A
+$select_qtd_geral_concorrente_drogariasp_a = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogariasaopaulo.com.br' and curve='A' and pbm <> $pbma";
+$resultado_qtd_geral_concorrente_drogariasp_a = mysqli_query($conn,$select_qtd_geral_concorrente_drogariasp_a);
+$qtd_geral_concorrente_drogariasp_a = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogariasp_a)[0];
+
+//Qtd Produtos Drogaria SP Menor B
+$select_qtd_geral_concorrente_drogariasp_b = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogariasaopaulo.com.br' and curve='B' and pbm <> $pbma";
+$resultado_qtd_geral_concorrente_drogariasp_b = mysqli_query($conn,$select_qtd_geral_concorrente_drogariasp_b);
+$qtd_geral_concorrente_drogariasp_b = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogariasp_b)[0];
+
+
+//Qtd Produtos Drogaria SP Menor C
+$select_qtd_geral_concorrente_drogariasp_c = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogariasaopaulo.com.br' and curve='C' and pbm <> $pbma";
+$resultado_qtd_geral_concorrente_drogariasp_c = mysqli_query($conn,$select_qtd_geral_concorrente_drogariasp_c);
+$qtd_geral_concorrente_drogariasp_c = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogariasp_c)[0];
+
+
+
+//Qtd Produtos Ultrafarma Menor
+$select_qtd_geral_concorrente_ultrafarma = "SELECT count(1) FROM Products where active=1  and qty_stock_rms>'0'and lowest_price_competitor='www.ultrafarma.com.br' and pbm <> $pbma";
+$resultado_qtd_geral_concorrente_ultrafarma = mysqli_query($conn,$select_qtd_geral_concorrente_ultrafarma);
+$qtd_geral_concorrente_ultrafarma = mysqli_fetch_array($resultado_qtd_geral_concorrente_ultrafarma)[0];
+
+
+//Qtd Produtos Ultrafarma Menor A
+$select_qtd_geral_concorrente_ultrafarma_a = "SELECT count(1) FROM Products where active=1  and qty_stock_rms>'0'and lowest_price_competitor='www.ultrafarma.com.br' and curve='A' and pbm <> $pbma";
+$resultado_qtd_geral_concorrente_ultrafarma_a = mysqli_query($conn,$select_qtd_geral_concorrente_ultrafarma_a);
+$qtd_geral_concorrente_ultrafarma_a = mysqli_fetch_array($resultado_qtd_geral_concorrente_ultrafarma_a)[0];
+
+//Qtd Produtos Ultrafarma Menor B
+$select_qtd_geral_concorrente_ultrafarma_b = "SELECT count(1) FROM Products where active=1  and qty_stock_rms>'0'and lowest_price_competitor='www.ultrafarma.com.br' and curve='B' and pbm <> $pbma";
+$resultado_qtd_geral_concorrente_ultrafarma_b = mysqli_query($conn,$select_qtd_geral_concorrente_ultrafarma_b);
+$qtd_geral_concorrente_ultrafarma_b = mysqli_fetch_array($resultado_qtd_geral_concorrente_ultrafarma_b)[0];
+
+//Qtd Produtos Ultrafarma Menor C
+$select_qtd_geral_concorrente_ultrafarma_c = "SELECT count(1) FROM Products where active=1  and qty_stock_rms>'0'and lowest_price_competitor='www.ultrafarma.com.br' and curve='C' and pbm <> $pbma";
+$resultado_qtd_geral_concorrente_ultrafarma_c = mysqli_query($conn,$select_qtd_geral_concorrente_ultrafarma_c);
+$qtd_geral_concorrente_ultrafarma_c = mysqli_fetch_array($resultado_qtd_geral_concorrente_ultrafarma_c)[0];
+
+
+//concorrente com menor preco financiando
+
+
+
+
+//Qtd Produtos Drogaraia Menor
+$select_qtd_geral_concorrente_drogaraiaf = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogaraia.com.br' and current_gross_margin_percent < 0 and pbm <> $pbma";
+$resultado_qtd_geral_concorrente_drogaraiaf = mysqli_query($conn,$select_qtd_geral_concorrente_drogaraiaf);
+ $qtd_geral_concorrente_drogaraiaf = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogaraiaf)[0];
+
+//Qtd Produtos Drogaraia Menor
+$select_qtd_geral_concorrente_drogaraiaf5 = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogaraia.com.br' and (current_gross_margin_percent BETWEEN -0.05 and -0.0001) and pbm <> $pbma";
+$resultado_qtd_geral_concorrente_drogaraiaf5 = mysqli_query($conn,$select_qtd_geral_concorrente_drogaraiaf5);
+ $qtd_geral_concorrente_drogaraiaf5 = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogaraiaf5)[0];
+
+
+//Qtd Produtos Drogaraia Menor
+$select_qtd_geral_concorrente_drogaraiaf10 = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogaraia.com.br' and (current_gross_margin_percent BETWEEN -0.10 and -0.04999) and pbm <> $pbma";
+$resultado_qtd_geral_concorrente_drogaraiaf10 = mysqli_query($conn,$select_qtd_geral_concorrente_drogaraiaf10);
+ $qtd_geral_concorrente_drogaraiaf10 = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogaraiaf10)[0];
+
+
+//Qtd Produtos Drogaraia Menor
+$select_qtd_geral_concorrente_drogaraiaf20 = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogaraia.com.br' and (current_gross_margin_percent BETWEEN -0.20 and -0.0999) and pbm <> $pbma";
+$resultado_qtd_geral_concorrente_drogaraiaf20 = mysqli_query($conn,$select_qtd_geral_concorrente_drogaraiaf20);
+ $qtd_geral_concorrente_drogaraiaf20 = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogaraiaf20)[0];
+
+//Qtd Produtos Drogaraia Menor
+$select_qtd_geral_concorrente_drogaraiaf30 = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogaraia.com.br' and (current_gross_margin_percent BETWEEN -0.30 and -0.19999) and pbm <> $pbma";
+$resultado_qtd_geral_concorrente_drogaraiaf30 = mysqli_query($conn,$select_qtd_geral_concorrente_drogaraiaf30);
+ $qtd_geral_concorrente_drogaraiaf30 = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogaraiaf30)[0];
+
+//Qtd Produtos Drogaraia Menor
+$select_qtd_geral_concorrente_drogaraiaf30a = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogaraia.com.br' and current_gross_margin_percent < -0.30  and pbm <> $pbma";
+$resultado_qtd_geral_concorrente_drogaraiaf30a = mysqli_query($conn,$select_qtd_geral_concorrente_drogaraiaf30a);
+ $qtd_geral_concorrente_drogaraiaf30a = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogaraiaf30a)[0];
+
+
+
+
+
+//Qtd Produtos Drogasil Menor
+$select_qtd_geral_concorrente_drogasilf = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogasil.com.br' and current_gross_margin_percent < 0 and pbm <> $pbma";
+$resultado_qtd_geral_concorrente_drogasilf = mysqli_query($conn,$select_qtd_geral_concorrente_drogasilf);
+$qtd_geral_concorrente_drogasilf = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogasilf)[0];
+
+
+//Qtd Produtos Drogasil Menor
+$select_qtd_geral_concorrente_drogasilf5 = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogasil.com.br' and (current_gross_margin_percent BETWEEN -0.05 and -0.001) and pbm <> $pbma";
+$resultado_qtd_geral_concorrente_drogasilf5 = mysqli_query($conn,$select_qtd_geral_concorrente_drogasilf5);
+$qtd_geral_concorrente_drogasilf5 = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogasilf5)[0];
+
+
+//Qtd Produtos Drogasil Menor
+$select_qtd_geral_concorrente_drogasilf10 = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogasil.com.br' and (current_gross_margin_percent BETWEEN -0.10 and -0.04999) and pbm <> $pbma";
+$resultado_qtd_geral_concorrente_drogasilf10 = mysqli_query($conn,$select_qtd_geral_concorrente_drogasilf10);
+$qtd_geral_concorrente_drogasilf10 = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogasilf10)[0];
+
+//Qtd Produtos Drogasil Menor
+$select_qtd_geral_concorrente_drogasilf20 = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogasil.com.br' and (current_gross_margin_percent BETWEEN -0.20 and -0.0999) and pbm <> $pbma";
+$resultado_qtd_geral_concorrente_drogasilf20 = mysqli_query($conn,$select_qtd_geral_concorrente_drogasilf20);
+$qtd_geral_concorrente_drogasilf20 = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogasilf20)[0];
+
+//Qtd Produtos Drogasil Menor
+$select_qtd_geral_concorrente_drogasilf30 = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogasil.com.br' and (current_gross_margin_percent BETWEEN -0.30 and -0.19999) and pbm <> $pbma";
+$resultado_qtd_geral_concorrente_drogasilf30 = mysqli_query($conn,$select_qtd_geral_concorrente_drogasilf30);
+$qtd_geral_concorrente_drogasilf30 = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogasilf30)[0];
+
+//Qtd Produtos Drogasil Menor
+$select_qtd_geral_concorrente_drogasilf30a = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogasil.com.br' and current_gross_margin_percent < -0.30  and pbm <> $pbma";
+$resultado_qtd_geral_concorrente_drogasilf30a = mysqli_query($conn,$select_qtd_geral_concorrente_drogasilf30a);
+$qtd_geral_concorrente_drogasilf30a = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogasilf30a)[0];
+
+
+
+
+
+//Qtd Produtos Drogaria SP Menor
+
+$select_qtd_geral_concorrente_drogariaspf = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogariasaopaulo.com.br' and current_gross_margin_percent < 0 and pbm <> $pbma";
+$resultado_qtd_geral_concorrente_drogariaspf = mysqli_query($conn,$select_qtd_geral_concorrente_drogariaspf);
+$qtd_geral_concorrente_drogariaspf = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogariaspf)[0];
+
+
+//Qtd Produtos Drogaria SP Menor
+
+$select_qtd_geral_concorrente_drogariaspf5 = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogariasaopaulo.com.br' and (current_gross_margin_percent BETWEEN -0.05 and -0.001) and pbm <> $pbma";
+$resultado_qtd_geral_concorrente_drogariaspf5 = mysqli_query($conn,$select_qtd_geral_concorrente_drogariaspf5);
+$qtd_geral_concorrente_drogariaspf5 = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogariaspf5)[0];
+
+
+//Qtd Produtos Drogaria SP Menor
+
+$select_qtd_geral_concorrente_drogariaspf10 = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogariasaopaulo.com.br' and (current_gross_margin_percent BETWEEN -0.10 and -0.04999) and pbm <> $pbma";
+$resultado_qtd_geral_concorrente_drogariaspf10 = mysqli_query($conn,$select_qtd_geral_concorrente_drogariaspf10);
+$qtd_geral_concorrente_drogariaspf10 = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogariaspf10)[0];
+
+
+//Qtd Produtos Drogaria SP Menor
+
+$select_qtd_geral_concorrente_drogariaspf20 = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogariasaopaulo.com.br' and  (current_gross_margin_percent BETWEEN -0.20 and -0.0999) and pbm <> $pbma";
+$resultado_qtd_geral_concorrente_drogariaspf20 = mysqli_query($conn,$select_qtd_geral_concorrente_drogariaspf20);
+$qtd_geral_concorrente_drogariaspf20 = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogariaspf20)[0];
+
+
+//Qtd Produtos Drogaria SP Menor
+
+$select_qtd_geral_concorrente_drogariaspf30 = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogariasaopaulo.com.br' and (current_gross_margin_percent BETWEEN -0.30 and -0.19999) and pbm <> $pbma";
+$resultado_qtd_geral_concorrente_drogariaspf30 = mysqli_query($conn,$select_qtd_geral_concorrente_drogariaspf30);
+$qtd_geral_concorrente_drogariaspf30 = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogariaspf30)[0];
+
+
+//Qtd Produtos Drogaria SP Menor
+
+$select_qtd_geral_concorrente_drogariaspf30a = "SELECT count(1) FROM Products where active=1 and qty_stock_rms>'0' and lowest_price_competitor='www.drogariasaopaulo.com.br' and current_gross_margin_percent < -0.30 and pbm <> $pbma";
+$resultado_qtd_geral_concorrente_drogariaspf30a = mysqli_query($conn,$select_qtd_geral_concorrente_drogariaspf30a);
+$qtd_geral_concorrente_drogariaspf30a = mysqli_fetch_array($resultado_qtd_geral_concorrente_drogariaspf30a)[0];
+
+
+
+
+
+
+//Qtd Produtos Ultrafarma Menor
+$select_qtd_geral_concorrente_ultrafarmaf = "SELECT count(1) FROM Products where active=1  and qty_stock_rms>'0'and lowest_price_competitor='www.ultrafarma.com.br' and current_gross_margin_percent < 0 and pbm <> $pbma";
+$resultado_qtd_geral_concorrente_ultrafarmaf = mysqli_query($conn,$select_qtd_geral_concorrente_ultrafarmaf);
+$qtd_geral_concorrente_ultrafarmaf = mysqli_fetch_array($resultado_qtd_geral_concorrente_ultrafarmaf)[0];
+
+//Qtd Produtos Ultrafarma Menor
+$select_qtd_geral_concorrente_ultrafarmaf5 = "SELECT count(1) FROM Products where active=1  and qty_stock_rms>'0'and lowest_price_competitor='www.ultrafarma.com.br' and (current_gross_margin_percent BETWEEN -0.05 and -0.001) and pbm <> $pbma";
+$resultado_qtd_geral_concorrente_ultrafarmaf5 = mysqli_query($conn,$select_qtd_geral_concorrente_ultrafarmaf5);
+$qtd_geral_concorrente_ultrafarmaf5 = mysqli_fetch_array($resultado_qtd_geral_concorrente_ultrafarmaf5)[0];
+
+
+//Qtd Produtos Ultrafarma Menor
+$select_qtd_geral_concorrente_ultrafarmaf10 = "SELECT count(1) FROM Products where active=1  and qty_stock_rms>'0'and lowest_price_competitor='www.ultrafarma.com.br' and  (current_gross_margin_percent BETWEEN -0.10 and -0.04999) and pbm <> $pbma";
+$resultado_qtd_geral_concorrente_ultrafarmaf10 = mysqli_query($conn,$select_qtd_geral_concorrente_ultrafarmaf10);
+$qtd_geral_concorrente_ultrafarmaf10 = mysqli_fetch_array($resultado_qtd_geral_concorrente_ultrafarmaf10)[0];
+
+
+//Qtd Produtos Ultrafarma Menor
+$select_qtd_geral_concorrente_ultrafarmaf20 = "SELECT count(1) FROM Products where active=1  and qty_stock_rms>'0'and lowest_price_competitor='www.ultrafarma.com.br' and (current_gross_margin_percent  BETWEEN -0.20 and -0.0999) and pbm <> $pbma";
+$resultado_qtd_geral_concorrente_ultrafarmaf20 = mysqli_query($conn,$select_qtd_geral_concorrente_ultrafarmaf20);
+$qtd_geral_concorrente_ultrafarmaf20 = mysqli_fetch_array($resultado_qtd_geral_concorrente_ultrafarmaf20)[0];
+
+
+//Qtd Produtos Ultrafarma Menor
+$select_qtd_geral_concorrente_ultrafarmaf30 = "SELECT count(1) FROM Products where active=1  and qty_stock_rms>'0'and lowest_price_competitor='www.ultrafarma.com.br' and (current_gross_margin_percent BETWEEN -0.30 and -0.19999) and pbm <> $pbma";
+$resultado_qtd_geral_concorrente_ultrafarmaf30 = mysqli_query($conn,$select_qtd_geral_concorrente_ultrafarmaf30);
+$qtd_geral_concorrente_ultrafarmaf30 = mysqli_fetch_array($resultado_qtd_geral_concorrente_ultrafarmaf30)[0];
+
+
+//Qtd Produtos Ultrafarma Menor
+$select_qtd_geral_concorrente_ultrafarmaf30a = "SELECT count(1) FROM Products where active=1  and qty_stock_rms>'0'and lowest_price_competitor='www.ultrafarma.com.br'  and current_gross_margin_percent < -0.30 and pbm <> $pbma";
+$resultado_qtd_geral_concorrente_ultrafarmaf30a = mysqli_query($conn,$select_qtd_geral_concorrente_ultrafarmaf30a);
+$qtd_geral_concorrente_ultrafarmaf30a = mysqli_fetch_array($resultado_qtd_geral_concorrente_ultrafarmaf30a)[0];
+
+
+
+
+
+
+//Qtd Produtos belezanaweb Menor
+$select_qtd_geral_concorrente_belezanawebf = "SELECT count(1) FROM Products where active=1  and qty_stock_rms>'0'and lowest_price_competitor='www.belezanaweb.com.br' and current_gross_margin_percent < 0 and pbm <> $pbma";
+$resultado_qtd_geral_concorrente_belezanawebf = mysqli_query($conn,$select_qtd_geral_concorrente_belezanawebf);
+$qtd_geral_concorrente_belezanawebf = mysqli_fetch_array($resultado_qtd_geral_concorrente_belezanawebf)[0];
+
+//Qtd Produtos belezanaweb Menor
+$select_qtd_geral_concorrente_belezanawebf5 = "SELECT count(1) FROM Products where active=1  and qty_stock_rms>'0'and lowest_price_competitor='www.belezanaweb.com.br' and (current_gross_margin_percent BETWEEN -0.05 and -0.001) and pbm <> $pbma";
+$resultado_qtd_geral_concorrente_belezanawebf5 = mysqli_query($conn,$select_qtd_geral_concorrente_belezanawebf5);
+$qtd_geral_concorrente_belezanawebf5 = mysqli_fetch_array($resultado_qtd_geral_concorrente_belezanawebf5)[0];
+
+
+//Qtd Produtos belezanaweb Menor
+$select_qtd_geral_concorrente_belezanawebf10 = "SELECT count(1) FROM Products where active=1  and qty_stock_rms>'0'and lowest_price_competitor='www.belezanaweb.com.br' and  (current_gross_margin_percent BETWEEN -0.10 and -0.04999) and pbm <> $pbma";
+$resultado_qtd_geral_concorrente_belezanawebf10 = mysqli_query($conn,$select_qtd_geral_concorrente_belezanawebf10);
+$qtd_geral_concorrente_belezanawebf10 = mysqli_fetch_array($resultado_qtd_geral_concorrente_belezanawebf10)[0];
+
+
+//Qtd Produtos belezanaweb Menor
+$select_qtd_geral_concorrente_belezanawebf20 = "SELECT count(1) FROM Products where active=1  and qty_stock_rms>'0'and lowest_price_competitor='www.belezanaweb.com.br' and (current_gross_margin_percent BETWEEN -0.20 and -0.0999) and pbm <> $pbma";
+$resultado_qtd_geral_concorrente_belezanawebf20 = mysqli_query($conn,$select_qtd_geral_concorrente_belezanawebf20);
+$qtd_geral_concorrente_belezanawebf20 = mysqli_fetch_array($resultado_qtd_geral_concorrente_belezanawebf20)[0];
+
+
+//Qtd Produtos belezanaweb Menor
+$select_qtd_geral_concorrente_belezanawebf30 = "SELECT count(1) FROM Products where active=1  and qty_stock_rms>'0'and lowest_price_competitor='www.belezanaweb.com.br' and (current_gross_margin_percent BETWEEN -0.30 and -0.19999) and pbm <> $pbma";
+$resultado_qtd_geral_concorrente_belezanawebf30 = mysqli_query($conn,$select_qtd_geral_concorrente_belezanawebf30);
+$qtd_geral_concorrente_belezanawebf30 = mysqli_fetch_array($resultado_qtd_geral_concorrente_belezanawebf30)[0];
+
+
+//Qtd Produtos belezanaweb Menor
+$select_qtd_geral_concorrente_belezanawebf30a = "SELECT count(1) FROM Products where active=1  and qty_stock_rms>'0'and lowest_price_competitor='www.belezanaweb.com.br'  and current_gross_margin_percent < -0.30 and pbm <> $pbma";
+$resultado_qtd_geral_concorrente_belezanawebf30a = mysqli_query($conn,$select_qtd_geral_concorrente_belezanawebf30a);
+$qtd_geral_concorrente_belezanawebf30a = mysqli_fetch_array($resultado_qtd_geral_concorrente_belezanawebf30a)[0];
+
+
+//////RUPTURA///////////////
+
+
+//Qtd Produtos Geral
+$select_qtd_geral_ruptura = "SELECT count(1) FROM Products where active=1 and qty_stock_rms='0' and pbm <> $pbma";
+$resultado_qtd_geral_ruptura = mysqli_query($conn,$select_qtd_geral_ruptura);
+$qtd_geral_ruptura = mysqli_fetch_array($resultado_qtd_geral_ruptura)[0];
+
+//Qtd Produtos Geral Curva A
+$select_qtd_geral_a_ruptura = "SELECT count(1) FROM Products where active=1 and qty_stock_rms='0' and curve='A' and pbm <> $pbma";
+$resultado_qtd_geral_a_ruptura = mysqli_query($conn,$select_qtd_geral_a_ruptura);
+$qtd_geral_a_ruptura = mysqli_fetch_array($resultado_qtd_geral_a_ruptura)[0];
+
+//Qtd Produtos Geral Curva B
+$select_qtd_geral_b_ruptura = "SELECT count(1) FROM Products where active=1 and qty_stock_rms='0' and curve='B' and pbm <> $pbma";
+$resultado_qtd_geral_b_ruptura = mysqli_query($conn,$select_qtd_geral_b_ruptura);
+$qtd_geral_b_ruptura = mysqli_fetch_array($resultado_qtd_geral_b_ruptura)[0];
+
+
+//Qtd Produtos Geral Curva C
+$select_qtd_geral_c_ruptura = "SELECT count(1) FROM Products where active=1 and qty_stock_rms='0' and curve='C' and pbm <> $pbma";
+$resultado_qtd_geral_c_ruptura = mysqli_query($conn,$select_qtd_geral_c_ruptura);
+$qtd_geral_c_ruptura = mysqli_fetch_array($resultado_qtd_geral_c_ruptura)[0];
+
+
+
+
+
+//////EXCLUSIVO///////////////
+
+//Qtd Produtos Geral
+$select_qtd_geral_exclusivo = "SELECT count(1) FROM Products where active=1 and qty_competitors='0' and qty_stock_rms>'0' and pbm <> $pbma";
+$resultado_qtd_geral_exclusivo = mysqli_query($conn,$select_qtd_geral_exclusivo);
+$qtd_geral_exclusivo = mysqli_fetch_array($resultado_qtd_geral_exclusivo)[0];
+
+//Qtd Produtos Geral Curva A
+$select_qtd_geral_a_exclusivo = "SELECT count(1) FROM Products where active=1 and qty_competitors='0' and curve='A' and qty_stock_rms>'0' and pbm <> $pbma";
+$resultado_qtd_geral_a_exclusivo = mysqli_query($conn,$select_qtd_geral_a_exclusivo);
+$qtd_geral_a_exclusivo = mysqli_fetch_array($resultado_qtd_geral_a_exclusivo)[0];
+
+//Qtd Produtos Geral Curva B
+$select_qtd_geral_b_exclusivo = "SELECT count(1) FROM Products where active=1 and qty_competitors='0' and curve='B' and qty_stock_rms>'0' and pbm <> $pbma";
+$resultado_qtd_geral_b_exclusivo = mysqli_query($conn,$select_qtd_geral_b_exclusivo);
+$qtd_geral_b_exclusivo = mysqli_fetch_array($resultado_qtd_geral_b_exclusivo)[0];
+
+
+//Qtd Produtos Geral Curva C
+$select_qtd_geral_c_exclusivo = "SELECT count(1) FROM Products where active=1 and qty_competitors='0' and curve='C' and qty_stock_rms>'0' and pbm <> $pbma";
+$resultado_qtd_geral_c_exclusivo = mysqli_query($conn,$select_qtd_geral_c_exclusivo);
+$qtd_geral_c_exclusivo = mysqli_fetch_array($resultado_qtd_geral_c_exclusivo)[0];
+
+//***********MEDICAMENTOS**************//
+
+
+
+///////Geral Medicamento////////////
+
+////CUSTO
+$select_medicamento_custo_geral = "SELECT price_cost, qty_stock_rms from Products where active='1' and department = 'MEDICAMENTO' and qty_stock_rms>0 and pbm <> $pbma";
+$resultado_medicamento_custo_geral = mysqli_query($conn,$select_medicamento_custo_geral);
+        while($rowmcg = mysqli_fetch_array($resultado_medicamento_custo_geral)){
+
+$medicamento_custo_geral = $medicamento_custo_geral + ($rowmcg[0] * $rowmcg[1]);
+
+
+
+}
+
+
+$select_medicamento_custo_geral_a = "SELECT price_cost, qty_stock_rms from Products where active='1' and department = 'MEDICAMENTO' and qty_stock_rms>0 and pbm <> $pbma and curve ='A' ";
+$resultado_medicamento_custo_geral_a = mysqli_query($conn,$select_medicamento_custo_geral_a);
+        while($rowmcg_a = mysqli_fetch_array($resultado_medicamento_custo_geral_a)){
+
+$medicamento_custo_geral_a = $medicamento_custo_geral_a + ($rowmcg_a[0] * $rowmcg_a[1]);
+
+
+
+}
+
+
+
+
+$select_medicamento_custo_geral_b = "SELECT price_cost, qty_stock_rms from Products where active='1' and department = 'MEDICAMENTO' and qty_stock_rms>0 and pbm <> $pbma and curve ='B' ";
+$resultado_medicamento_custo_geral_b = mysqli_query($conn,$select_medicamento_custo_geral_b);
+        while($rowmcg_b = mysqli_fetch_array($resultado_medicamento_custo_geral_b)){
+
+$medicamento_custo_geral_b = $medicamento_custo_geral_b + ($rowmcg_b[0] * $rowmcg_b[1]);
+
+
+
+}
+
+
+$select_medicamento_custo_geral_c = "SELECT price_cost, qty_stock_rms from Products where active='1' and department = 'MEDICAMENTO' and qty_stock_rms>0 and pbm <> $pbma and curve ='C' ";
+$resultado_medicamento_custo_geral_c = mysqli_query($conn,$select_medicamento_custo_geral_c);
+        while($rowmcg_c = mysqli_fetch_array($resultado_medicamento_custo_geral_c)){
+
+$medicamento_custo_geral_c = $medicamento_custo_geral_c + ($rowmcg_c[0] * $rowmcg_c[1]);
+
+
+
+}
+
+
+
+//Pague Apenas Medicamento
+
+
+$select_pagueapenas_medicamento = "SELECT price_pay_only, qty_stock_rms from Products where active='1'  and department = 'MEDICAMENTO' and qty_stock_rms>0 and pbm <> $pbma";
+$resultado_pagueapenas_medicamento = mysqli_query($conn,$select_pagueapenas_medicamento);
+        while($row22mpa = mysqli_fetch_array($resultado_pagueapenas_medicamento)){
+
+$preco_pagueapenas_medicamento = $preco_pagueapenas_medicamento + ($row22mpa[0] * $row22mpa[1]);
+
+}
+
+
+
+
+//Pague Apenas Medicamento Curva A
+
+$select_pagueapenas_medicamento_a = "SELECT price_pay_only, qty_stock_rms from Products where active='1'  and department = 'MEDICAMENTO' and qty_stock_rms>0 and pbm <> $pbma  and curve='A'";
+$resultado_pagueapenas_medicamento_a = mysqli_query($conn,$select_pagueapenas_medicamento_a);
+        while($row22mpa_a = mysqli_fetch_array($resultado_pagueapenas_medicamento_a)){
+
+$preco_pagueapenas_medicamento_a = $preco_pagueapenas_medicamento_a + ($row22mpa_a[0] * $row22mpa_a[1]);
+
+}
+
+
+
+
+
+
+
+
+
+//Pague Apenas Medicamento Curva B
+
+$select_pagueapenas_medicamento_b = "SELECT price_pay_only, qty_stock_rms from Products where active='1'  and department = 'MEDICAMENTO' and qty_stock_rms>0 and pbm <> $pbma  and curve='B'";
+$resultado_pagueapenas_medicamento_b = mysqli_query($conn,$select_pagueapenas_medicamento_b);
+        while($row22mpa_b = mysqli_fetch_array($resultado_pagueapenas_medicamento_b)){
+
+$preco_pagueapenas_medicamento_b = $preco_pagueapenas_medicamento_b + ($row22mpa_b[0] * $row22mpa_b[1]);
+
+}
+
+
+
+//Pague Apenas Medicamento Curva C
+
+$select_pagueapenas_medicamento_c = "SELECT price_pay_only, qty_stock_rms from Products where active='1'  and department = 'MEDICAMENTO' and qty_stock_rms>0 and pbm <> $pbma  and curve='C'";
+$resultado_pagueapenas_medicamento_c = mysqli_query($conn,$select_pagueapenas_medicamento_c);
+        while($row22mpa_c = mysqli_fetch_array($resultado_pagueapenas_medicamento_c)){
+
+$preco_pagueapenas_medicamento_c = $preco_pagueapenas_medicamento_c + ($row22mpa_c[0] * $row22mpa_c[1]);
+
+}
+
+
+
+
+//Lucro Bruto
+
+
+$preco_venda_medicamento = ($preco_pagueapenas_medicamento - $medicamento_custo_geral);
+
+
+$preco_venda_medicamento_a = ($preco_pagueapenas_medicamento_a - $medicamento_custo_geral_a);
+
+
+$preco_venda_medicamento_b = ($preco_pagueapenas_medicamento_b - $medicamento_custo_geral_b);
+
+
+$preco_venda_medicamento_c = ($preco_pagueapenas_medicamento_c - $medicamento_custo_geral_c);
+
+
+$select_qtd_geral_financiandom = "SELECT count(1) FROM Products where active=1 and current_gross_margin_percent < 0 and qty_stock_rms>'0' and pbm <> $pbma  and department = 'Medicamento'";
+$resultado_qtd_geral_financiandom = mysqli_query($conn,$select_qtd_geral_financiandom);
+$qtd_geral_financiandom = mysqli_fetch_array($resultado_qtd_geral_financiandom)[0];
+
+$select_qtd_geral_financiandom_a = "SELECT count(1) FROM Products where active=1 and current_gross_margin_percent < 0 and qty_stock_rms>'0' and pbm <> $pbma  and department = 'Medicamento' and curve='A'";
+$resultado_qtd_geral_financiandom_a = mysqli_query($conn,$select_qtd_geral_financiandom_a);
+$qtd_geral_financiandom_a = mysqli_fetch_array($resultado_qtd_geral_financiandom_a)[0];
+
+$select_qtd_geral_financiandom_b = "SELECT count(1) FROM Products where active=1 and current_gross_margin_percent < 0 and qty_stock_rms>'0' and pbm <> $pbma  and department = 'Medicamento' and curve='B'";
+$resultado_qtd_geral_financiandom_b = mysqli_query($conn,$select_qtd_geral_financiandom_b);
+$qtd_geral_financiandom_b = mysqli_fetch_array($resultado_qtd_geral_financiandom_b)[0];
+
+$select_qtd_geral_financiandom_c = "SELECT count(1) FROM Products where active=1 and current_gross_margin_percent < 0 and qty_stock_rms>'0' and pbm <> $pbma  and department = 'Medicamento' and curve='C'";
+$resultado_qtd_geral_financiandom_c = mysqli_query($conn,$select_qtd_geral_financiandom_c);
+$qtd_geral_financiandom_c = mysqli_fetch_array($resultado_qtd_geral_financiandom_c)[0];
+
+
+////financiando
+$select_financiando_medicamentos = "SELECT price_pay_only, qty_stock_rms, price_cost from Products where active='1' and qty_stock_rms>0 and current_gross_margin_percent < 0 and pbm <> $pbma  and department = 'Medicamento'";
+$res_datatotalfinanciandom = mysqli_query($conn,$select_financiando_medicamentos);
+        while($row22fm = mysqli_fetch_array($res_datatotalfinanciandom)){
+
+$valoritempofm = $valoritempofm + ($row22fm[0] * $row22fm[1]);
+$valoritempofm1 = $valoritempofm1 + ($row22fm[2] * $row22fm[1]);
+}
+
+
+
+
+
+$valoritempofm10 = ($valoritempofm - $valoritempofm1);
+
+
+
+
+
+$select_financiando_medicamentos_a = "SELECT price_pay_only, qty_stock_rms, price_cost from Products where active='1' and qty_stock_rms>0 and current_gross_margin_percent < 0 and pbm <> $pbma  and department = 'Medicamento' and curve='A'";
+$res_datatotalfinanciandom_a = mysqli_query($conn,$select_financiando_medicamentos_a);
+        while($row22fm_a = mysqli_fetch_array($res_datatotalfinanciandom_a)){
+
+$valoritempofm_a = $valoritempofm_a + ($row22fm_a[0] * $row22fm_a[1]);
+$valoritempofm1_a = $valoritempofm1_a + ($row22fm_a[2] * $row22fm_a[1]);
+}
+
+
+
+
+
+$valoritempofm10_a = ($valoritempofm_a - $valoritempofm1_a);
+
+
+
+$select_financiando_medicamentos_b = "SELECT price_pay_only, qty_stock_rms, price_cost from Products where active='1' and qty_stock_rms>0 and current_gross_margin_percent < 0 and pbm <> $pbma  and department = 'Medicamento' and curve='B'";
+$res_datatotalfinanciandom_b = mysqli_query($conn,$select_financiando_medicamentos_b);
+        while($row22fm_b = mysqli_fetch_array($res_datatotalfinanciandom_b)){
+
+$valoritempofm_b = $valoritempofm_b + ($row22fm_b[0] * $row22fm_b[1]);
+$valoritempofm1_b = $valoritempofm1_b + ($row22fm_b[2] * $row22fm_b[1]);
+}
+
+
+
+
+
+$valoritempofm10_b = ($valoritempofm_b - $valoritempofm1_b);
+
+
+
+$select_financiando_medicamentos_c = "SELECT price_pay_only, qty_stock_rms, price_cost from Products where active='1' and qty_stock_rms>0 and current_gross_margin_percent < 0 and pbm <> $pbma  and department = 'Medicamento' and curve='C'";
+$res_datatotalfinanciandom_c = mysqli_query($conn,$select_financiando_medicamentos_c);
+        while($row22fm_c = mysqli_fetch_array($res_datatotalfinanciandom_c)){
+
+$valoritempofm_c = $valoritempofm_c + ($row22fm_c[0] * $row22fm_c[1]);
+$valoritempofm1_c = $valoritempofm1_c + ($row22fm_c[2] * $row22fm_c[1]);
+}
+
+
+
+
+
+$valoritempofm10_c = ($valoritempofm_c - $valoritempofm1_c);
+
+
+
+
+
+
+
+
+//estoque
+$consultatotalestoquem = "SELECT SUM(qty_stock_rms)FROM Products where active=1 and pbm <> $pbma and department = 'Medicamento'";
+$resultado_qtd_geral_estoquem = mysqli_query($conn,$consultatotalestoquem);
+$qtd_geral_estoquem = mysqli_fetch_array($resultado_qtd_geral_estoquem)[0];
+
+$consultatotalestoquem_a = "SELECT SUM(qty_stock_rms)FROM Products where active=1 and pbm <> $pbma and department = 'Medicamento' and Curve='A'";
+$resultado_qtd_geral_estoquem_a = mysqli_query($conn,$consultatotalestoquem_a);
+$qtd_geral_estoquem_a = mysqli_fetch_array($resultado_qtd_geral_estoquem_a)[0];
+
+$consultatotalestoquem_b = "SELECT SUM(qty_stock_rms)FROM Products where active=1 and pbm <> $pbma and department = 'Medicamento' and Curve='B'";
+$resultado_qtd_geral_estoquem_b = mysqli_query($conn,$consultatotalestoquem_b);
+$qtd_geral_estoquem_b = mysqli_fetch_array($resultado_qtd_geral_estoquem_b)[0];
+
+$consultatotalestoquem_c = "SELECT SUM(qty_stock_rms)FROM Products where active=1 and pbm <> $pbma and department = 'Medicamento' and Curve='C'";
+$resultado_qtd_geral_estoquem_c = mysqli_query($conn,$consultatotalestoquem_c);
+$qtd_geral_estoquem_c = mysqli_fetch_array($resultado_qtd_geral_estoquem_c)[0];
+
+
+
+//qtd produtos abaixo do custo
+
+
+
+
+
+//Margem Bruta Simulada Medicamentos Consulta 
+$select_margembruta_medicamentos = "SELECT AVG(current_gross_margin_percent) FROM Products where active=1 and department = 'Medicamento' and qty_stock_rms >'0' and pbm <> $pbma";
+$resultado_margembruta_medicamentos = mysqli_query($conn,$select_margembruta_medicamentos);
+$margem_bruta_medicamento = mysqli_fetch_array($resultado_margembruta_medicamentos)[0];
+
+//Margem Bruta Simulada Medicamentos Consulta Curva A
+$select_margembruta_medicamentos_a = "SELECT AVG(current_gross_margin_percent) FROM Products where active=1 and curve='A' and department = 'Medicamento' and qty_stock_rms >'0' and pbm <> $pbma";
+$resultado_margembruta_medicamentos_a = mysqli_query($conn,$select_margembruta_medicamentos_a);
+$margem_bruta_medicamento_a = mysqli_fetch_array($resultado_margembruta_medicamentos_a)[0];
+
+//Margem Bruta Simulada Medicamentos Consulta Curva B
+$select_margembruta_medicamentos_b = "SELECT AVG(current_gross_margin_percent) FROM Products where active=1 and curve='B' and department = 'Medicamento' and qty_stock_rms >'0' and pbm <> $pbma";
+$resultado_margembruta_medicamentos_b = mysqli_query($conn,$select_margembruta_medicamentos_b);
+$margem_bruta_medicamento_b = mysqli_fetch_array($resultado_margembruta_medicamentos_b)[0];
+
+//Margem Bruta Simulada Medicamentos Consulta Curva C 
+$select_margembruta_medicamentos_c = "SELECT AVG(current_gross_margin_percent) FROM Products where active=1 and curve='C' and department = 'Medicamento' and qty_stock_rms >'0' and pbm <> $pbma";
+$resultado_margembruta_medicamentos_c = mysqli_query($conn,$select_margembruta_medicamentos_c);
+$margem_bruta_medicamento_c = mysqli_fetch_array($resultado_margembruta_medicamentos_c)[0];
+
+
+
+
+
+
+
+//Margem Para o Menor Preco Geral Consulta
+$select_margemmenor_medicamentos = "SELECT AVG(diff_current_pay_only_lowest) FROM Products where active=1 and department = 'Medicamento' and qty_stock_rms >'0' and pbm <> $pbma";
+$resultado_margemmenor_medicamentos = mysqli_query($conn,$select_margemmenor_medicamentos);
+$margemmenor_medicamento = mysqli_fetch_array($resultado_margemmenor_medicamentos)[0];
+
+
+
+
+//Margem Para o Menor Preco Geral Consulta Curva A
+$select_margemmenor_medicamentos_a = "SELECT AVG(diff_current_pay_only_lowest) FROM Products where active=1 and curve='A' and department = 'Medicamento' and qty_stock_rms >'0' and pbm <> $pbma";
+$resultado_margemmenor_medicamentos_a = mysqli_query($conn,$select_margemmenor_medicamentos_a);
+$margemmenor_medicamento_a = mysqli_fetch_array($resultado_margemmenor_medicamentos_a)[0];
+
+//Margem Para o Menor Preco Geral Consulta Curva B
+$select_margemmenor_medicamentos_b = "SELECT AVG(diff_current_pay_only_lowest) FROM Products where active=1 and curve='B' and department = 'Medicamento' and qty_stock_rms >'0' and pbm <> $pbma";
+$resultado_margemmenor_medicamentos_b = mysqli_query($conn,$select_margemmenor_medicamentos_b);
+$margemmenor_medicamento_b = mysqli_fetch_array($resultado_margemmenor_medicamentos_b)[0];
+
+//Margem Para o Menor Preco Geral Consulta Curva C
+$select_margemmenor_medicamentos_c = "SELECT AVG(diff_current_pay_only_lowest) FROM Products where active=1 and curve='C' and department = 'Medicamento' and qty_stock_rms >'0' and pbm <> $pbma";
+$resultado_margemmenor_medicamentos_c = mysqli_query($conn,$select_margemmenor_medicamentos_c);
+$margemmenor_medicamento_c = mysqli_fetch_array($resultado_margemmenor_medicamentos_c)[0];
+
+
+
+
+//Qtd Produtos Medicamentos
+$select_qtd_medicamentos = "SELECT count(1) FROM Products where active=1 and department = 'Medicamento'  and pbm <> $pbma and qty_stock_rms >'0' ";
+$resultado_qtd_medicamentos = mysqli_query($conn,$select_qtd_medicamentos);
+$qtd_medicamento = mysqli_fetch_array($resultado_qtd_medicamentos)[0];
+
+
+//Qtd Produtos Medicamentos Curva A
+$select_qtd_medicamentos_a = "SELECT count(1) FROM Products where active=1 and curve='A' and department = 'Medicamento' and pbm <> $pbma and qty_stock_rms >'0' ";
+$resultado_qtd_medicamentos_a = mysqli_query($conn,$select_qtd_medicamentos_a);
+$qtd_medicamento_a = mysqli_fetch_array($resultado_qtd_medicamentos_a)[0];
+
+
+
+//Qtd Produtos Medicamentos Curva B
+$select_qtd_medicamentos_b = "SELECT count(1)FROM Products where active=1 and curve='B' and department = 'Medicamento' and pbm <> $pbma and qty_stock_rms >'0' ";
+$resultado_qtd_medicamentos_b = mysqli_query($conn,$select_qtd_medicamentos_b);
+$qtd_medicamento_b = mysqli_fetch_array($resultado_qtd_medicamentos_b)[0];
+
+//Qtd Produtos Medicamentos Curva C
+$select_qtd_medicamentos_c = "SELECT count(1) FROM Products where active=1 and curve='C' and department = 'Medicamento'  and pbm <> $pbma and qty_stock_rms >'0' ";
+$resultado_qtd_medicamentos_c = mysqli_query($conn,$select_qtd_medicamentos_c);
+$qtd_medicamento_c = mysqli_fetch_array($resultado_qtd_medicamentos_c)[0];
+
+
+
+
+///////////RUPTURA MEDICAMENTOS////////////////////////
+
+//Qtd Produtos Geral
+$select_qtd_geral_ruptura_medicamentos = "SELECT count(1) FROM Products where active=1 and department = 'Medicamento'  and qty_stock_rms ='0' and pbm <> $pbma";
+$resultado_qtd_geral_ruptura_medicamentos = mysqli_query($conn,$select_qtd_geral_ruptura_medicamentos);
+$qtd_geral_ruptura_medicamentos = mysqli_fetch_array($resultado_qtd_geral_ruptura_medicamentos)[0];
+
+//Qtd Produtos Geral Curva A
+$select_qtd_geral_a_ruptura_medicamentos = "SELECT count(1) FROM Products where active=1  and department = 'Medicamento' and curve='A'  and qty_stock_rms ='0' and pbm <> $pbma";
+$resultado_qtd_geral_a_ruptura_medicamentos = mysqli_query($conn,$select_qtd_geral_a_ruptura_medicamentos);
+$qtd_geral_a_ruptura_medicamentos = mysqli_fetch_array($resultado_qtd_geral_a_ruptura_medicamentos)[0];
+
+//Qtd Produtos Geral Curva B
+$select_qtd_geral_b_ruptura_medicamentos = "SELECT count(1) FROM Products where active=1 and department = 'Medicamento' and curve='B' and qty_stock_rms ='0' and pbm <> $pbma";
+$resultado_qtd_geral_b_ruptura_medicamentos = mysqli_query($conn,$select_qtd_geral_b_ruptura_medicamentos);
+$qtd_geral_b_ruptura_medicamentos = mysqli_fetch_array($resultado_qtd_geral_b_ruptura_medicamentos)[0];
+
+
+//Qtd Produtos Geral Curva C
+$select_qtd_geral_c_ruptura_medicamentos = "SELECT count(1) FROM Products where active=1 and department = 'Medicamento' and curve='C' and qty_stock_rms ='0' and pbm <> $pbma";
+$resultado_qtd_geral_c_ruptura_medicamentos = mysqli_query($conn,$select_qtd_geral_c_ruptura_medicamentos);
+$qtd_geral_c_ruptura_medicamentos = mysqli_fetch_array($resultado_qtd_geral_c_ruptura_medicamentos)[0];
+
+
+
+
+
+//Qtd Produtos Geral
+$select_qtd_geral_ee_medicamentos = "SELECT count(1) FROM Products where active=1 and department = 'Medicamento' and qty_competitors='0' and pbm <> $pbma  and qty_stock_rms >'0' ";
+$resultado_qtd_geral_ee_medicamentos = mysqli_query($conn,$select_qtd_geral_ee_medicamentos_medicamentos);
+$qtd_geral_ee_medicamentos = mysqli_fetch_array($resultado_qtd_geral_ee_medicamentos_medicamentos)[0];
+
+//Qtd Produtos Geral Curva A
+$select_qtd_geral_a_ee_medicamentos = "SELECT count(1) FROM Products where active=1  and department = 'Medicamento' and qty_competitors='0' and curve='A' and pbm <> $pbma and qty_stock_rms >'0' ";
+$resultado_qtd_geral_a_ee_medicamentos = mysqli_query($conn,$select_qtd_geral_a_ee_medicamentos);
+$qtd_geral_a_ee = mysqli_fetch_array($resultado_qtd_geral_a_ee_medicamentos)[0];
+
+//Qtd Produtos Geral Curva B
