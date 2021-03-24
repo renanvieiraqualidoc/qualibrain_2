@@ -106,44 +106,37 @@ header('Content-Type: text/html; charset=utf-8'); ?>
         },
         methods: {
           async upload() {
-            this.loading = true
-            if (this.file.name.substring(this.file.name.lastIndexOf('.')+1) == 'csv') {
-              let form = new FormData()
-              form.append('file', this.file)
-              const t = this
-              axios.post('juridico/salva_planilha.php', form, {
-                  headers: {
-                      'Content-Type': 'multipart/form-data'
-                  }
-              })
-              .then(function(response) {
-                  if(response.data.success) {
-                    t.$buefy.notification.open({
-                        message: 'Produtos atualizados com sucesso!',
-                        type: 'is-success',
-                        position: 'is-bottom-right',
-                        hasIcon: true
-                    })
-                  }
-                  else {
+            if(this.file != null) {
+              this.loading = true
+              if (this.file.name.substring(this.file.name.lastIndexOf('.')+1) == 'csv') {
+                let form = new FormData()
+                form.append('file', this.file)
+                const t = this
+                axios.post('juridico/salva_planilha.php', form, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                })
+                .then(function(response) {
                     t.$buefy.notification.open({
                         message: response.data.msg,
-                        type: 'is-danger',
+                        type: response.data.success ? 'is-success' : 'is-danger',
                         position: 'is-bottom-right',
                         hasIcon: true
                     })
-                  }
-              })
+                    t.loading = false
+                })
+              }
+              else {
+                this.$buefy.notification.open({
+                    message: 'Formato de arquivo deve ser CSV!',
+                    type: 'is-danger',
+                    position: 'is-bottom-right',
+                    hasIcon: true
+                })
+                this.loading = false
+              }
             }
-            else {
-              this.$buefy.notification.open({
-                  message: 'Formato de arquivo deve ser CSV!',
-                  type: 'is-danger',
-                  position: 'is-bottom-right',
-                  hasIcon: true
-              })
-            }            
-            this.loading = false
           }
         }
     })
