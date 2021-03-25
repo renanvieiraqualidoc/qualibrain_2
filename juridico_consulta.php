@@ -102,6 +102,7 @@ header('Content-Type: text/html; charset=utf-8'); ?>
 
 <script src="https://unpkg.com/vue"></script>
 <script src="https://unpkg.com/buefy/dist/buefy.min.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src="https://rawgit.com/vuejs-tips/v-money/master/dist/v-money.js"></script>
 <script>
     new Vue({
@@ -110,6 +111,7 @@ header('Content-Type: text/html; charset=utf-8'); ?>
             return {
                 data: [],
                 data_group: [],
+                response: [],
                 data_items: [],
                 selected: [],
                 money: {
@@ -140,111 +142,48 @@ header('Content-Type: text/html; charset=utf-8'); ?>
             })
           },
           loadAsyncData() {
-            let response = [{
-              'codigo': '1000586',
-              'descricao': 'Novalgina 1g 10 Comprimidos',
-              'preco_custo': 15.3,
-              'website_monitorado': 'www.drogariasaopaulo.com.br',
-              'url_monitorado': 'https://www.drogariasaopaulo.com.br/analgesico-novalgina-1g-10-comprimidos/p',
-              'data': '05/03/2021',
-              'hora': '07:00',
-              'preco_oferta': 17.9,
-              'url_monitor': 'https://monitor.precifica.com.br/index.php/Produtos?act=edit&id=13717542'
-            },
-            {
-              'codigo': '1000586',
-              'descricao': 'Novalgina 1g 10 Comprimidos',
-              'preco_custo': 15.3,
-              'website_monitorado': 'www.drogaraia.com.br',
-              'url_monitorado': 'https://www.drogaraia.com.br/novalgina-1-grama-10-comprimidos.html',
-              'data': '05/03/2021',
-              'hora': '07:00',
-              'preco_oferta': 20.96,
-              'url_monitor': 'https://monitor.precifica.com.br/index.php/Produtos?act=edit&id=13717542'
-            },
-            {
-              'codigo': '1000837',
-              'descricao': 'Apevitin BC Xarope 240ml',
-              'preco_custo': 11.83,
-              'website_monitorado': 'www.ultrafarma.com.br',
-              'url_monitorado': 'https://www.ultrafarma.com.br/apevitin-bc-xarope-com-240ml',
-              'data': '05/03/2021',
-              'hora': '07:00',
-              'preco_oferta': '',
-              'url_monitor': 'https://monitor.precifica.com.br/index.php/Produtos?act=edit&id=13717567'
-            },
-            {
-              'codigo': '1000837',
-              'descricao': 'Apevitin BC Xarope 240ml',
-              'preco_custo': 11.83,
-              'website_monitorado': 'www.qualidoc.com.br',
-              'url_monitorado': 'https://www.qualidoc.com.br/apevitin-bc-xarope-240ml/product/1000837',
-              'data': '05/03/2021',
-              'hora': '07:00',
-              'preco_oferta': 17.75,
-              'url_monitor': 'https://monitor.precifica.com.br/index.php/Produtos?act=edit&id=13717567'
-            },
-            {
-              'codigo': '1000845',
-              'descricao': 'Nesina 25mg 30 Comprimidos Revestidos',
-              'preco_custo': 74.49,
-              'website_monitorado': 'www.drogasil.com.br',
-              'url_monitorado': 'https://www.drogasil.com.br/nesina-25-mg-30-comprimidos-revestidos.html',
-              'data': '05/03/2021',
-              'hora': '07:00',
-              'preco_oferta': 74.49,
-              'url_monitor': 'https://monitor.precifica.com.br/index.php/Produtos?act=edit&id=13717568'
-            },
-            {
-              'codigo': '1000845',
-              'descricao': 'Nesina 25mg 30 Comprimidos Revestidos',
-              'preco_custo': 74.49,
-              'website_monitorado': 'www.ultrafarma.com.br',
-              'url_monitorado': 'https://www.ultrafarma.com.br/nesina-25-mg-com-30-comprimidos',
-              'data': '05/03/2021',
-              'hora': '07:00',
-              'preco_oferta': 90.76,
-              'url_monitor': 'https://monitor.precifica.com.br/index.php/Produtos?act=edit&id=13717568'
-            }]
+            const t = this
 
-            // Agrupa os produtos pelos códigos SKU's
-            response.filter(r => {
-              // Verifica se código já foi inserido
-              if(!this.data_group.some(data => data.codigo == r.codigo)) { // Não existe
-                this.data.push({
-                  codigo: r.codigo,
-                  descricao: r.descricao,
-                  data: r.data,
-                  url_monitor: r.url_monitor
+            axios.get('juridico/consultalogs.php').then(({ data }) => {
+                data.forEach((item) => {
+                    t.response.push(item)
+                    if(!t.data_group.some(d => d.codigo == item.codigo)) { // Não existe
+                      t.data.push({
+                        codigo: item.codigo,
+                        descricao: item.descricao,
+                        data: item.data,
+                        url_monitor: item.url_monitor
+                      })
+                      t.data_group.push({
+                        codigo: item.codigo,
+                        descricao: item.descricao,
+                        data: item.data,
+                        url_monitor: item.url_monitor,
+                        items: [{
+                          preco_custo: item.preco_custo,
+                          website_monitorado: item.website_monitorado,
+                          url_monitorado: item.url_monitorado,
+                          preco_oferta: item.preco_oferta,
+                          hora: item.hora
+                        }]
+                      })
+                    }
+                    else { // Já existe
+                      t.data_group.map(d => {
+                        if(d.codigo == item.codigo) {
+                          d.items.push({
+                            preco_custo: item.preco_custo,
+                            website_monitorado: item.website_monitorado,
+                            url_monitorado: item.url_monitorado,
+                            preco_oferta: item.preco_oferta,
+                            hora: item.hora
+                          })
+                        }
+                      })
+                    }
                 })
-                this.data_group.push({
-                  codigo: r.codigo,
-                  descricao: r.descricao,
-                  data: r.data,
-                  url_monitor: r.url_monitor,
-                  items: [{
-                    preco_custo: '<money v-model="' + r.preco_custo + '" v-bind="money">' + r.preco_custo + '</money>',
-                    // preco_custo: '<input v-model="' + r.preco_custo + '" />',
-                    website_monitorado: r.website_monitorado,
-                    url_monitorado: r.url_monitorado,
-                    preco_oferta: r.preco_oferta,
-                    hora: r.hora
-                  }]
-                })
-              }
-              else { // Já existe
-                this.data_group.map(data => {
-                  if(data.codigo == r.codigo) {
-                    data.items.push({
-                      preco_custo: r.preco_custo,
-                      website_monitorado: r.website_monitorado,
-                      url_monitorado: r.url_monitorado,
-                      preco_oferta: r.preco_oferta,
-                      hora: r.hora
-                    })
-                  }
-                })
-              }
+            }).catch((error) => {
+                throw error
             })
           }
         },
