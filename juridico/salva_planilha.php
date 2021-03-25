@@ -2,6 +2,8 @@
 //Initialize the session
 session_start();
 
+header('Content-Type: text/html; charset=UTF-8');
+
 // Check if the user is logged in, if not then redirect him to login page
 if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     header("location: login.php");
@@ -33,31 +35,32 @@ else {
        $msg = 'upload/'.$_FILES['file']['name'];
        if(move_uploaded_file($_FILES['file']['tmp_name'], '../upload/' . $_FILES['file']['name'])) {
            $file = fopen("../upload/{$_FILES['file']['name']}", "r");
-           fwrite($file_dump, "INSERT INTO produtos_juridico (codigo, descricao, data, url_monitor, preco_custo, website_monitorado, url_monitorado, hora, preco_oferta) VALUES ");
            $sql = "INSERT INTO produtos_juridico (codigo, descricao, data, url_monitor, preco_custo, website_monitorado, url_monitorado, hora, preco_oferta) VALUES ";
            $i = 0;
            while (($getData = fgetcsv($file, 10000, "|")) !== false) {
              if($i > 0) {
-               $fields = explode(";", $getData[0]);
-               $fields_array = array();
-               array_push($fields_array,
-                                         trim($fields[0]) ?? 0,
-                                         trim($fields[1]) ?? '',
-                                         '"'.trim(implode('-', array_reverse(explode('/', str_replace('"', '', $fields[26]))))).'"' ?? '""',
-                                         trim($fields[31]) ?? '',
-                                         trim(str_replace(",", ".", str_replace('"', '', $fields[17]))) ?? 0.00,
-                                         trim($fields[24]) ?? '',
-                                         trim($fields[25]) ?? '',
-                                         trim($fields[27]) ?? '',
-                                         str_replace('"', '', $fields[29]) != "" ? trim(str_replace(",", ".", str_replace('"', '', $fields[29]))) : 0);
-               $sql .= "(".implode(", ", $fields_array)."),\n";
+               $fields = explode('";"', $getData[0]);
+             if(strpos(trim(explode(';"', $fields[0])[0]), 'IA-') === false) {
+                 $fields_array = array();
+                 array_push($fields_array,
+                                           trim(explode(';"', $fields[0])[0]) ?? 0,
+                                           '"'.trim(utf8_encode(explode(';"', $fields[0])[1])).'"' ?? '',
+                                           '"'.trim(implode('-', array_reverse(explode('/', str_replace('"', '', $fields[25]))))).'"' ?? '""',
+                                           '"'.trim(utf8_encode(str_replace('";', '', $fields[30]))).'"' ?? '',
+                                           str_replace('"', '', $fields[16]) != "" ? trim(str_replace(",", ".", str_replace('"', '', $fields[16]))) : 0,
+                                           '"'.trim(utf8_encode($fields[23])).'"' ?? '',
+                                           '"'.trim(utf8_encode($fields[24])).'"' ?? '',
+                                           '"'.trim($fields[26]).'"' ?? '',
+                                           str_replace('"', '', $fields[28]) != "" ? trim(str_replace(",", ".", str_replace('"', '', $fields[28]))) : 0);
+                 $sql .= "(".implode(", ", $fields_array)."),\n";
+               }
              }
              $i++;
            }
            fclose($file);
            $sql = substr($sql, 0, -2);
            $sql .= ";";
-           $file_dump = fopen('../export_sql/data.sql', 'w');
+           $file_dump = fopen('../export_sql/data.txt', 'w');
            fwrite($file_dump, $sql);
            fclose($file_dump);
            $msg = 'Arquivo dump gerado!';
