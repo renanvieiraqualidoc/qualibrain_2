@@ -46,7 +46,7 @@ header('Content-Type: text/html; charset=utf-8'); ?>
       <div id="content">
         <?php include('topbar.php'); ?>
         <div class="container-fluid">
-          <div id="app" class="container">
+          <div id="app" >
             <h1 class="title">Consulta de Logs</h1>
             <section>
                 <b-table
@@ -55,11 +55,18 @@ header('Content-Type: text/html; charset=utf-8'); ?>
                     narrowed
                     sticky-header
                     paginated
-                    pagination-simple
-                    per-page="10"
+                    backend-pagination
+                    backend-sorting
                     detailed
                     detail-key="codigo"
                     @details-open="(row) => set_data_items(row)"
+                    @page-change="onPageChange"
+                    @sort="onSort"
+                    :default-sort-direction="defaultSortOrder"
+                    :default-sort="[sortField, sortOrder]"
+                    :per-page="perPage"
+                    :total="total"
+                    :loading="loading"
                     :data="data"
                     :columns="columns">
                     <template slot="detail" slot-scope="props">
@@ -110,22 +117,21 @@ header('Content-Type: text/html; charset=utf-8'); ?>
         data() {
             return {
                 data: [],
+                loading: false,
+                total: 0,
+                perPage: 7,
+                page: 1,
+                defaultSortOrder: 'desc',
+                sortField: 'data',
+                sortOrder: 'desc',
                 data_group: [],
-                response: [],
                 data_items: [],
                 selected: [],
-                money: {
-                   decimal: ',',
-                   thousands: '.',
-                   prefix: 'R$ ',
-                   suffix: ' #',
-                   precision: 2,
-                   masked: false
-                },
-                columns: [{ field: 'codigo', label: 'Código SKU', sortable: true, searchable: true, centered: true, width: "148" },
-                          { field: 'descricao', label: 'Descrição do Produto', sortable: true, centered: true, width: "468" },
+                columns: [{ field: 'codigo', label: 'Código SKU', sortable: true, searchable: true, centered: true, width: "120" },
+                          { field: 'descricao', label: 'Descrição do Produto', sortable: true, centered: true, width: "250" },
                           { field: 'data', label: 'Data', sortable: true, searchable: true, centered: true, width: "85" },
-                          { field: 'url_monitor', label: 'URL Monitor', centered: true, width: "581" }],
+                          { field: 'url_monitor', label: 'URL Monitor', centered: true, width: "350" },
+                          { field: 'media', label: 'Média', centered: true, width: "85" }],
                 columns_items: [{ field: 'preco_custo', label: 'Preço de Custo', sortable: true, centered: true, width: "162" },
                                 { field: 'website_monitorado', label: 'Website Monitorado', centered: true },
                                 { field: 'url_monitorado', label: 'URL Produto Monitorado', centered: true },
@@ -141,18 +147,46 @@ header('Content-Type: text/html; charset=utf-8'); ?>
               }
             })
           },
+          onPageChange(page) {
+              this.page = page
+              this.loadAsyncData()
+          },
+          onSort(field, order) {
+              this.sortField = field
+              this.sortOrder = order
+              this.loadAsyncData()
+          },
+          emptyData() {
+              while(this.data.length > 0) {
+                  this.data.pop();
+              }
+          },
           loadAsyncData() {
             const t = this
-
-            axios.get('juridico/consultalogs.php').then(({ data }) => {
-                data.forEach((item) => {
-                    t.response.push(item)
+            const params = [`sort_by=${this.sortField}`,`page=${this.page}`,`sort_order=${this.sortOrder}`,`per_page=${this.perPage}`].join('&')
+            this.loading = true
+            axios.get(`juridico/consultalogs.php?${params}`).then((response) => {
+                t.emptyData()
+                t.data_group = []
+                t.data_items = []
+                let currentTotal = response.data.total_results
+                if (response.data.total_results / t.perPage > 1000) {
+                    currentTotal = t.perPage * 1000
+                }
+                t.total = currentTotal
+                let media = ''
+                let i = 1
+                response.data.results.forEach((item) => {
                     if(!t.data_group.some(d => d.codigo == item.codigo)) { // Não existe
+                      if(!item.website_monitorado.includes("qualidoc") && parseFloat(item.preco_oferta) != 0) {
+                        media = parseFloat(item.preco_oferta)
+                      }
                       t.data.push({
                         codigo: item.codigo,
                         descricao: item.descricao,
                         data: item.data,
-                        url_monitor: item.url_monitor
+                        url_monitor: item.url_monitor,
+                        media: 0
                       })
                       t.data_group.push({
                         codigo: item.codigo,
@@ -171,6 +205,11 @@ header('Content-Type: text/html; charset=utf-8'); ?>
                     else { // Já existe
                       t.data_group.map(d => {
                         if(d.codigo == item.codigo) {
+                          if(!item.website_monitorado.includes("qualidoc") && parseFloat(item.preco_oferta) != 0) {
+                            media = media + parseFloat(item.preco_oferta)
+                            i++
+                            d.media = media/i
+                          }
                           d.items.push({
                             preco_custo: item.preco_custo,
                             website_monitorado: item.website_monitorado,
@@ -180,9 +219,16 @@ header('Content-Type: text/html; charset=utf-8'); ?>
                           })
                         }
                       })
+                      console.log(d)
                     }
                 })
+                t.loading = false
             }).catch((error) => {
+                t.emptyData()
+                t.data_group = []
+                t.data_items = []
+                t.total = 0
+                t.loading = false
                 throw error
             })
           }
