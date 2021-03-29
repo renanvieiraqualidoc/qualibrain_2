@@ -48,6 +48,38 @@ header('Content-Type: text/html; charset=utf-8'); ?>
         <div class="container-fluid">
           <div id="app" >
             <h1 class="title">Consulta de Logs</h1>
+            <b-field>
+                <b-input placeholder="Código SKU"
+                    type="search"
+                    @input="loadAsyncData"
+                    v-model="codigo"
+                    icon="magnify"
+                    icon-right-clickable
+                    @icon-right-click="this.codigo = ''">
+                </b-input>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <b-datetimepicker
+                    v-model="data_hora"
+                    @input="loadAsyncData"
+                    placeholder="Data e hora">
+                    <template #left>
+                        <b-button
+                            label="Atual"
+                            type="is-primary"
+                            icon-left="clock"
+                            @click="data_hora = new Date()" />
+                    </template>
+
+                    <template #right>
+                        <b-button
+                            label="Clear"
+                            type="is-danger"
+                            icon-left="close"
+                            outlined
+                            @click="data_hora = null" />
+                    </template>
+                </b-datetimepicker>
+            </b-field>
             <section>
                 <b-table
                     bordered
@@ -70,7 +102,34 @@ header('Content-Type: text/html; charset=utf-8'); ?>
                     :data="data"
                     :columns="columns">
                     <template slot="detail" slot-scope="props">
-                        <b-table sortable :data="data_items" :columns="columns_items" :selected.sync="selected"></b-table>
+                        <b-table sortable :data="data_items" :selected.sync="selected">
+                          <b-table-column centered subheading="Média:"><template v-slot="props"></template></b-table-column>
+                          <b-table-column field="items.preco_custo" label="Preço Custo" sortable centered>
+                              <template v-slot="props">
+                                  {{ props.row.preco_custo }}
+                              </template>
+                          </b-table-column>
+                          <b-table-column field="items.website_monitorado" label="Website Monitorado" centered>
+                              <template v-slot="props">
+                                  {{ props.row.website_monitorado }}
+                              </template>
+                          </b-table-column>
+                          <b-table-column field="items.url_monitorado" label="URL Produto Monitorado" centered>
+                              <template v-slot="props">
+                                  {{ props.row.url_monitorado }}
+                              </template>
+                          </b-table-column>
+                          <b-table-column field="items.hora" label="Hora" centered sortable>
+                              <template v-slot="props">
+                                  {{ props.row.hora }}
+                              </template>
+                          </b-table-column>
+                          <b-table-column field="items.preco_oferta" label="Preço Oferta" centered :subheading="media(props.row)" sortable>
+                              <template v-slot="props">
+                                  {{ props.row.preco_oferta }}
+                              </template>
+                          </b-table-column>
+                        </b-table>
                     </template>
                 </b-table>
             </section>
@@ -110,7 +169,6 @@ header('Content-Type: text/html; charset=utf-8'); ?>
 <script src="https://unpkg.com/vue"></script>
 <script src="https://unpkg.com/buefy/dist/buefy.min.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<script src="https://rawgit.com/vuejs-tips/v-money/master/dist/v-money.js"></script>
 <script>
     new Vue({
         el: '#app',
@@ -119,24 +177,20 @@ header('Content-Type: text/html; charset=utf-8'); ?>
                 data: [],
                 loading: false,
                 total: 0,
-                perPage: 7,
+                perPage: 1000,
                 page: 1,
                 defaultSortOrder: 'desc',
                 sortField: 'data',
+                codigo: '',
+                data_hora: null,
                 sortOrder: 'desc',
                 data_group: [],
                 data_items: [],
-                selected: [],
-                columns: [{ field: 'codigo', label: 'Código SKU', sortable: true, searchable: true, centered: true, width: "120" },
-                          { field: 'descricao', label: 'Descrição do Produto', sortable: true, centered: true, width: "250" },
-                          { field: 'data', label: 'Data', sortable: true, searchable: true, centered: true, width: "85" },
-                          { field: 'url_monitor', label: 'URL Monitor', centered: true, width: "350" },
-                          { field: 'media', label: 'Média', centered: true, width: "85" }],
-                columns_items: [{ field: 'preco_custo', label: 'Preço de Custo', sortable: true, centered: true, width: "162" },
-                                { field: 'website_monitorado', label: 'Website Monitorado', centered: true },
-                                { field: 'url_monitorado', label: 'URL Produto Monitorado', centered: true },
-                                { field: 'hora', label: 'Hora', sortable: true, searchable: true, centered: true, width: "91" },
-                                { field: 'preco_oferta', label: 'Preço Oferta', sortable: true, centered: true, width: "154" }]
+                selected: null,
+                columns: [{ field: 'codigo', label: 'Código SKU', sortable: true, centered: true },
+                          { field: 'descricao', label: 'Descrição do Produto', sortable: true, centered: true },
+                          { field: 'data', label: 'Data', sortable: true, centered: true },
+                          { field: 'url_monitor', label: 'URL Monitor', centered: true }]
             }
         },
         methods: {
@@ -146,6 +200,24 @@ header('Content-Type: text/html; charset=utf-8'); ?>
                 this.data_items = r.items
               }
             })
+          },
+          media(row) {
+            let soma = 0
+            let it = 0
+            let items = []
+            this.data_group.filter(r => {
+              if (r.codigo == row.codigo) {
+                items = r.items
+              }
+            })
+
+            items.filter(i => {
+              if(!i.website_monitorado.includes("qualidoc") && i.preco_oferta.replace( /^\D+/g, '').replace(",", ".") != 0) {
+                soma += parseFloat(i.preco_oferta.replace( /^\D+/g, '').replace(",", "."))
+                it++
+              }
+            })
+            return "R$ " + (soma/it).toFixed(2).replace(".", ",")
           },
           onPageChange(page) {
               this.page = page
@@ -163,7 +235,13 @@ header('Content-Type: text/html; charset=utf-8'); ?>
           },
           loadAsyncData() {
             const t = this
-            const params = [`sort_by=${this.sortField}`,`page=${this.page}`,`sort_order=${this.sortOrder}`,`per_page=${this.perPage}`].join('&')
+            const params = [`sort_by=${this.sortField}`,
+                            `page=${this.page}`,
+                            `sort_order=${this.sortOrder}`,
+                            `per_page=${this.perPage}`,
+                            `codigo=${this.codigo}`,
+                            "data=" + ((this.data_hora == null) ? '' : this.data_hora.toLocaleDateString()),
+                            "hora=" + ((this.data_hora == null) ? '' : this.data_hora.toLocaleTimeString().substring(0,5))].join('&')
             this.loading = true
             axios.get(`juridico/consultalogs.php?${params}`).then((response) => {
                 t.emptyData()
@@ -174,53 +252,41 @@ header('Content-Type: text/html; charset=utf-8'); ?>
                     currentTotal = t.perPage * 1000
                 }
                 t.total = currentTotal
-                let media = ''
-                let i = 1
                 response.data.results.forEach((item) => {
-                    if(!t.data_group.some(d => d.codigo == item.codigo)) { // Não existe
-                      if(!item.website_monitorado.includes("qualidoc") && parseFloat(item.preco_oferta) != 0) {
-                        media = parseFloat(item.preco_oferta)
-                      }
-                      t.data.push({
-                        codigo: item.codigo,
-                        descricao: item.descricao,
-                        data: item.data,
-                        url_monitor: item.url_monitor,
-                        media: 0
-                      })
-                      t.data_group.push({
-                        codigo: item.codigo,
-                        descricao: item.descricao,
-                        data: item.data,
-                        url_monitor: item.url_monitor,
-                        items: [{
+                  if(!t.data_group.some(d => d.codigo == item.codigo)) { // Não existe
+                    t.data.push({
+                      codigo: item.codigo,
+                      descricao: item.descricao,
+                      data: item.data,
+                      url_monitor: item.url_monitor
+                    })
+                    t.data_group.push({
+                      codigo: item.codigo,
+                      descricao: item.descricao,
+                      data: item.data,
+                      url_monitor: item.url_monitor,
+                      items: [{
+                        preco_custo: item.preco_custo,
+                        website_monitorado: item.website_monitorado,
+                        url_monitorado: item.url_monitorado,
+                        preco_oferta: item.preco_oferta,
+                        hora: item.hora
+                      }]
+                    })
+                  }
+                  else { // Já existe
+                    t.data_group.map(d => {
+                      if(d.codigo == item.codigo) {
+                        d.items.push({
                           preco_custo: item.preco_custo,
                           website_monitorado: item.website_monitorado,
                           url_monitorado: item.url_monitorado,
                           preco_oferta: item.preco_oferta,
                           hora: item.hora
-                        }]
-                      })
-                    }
-                    else { // Já existe
-                      t.data_group.map(d => {
-                        if(d.codigo == item.codigo) {
-                          if(!item.website_monitorado.includes("qualidoc") && parseFloat(item.preco_oferta) != 0) {
-                            media = media + parseFloat(item.preco_oferta)
-                            i++
-                            d.media = media/i
-                          }
-                          d.items.push({
-                            preco_custo: item.preco_custo,
-                            website_monitorado: item.website_monitorado,
-                            url_monitorado: item.url_monitorado,
-                            preco_oferta: item.preco_oferta,
-                            hora: item.hora
-                          })
-                        }
-                      })
-                      console.log(d)
-                    }
+                        })
+                      }
+                    })
+                  }
                 })
                 t.loading = false
             }).catch((error) => {
