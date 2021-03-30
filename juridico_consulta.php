@@ -60,8 +60,9 @@ header('Content-Type: text/html; charset=utf-8'); ?>
                 &nbsp;&nbsp;&nbsp;&nbsp;
                 <b-datetimepicker
                     v-model="data_hora"
-                    @input="loadAsyncData"
-                    placeholder="Data e hora">
+                    @blur="loadAsyncData"
+                    placeholder="Data e hora"
+                    :datetime-formatter="(datetime) => new Intl.DateTimeFormat('pt-br', { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', timezone: 'UTC-03:00' }).format(datetime)">
                     <template #left>
                         <b-button
                             label="Atual"
