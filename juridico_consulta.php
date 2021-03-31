@@ -120,6 +120,11 @@ header('Content-Type: text/html; charset=utf-8'); ?>
                                   {{ props.row.url_monitorado }}
                               </template>
                           </b-table-column>
+                          <b-table-column field="items.data" label="Data" centered sortable>
+                              <template v-slot="props">
+                                  {{ props.row.data }}
+                              </template>
+                          </b-table-column>
                           <b-table-column field="items.hora" label="Hora" centered sortable>
                               <template v-slot="props">
                                   {{ props.row.hora }}
@@ -190,7 +195,6 @@ header('Content-Type: text/html; charset=utf-8'); ?>
                 selected: null,
                 columns: [{ field: 'codigo', label: 'Código SKU', sortable: true, centered: true },
                           { field: 'descricao', label: 'Descrição do Produto', sortable: true, centered: true },
-                          { field: 'data', label: 'Data', sortable: true, centered: true },
                           { field: 'url_monitor', label: 'URL Monitor', centered: true }]
             }
         },
@@ -258,20 +262,19 @@ header('Content-Type: text/html; charset=utf-8'); ?>
                     t.data.push({
                       codigo: item.codigo,
                       descricao: item.descricao,
-                      data: item.data,
                       url_monitor: item.url_monitor
                     })
                     t.data_group.push({
                       codigo: item.codigo,
                       descricao: item.descricao,
-                      data: item.data,
                       url_monitor: item.url_monitor,
                       items: [{
                         preco_custo: item.preco_custo,
                         website_monitorado: item.website_monitorado,
                         url_monitorado: item.url_monitorado,
                         preco_oferta: item.preco_oferta,
-                        hora: item.hora
+                        hora: item.hora,
+                        data: item.data
                       }]
                     })
                   }
@@ -283,7 +286,8 @@ header('Content-Type: text/html; charset=utf-8'); ?>
                           website_monitorado: item.website_monitorado,
                           url_monitorado: item.url_monitorado,
                           preco_oferta: item.preco_oferta,
-                          hora: item.hora
+                          hora: item.hora,
+                          data: item.data
                         })
                       }
                     })
