@@ -65,7 +65,7 @@ else {
            $file_dump = fopen($dump, 'w');
            fwrite($file_dump, $sql);
            fclose($file_dump);
-           if(trim(shell_exec("mysql -u$DATABASE_USER -p'$DATABASE_PASS' $DATABASE_NAME < $dump 2>&1"))
+           if(trim(shell_exec("mysql -h $DATABASE_HOST -u$DATABASE_USER -p'$DATABASE_PASS' $DATABASE_NAME < $dump 2>&1"))
                         == "mysql: [Warning] Using a password on the command line interface can be insecure.") {
              $msg = 'Planilha atualizada com sucesso!';
              $success = true;
