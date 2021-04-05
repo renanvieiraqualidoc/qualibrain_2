@@ -125,6 +125,9 @@ header('Content-Type: text/html; charset=utf-8'); ?>
                         hasIcon: true
                     })
                     t.loading = false
+                    if(response.data.success) {
+                      location.reload();
+                    }
                 })
               }
               else {
