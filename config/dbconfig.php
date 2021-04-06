@@ -2,9 +2,9 @@
 header('Content-Type: text/html; charset=utf-8');
 
 //DB INFO.
-$DATABASE_HOST = 'localhost';
-$DATABASE_USER = 'root';
-$DATABASE_PASS = 'root1234';
+$DATABASE_HOST = 'cockpit.c7yft9tue2sa.us-east-2.rds.amazonaws.com:3306';
+$DATABASE_USER = 'admin';
+$DATABASE_PASS = 'KyCKIVFAcmyVmwzji5uO';
 $DATABASE_NAME = 'fspider';
 
 
