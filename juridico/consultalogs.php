@@ -44,7 +44,7 @@ while($row = mysqli_fetch_array($results)) {
                                 'url_monitor' => $row['url_monitor']));
 }
 
-$query = "SELECT COUNT(*) AS qtd FROM produtos_juridico";
+$query = "SELECT COUNT(*) AS qtd FROM produtos_juridico $comp";
 $results = mysqli_query($conn,$query);
 $qtd = mysqli_fetch_array($results)[0];
 
