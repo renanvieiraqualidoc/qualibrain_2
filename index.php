@@ -14,13 +14,13 @@
         <div class="modal-body"><div class="btn-group btn-group-toggle" data-toggle="buttons">
 <button type="button" class="btn btn-outline-success">
 <a href='relatorio/exportrupturabxls.php'>Exportar</a></button></div><br><br><div class="dropdown-divider"></div>
-                
+
 
 
 <table class="display table table-bordered table-sm table-hover" id="" width="100%" cellspacing="0">
                   <thead class="thead-dark">
                     <tr>
-                      
+
                              <th>SKU</th>
                       <th>TITULO</th>
                       <th>DEPARTAMENTO</th>
@@ -48,7 +48,7 @@
                     </tr>
                   </thead>
                   <tfoot class="thead-dark">
-                  
+
   <tr>
                                         <th>SKU</th>
                       <th>TITULO</th>
@@ -63,7 +63,7 @@
 
 
 
-                     
+
 <th>MARGEM OP.</th>
 <th>DIF. MENOR PRECO</th>
 
@@ -78,14 +78,14 @@
                   <tbody>
 
 <?php
-  
+
 
 $consultatotalprodutosruptura = "SELECT Products.sku, Products.title, Products.department, Products.category, Products.price_cost, Products.sale_price, Products.current_price_pay_only,
  Products.current_less_price_around, Products.lowest_price_competitor, Products.current_gross_margin_percent, Products.diff_current_pay_only_lowest, Products.curve,
  marca.marca, marca.fabricante, Products.qty_competitors from Products Inner join marca on marca.sku=Products.sku where active='1' and qty_stock_rms=0 and pbm <> $pbma and curve='A'";
 $res_datatotalruptura = mysqli_query($conn,$consultatotalprodutosruptura);
         while($rowr = mysqli_fetch_array($res_datatotalruptura)){
-     
+
                 echo    '<tr>';
                                     echo  '<td><a target="_blank" href=https://www.qualidoc.com.br/cadastro/product/'.$rowr[0].'>'.$rowr[0].'</a></td>';
                     echo  '<td>'. $rowr[1].'</td>';
@@ -105,12 +105,12 @@ echo  '<td>'.$rowr[13].'</td>';
 echo  '<td>'.$rowr[14].'</td>';
 
 echo  '</tr>';
- 
+
 }
-?>               
+?>
                   </tbody>
                 </table>
- 
+
 
 
 </div>
@@ -132,7 +132,7 @@ header('Content-Type: text/html; charset=utf-8');
 
 // Initialize the session
 session_start();
- 
+
 // Check if the user is logged in, if not then redirect him to login page
 if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     header("location: login.php");
@@ -266,7 +266,7 @@ $margem_bruta_geral = mysqli_fetch_array($resultado_margembruta_geral)[0];
 $select_margembruta_geral_a = "SELECT AVG(current_gross_margin_percent)  FROM Products where active=1 and curve='A' and qty_stock_rms>'0' and pbm <> $pbma  and descontinuado <> 1";
 $resultado_margembruta_geral_a = mysqli_query($conn,$select_margembruta_geral_a);
 $margem_bruta_geral_a = mysqli_fetch_array($resultado_margembruta_geral_a)[0];
- 
+
 //Margem Bruta Simulada Geral Consulta Curva B
 $select_margembruta_geral_b = "SELECT AVG(current_gross_margin_percent)  FROM Products where active=1 and curve='B' and qty_stock_rms>'0' and pbm <> $pbma and descontinuado <> 1";
 $resultado_margembruta_geral_b = mysqli_query($conn,$select_margembruta_geral_b);
@@ -374,7 +374,7 @@ $register_at=$rowreg[0];
 //(current_gross_margin_percent BETWEEN -0.10 and -0.04999)
 //(current_gross_margin_percent BETWEEN -0.20 and -0.0999)
 //(current_gross_margin_percent BETWEEN -0.30 and -0.19999)
-// current_gross_margin_percent < -0.30 
+// current_gross_margin_percent < -0.30
 
 $valortotalitemestoque= ($qtd_geral_estoquef30a + $qtd_geral_estoquef30 + $qtd_geral_estoquef20 + $qtd_geral_estoquef10 + $qtd_geral_estoquef5);
 
@@ -1305,7 +1305,7 @@ $qtd_geral_estoqueautocu_c = mysqli_fetch_array($resultado_qtd_geral_estoqueauto
 
 
 
-//Margem Bruta Simulada Medicamentos Consulta 
+//Margem Bruta Simulada Medicamentos Consulta
 $select_margembruta_medicamentos = "SELECT AVG(current_gross_margin_percent) FROM Products where active=1 and department = 'Medicamento' and qty_stock_rms >'0' and pbm <> $pbma and descontinuado<>1";
 $resultado_margembruta_medicamentos = mysqli_query($conn,$select_margembruta_medicamentos);
 $margem_bruta_medicamento = mysqli_fetch_array($resultado_margembruta_medicamentos)[0];
@@ -1320,7 +1320,7 @@ $select_margembruta_medicamentos_b = "SELECT AVG(current_gross_margin_percent) F
 $resultado_margembruta_medicamentos_b = mysqli_query($conn,$select_margembruta_medicamentos_b);
 $margem_bruta_medicamento_b = mysqli_fetch_array($resultado_margembruta_medicamentos_b)[0];
 
-//Margem Bruta Simulada Medicamentos Consulta Curva C 
+//Margem Bruta Simulada Medicamentos Consulta Curva C
 $select_margembruta_medicamentos_c = "SELECT AVG(current_gross_margin_percent) FROM Products where active=1 and curve='C' and department = 'Medicamento' and qty_stock_rms >'0' and pbm <> $pbma and descontinuado<>1";
 $resultado_margembruta_medicamentos_c = mysqli_query($conn,$select_margembruta_medicamentos_c);
 $margem_bruta_medicamento_c = mysqli_fetch_array($resultado_margembruta_medicamentos_c)[0];
@@ -1762,7 +1762,7 @@ $qtd_geral_estoquemamae_c = mysqli_fetch_array($resultado_qtd_geral_estoquemamae
 
 
 
-//Margem Bruta Simulada Perfumaria Consulta 
+//Margem Bruta Simulada Perfumaria Consulta
 $select_margembruta_perfumaria = "SELECT AVG(current_gross_margin_percent) from Products where active=1  and qty_stock_rms >'0' and department = 'Perfumaria' and pbm <> $pbma and descontinuado<>1";
 $resultado_margembruta_perfumaria = mysqli_query($conn,$select_margembruta_perfumaria);
 $margem_bruta_perfumaria = mysqli_fetch_array($resultado_margembruta_perfumaria)[0];
@@ -1770,19 +1770,19 @@ $margem_bruta_perfumaria = mysqli_fetch_array($resultado_margembruta_perfumaria)
 
 
 
-//Margem Bruta Simulada Perfumaria Consulta 
+//Margem Bruta Simulada Perfumaria Consulta
 $select_margembruta_perfumaria_a = "SELECT AVG(current_gross_margin_percent) from Products where active=1  and qty_stock_rms >'0' and department = 'Perfumaria' and curve = 'A' and pbm <> $pbma and descontinuado<>1";
 $resultado_margembruta_perfumaria_a = mysqli_query($conn,$select_margembruta_perfumaria_a);
 $margem_bruta_perfumaria_a = mysqli_fetch_array($resultado_margembruta_perfumaria_a)[0];
 
 
-//Margem Bruta Simulada Perfumaria Consulta 
+//Margem Bruta Simulada Perfumaria Consulta
 $select_margembruta_perfumaria_b = "SELECT AVG(current_gross_margin_percent) from Products where active=1  and qty_stock_rms >'0' and department = 'Perfumaria' and curve = 'B' and pbm <> $pbma and descontinuado<>1";
 $resultado_margembruta_perfumaria_b = mysqli_query($conn,$select_margembruta_perfumaria_b);
 $margem_bruta_perfumaria_b = mysqli_fetch_array($resultado_margembruta_perfumaria_b)[0];
 
 
-//Margem Bruta Simulada Perfumaria Consulta 
+//Margem Bruta Simulada Perfumaria Consulta
 $select_margembruta_perfumaria_c = "SELECT AVG(current_gross_margin_percent) from Products where active=1  and qty_stock_rms >'0' and department = 'Perfumaria' and curve = 'C' and pbm <> $pbma and descontinuado<>1";
 $resultado_margembruta_perfumaria_c = mysqli_query($conn,$select_margembruta_perfumaria_c);
 $margem_bruta_perfumaria_c = mysqli_fetch_array($resultado_margembruta_perfumaria_c)[0];
@@ -2174,7 +2174,7 @@ $qtd_geral_estoqueprodd_c = mysqli_fetch_array($resultado_qtd_geral_estoqueprodd
 
 
 
-//Margem Bruta Simulada Nao Medicamentos Consulta 
+//Margem Bruta Simulada Nao Medicamentos Consulta
 $select_margembruta_naomedicamentos = "SELECT AVG(current_gross_margin_percent) FROM Products where active=1 and department = 'NAO MEDICAMENTO' and qty_stock_rms >'0' and pbm <> $pbma and descontinuado<>1";
 $resultado_margembruta_naomedicamentos = mysqli_query($conn,$select_margembruta_naomedicamentos);
 $margem_bruta_naomedicamento = mysqli_fetch_array($resultado_margembruta_naomedicamentos)[0];
@@ -2191,7 +2191,7 @@ $select_margembruta_naomedicamentos_b = "SELECT AVG(current_gross_margin_percent
 $resultado_margembruta_naomedicamentos_b = mysqli_query($conn,$select_margembruta_naomedicamentos_b);
 $margem_bruta_naomedicamento_b = mysqli_fetch_array($resultado_margembruta_naomedicamentos_b)[0];
 
-//Margem Bruta Simulada Medicamentos Consulta Curva C 
+//Margem Bruta Simulada Medicamentos Consulta Curva C
 $select_margembruta_naomedicamentos_c = "SELECT AVG(current_gross_margin_percent) FROM Products where active=1 and department = 'NAO MEDICAMENTO' and qty_stock_rms >'0' and curve = 'C' and pbm <> $pbma and descontinuado<>1";
 $resultado_margembruta_naomedicamentos_c = mysqli_query($conn,$select_margembruta_naomedicamentos_c);
 $margem_bruta_naomedicamento_c = mysqli_fetch_array($resultado_margembruta_naomedicamentos_c)[0];
@@ -2462,7 +2462,7 @@ $qtd_concorrente6ra = mysqli_fetch_array($resultado_qtd_concorrente6ra)[0];
   <div id="wrapper">
 
     <!-- Sidebar -->
-    
+
 <?php include('sidebar.html'); ?>
     <!-- End of Sidebar -->
 
@@ -2472,7 +2472,7 @@ $qtd_concorrente6ra = mysqli_fetch_array($resultado_qtd_concorrente6ra)[0];
       <!-- Main Content -->
       <div id="content">
       <?php include('topbar.php'); ?>
-        
+
         <!-- End of Topbar -->
 
         <!-- Begin Page Content -->
@@ -2483,25 +2483,25 @@ $qtd_concorrente6ra = mysqli_fetch_array($resultado_qtd_concorrente6ra)[0];
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">QualiBrain</h1>
 <input type=hidden value='<?php echo $vpbm;?>' name='vpbm' id='vpbm'>
-<?php 
+<?php
 if ($pbma == '1'){
 
 echo '<div class="custom-control custom-switch">';
 echo  '<input type="checkbox" class="custom-control-input" id="customSwitch1" checked>';
 echo  '<label class="custom-control-label" for="customSwitch1">Cenário Sem PBM</label>';
-echo '</div>'; 
+echo '</div>';
 }
 if ($pbma <> '1'){
 echo '<div class="custom-control custom-switch">';
 echo  '<input type="checkbox" class="custom-control-input" id="customSwitch1" >';
 echo  '<label class="custom-control-label" for="customSwitch1">Cenário Sem PBM</label>';
-echo '</div>'; 
+echo '</div>';
 }
 ?>
 
 
-  
-  
+
+
 
 
 <script>
@@ -2513,13 +2513,13 @@ var id_switch = document.getElementById('customSwitch1');
 
 id_switch.addEventListener('change',function(){
   if(this.checked == true){
- 
+
 
 
  window.location = 'index.php?vpbm=1';
 
  }else{
- 
+
 
  window.location = 'index.php?vpbm=5';
 
@@ -2528,7 +2528,7 @@ id_switch.addEventListener('change',function(){
 </script>
             <a href="#" data-toggle="modal" data-target="#relatoriomodal" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-bars fa-sm text-white-50"></i> Regras Gerais</a>
           </div>
-         
+
           <!-- Content Row -->
           <div class="row">
 
@@ -2539,14 +2539,14 @@ id_switch.addEventListener('change',function(){
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                       <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Produtos Abaixo do Custo(SKU)</div>
-                      
-                    
+
+
 <div class="h5 mb-0 font-weight-bold text-primary"><font size=3px> (-5% / -0,1%)-  </font><a href='#'><font color='black' size=3px><?php echo $qtd_geral_financiando_cinco;?> </font></b></a></div>
      <div class="h5 mb-0 font-weight-bold text-warning"><font size=3px>(-10% / -5%)- </font> <a href='#'><font color='black' size=3px><?php echo $qtd_geral_financiando_dez;?> </font></b></a></div>
 <div class="h5 mb-0 font-weight-bold text-danger"><font size=3px>(-20% / -10%)- </font> <a href='#'><font color='black' size=3px><?php echo $qtd_geral_financiando_vinte;?></font></b></a></div>
 <div class="h5 mb-0 font-weight-bold text-danger"><font size=3px>(-30% / -20%)- </font> <a href='#'><font color='black' size=3px><?php echo $qtd_geral_financiando_trinta;?></font></b></a></div>
 <div class="h5 mb-0 font-weight-bold text-danger"><font size=3px>(< -30% )-  </font><a href='#'><font color='black' size=3px><?php echo $qtd_geral_financiando_atrinta;?> </font></a> </div>
-<div class="h5 mb-0 font-weight-bold text-danger"><font size=3px>R$ <?php echo  number_format($valortotalitemdefict, 0, ',', '.') ;?></font><font size=1px></font></div> 
+<div class="h5 mb-0 font-weight-bold text-danger"><font size=3px>R$ <?php echo  number_format($valortotalitemdefict, 0, ',', '.') ;?></font><font size=1px></font></div>
 
 
                     </div>
@@ -2575,8 +2575,8 @@ id_switch.addEventListener('change',function(){
 
 <div class="h5 mb-0 font-weight-bold text-primary"><font size=3px>R$ <?php echo  number_format($valoritem, 0, ',', '.') ;?></font><font size=2px>(custo)</font></div>
      <div class="h5 mb-0 font-weight-bold text-warning"><font size=3px>R$ <?php echo  number_format($valoritempo, 0, ',', '.') ;?></font><font size=2px>(receita)</font></div>
-<div class="h5 mb-0 font-weight-bold text-success"><font size=3px>R$ <?php $valoritempva=($valoritempo - $valoritem );  echo  number_format($valoritempva, 0, ',', '.') ;?></font><font size=2px>(lucro bruto)</font></div>  
-<div class="h5 mb-0 font-weight-bold text-info"><font size=3px>R$ <?php echo  number_format($valoritemcashback, 0, ',', '.') ;?></font><font size=2px>(cashback)</font></div>  
+<div class="h5 mb-0 font-weight-bold text-success"><font size=3px>R$ <?php $valoritempva=($valoritempo - $valoritem );  echo  number_format($valoritempva, 0, ',', '.') ;?></font><font size=2px>(lucro bruto)</font></div>
+<div class="h5 mb-0 font-weight-bold text-info"><font size=3px>R$ <?php echo  number_format($valoritemcashback, 0, ',', '.') ;?></font><font size=2px>(cashback)</font></div>
 
 
 </div>
@@ -2595,11 +2595,11 @@ id_switch.addEventListener('change',function(){
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                       <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Média Margem de Operação</div>
-                     
+
  <div class="row no-gutters align-items-center">
                         <div class="col-auto">
                           <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800"><?php $margem_bruta_geral1=($margem_bruta_geral * 100); echo  number_format($margem_bruta_geral1, 2, ',', '.') . '%';?></div>
- 
+
                         </div>
                         <div class="col">
                           <div class="progress progress-sm mr-2">
@@ -2611,7 +2611,7 @@ id_switch.addEventListener('change',function(){
  <div class="row no-gutters align-items-center">
                         <div class="col-auto">
                           <div class="h5 mb-0 font-weight-bold text-primary"><font size=3px><?php $margem_bruta_geral1_a=($margem_bruta_geral_a * 100); echo  number_format($margem_bruta_geral1_a, 2, ',', '.') . '%';?>&nbsp;&nbsp;</font></div>
- 
+
                         </div>
                         <div class="col">
                           <div class="progress progress-sm mr-2">
@@ -2624,7 +2624,7 @@ id_switch.addEventListener('change',function(){
 <div class="row no-gutters align-items-center">
                         <div class="col-auto">
                           <div class="h5 mb-0 font-weight-bold text-warning"><font size=3px><?php $margem_bruta_geral1b=($margem_bruta_geral_b * 100); echo  number_format($margem_bruta_geral1b, 2, ',', '.') . '%';?>&nbsp;&nbsp;</font></div>
- 
+
                         </div>
                         <div class="col">
                           <div class="progress progress-sm mr-2">
@@ -2636,7 +2636,7 @@ id_switch.addEventListener('change',function(){
  <div class="row no-gutters align-items-center">
                         <div class="col-auto">
                           <div class="h5 mb-0 font-weight-bold text-danger"><font size=3px><?php $margem_bruta_geral1c=($margem_bruta_geral_c * 100); echo  number_format($margem_bruta_geral1c, 2, ',', '.') . '%';?>&nbsp;&nbsp;</font></div>
- 
+
                         </div>
                         <div class="col">
                           <div class="progress progress-sm mr-2">
@@ -2663,11 +2663,11 @@ id_switch.addEventListener('change',function(){
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                       <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Margem Dif. Menor Preço</div>
-                     
+
  <div class="row no-gutters align-items-center">
                         <div class="col-auto">
                           <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800"><?php $margemmenor_geral1=($margemmenor_geral * 100); echo  number_format($margemmenor_geral1, 2, ',', '.') . '%';?></div>
- 
+
                         </div>
                         <div class="col">
                           <div class="progress progress-sm mr-2">
@@ -2679,7 +2679,7 @@ id_switch.addEventListener('change',function(){
  <div class="row no-gutters align-items-center">
                         <div class="col-auto">
                           <div class="h5 mb-0 font-weight-bold text-primary"><font size=3px><?php $margemmenor_geral1a=($margemmenor_geral_a * 100); echo  number_format($margemmenor_geral1a, 2, ',', '.') . '%';?>&nbsp;&nbsp;</font></div>
- 
+
                         </div>
                         <div class="col">
                           <div class="progress progress-sm mr-2">
@@ -2692,7 +2692,7 @@ id_switch.addEventListener('change',function(){
 <div class="row no-gutters align-items-center">
                         <div class="col-auto">
                           <div class="h5 mb-0 font-weight-bold text-warning"><font size=3px><?php $margemmenor_geral1b=($margemmenor_geral_b * 100); echo  number_format($margemmenor_geral1b, 2, ',', '.') . '%';?>&nbsp;&nbsp;</font></div>
- 
+
                         </div>
                         <div class="col">
                           <div class="progress progress-sm mr-2">
@@ -2704,7 +2704,7 @@ id_switch.addEventListener('change',function(){
  <div class="row no-gutters align-items-center">
                         <div class="col-auto">
                           <div class="h5 mb-0 font-weight-bold text-danger"><font size=3px><?php $margemmenor_geral1c=($margemmenor_geral_c * 100); echo  number_format($margemmenor_geral1c, 2, ',', '.') . '%';?>&nbsp;&nbsp;</font></div>
- 
+
                         </div>
                         <div class="col">
                           <div class="progress progress-sm mr-2">
@@ -2727,7 +2727,7 @@ id_switch.addEventListener('change',function(){
   <div class="row">
     <div class="col-sm">
 <div class="alert alert-success" role="alert">
-  
+
 Total SKUs <a href="#" class="alert-link" data-toggle="modal" data-target="#totalprodutosmodal"><?php echo  number_format($qtd_geral, 0, ',', '.');?></a>
 </div>
     </div>
@@ -2753,7 +2753,7 @@ Total SKUs <a href="#" class="alert-link" data-toggle="modal" data-target="#tota
 
 
 
-	                      	
+
   </div>
 <div class="col mr-2">
 <a href="#"><span class="badge badge-warning cachbackicon" style="" data-toggle="modal" data-target="#cashbackmodal">Cashback: <?php echo number_format($margem_cashback_geral, 0, ',', '.');?> </span></a>
@@ -2830,7 +2830,7 @@ Total SKUs <a href="#" class="alert-link" data-toggle="modal" data-target="#tota
     </div>
 
 
- 
+
    <div class="col-xl-12 col-md-6 mb-4">
 <h4 class="m-0 small font-weight-bold text-danger">PRODUTOS COM ESTOQUE EXCLUSIVO</h4>
   <div class="row">
@@ -2871,7 +2871,7 @@ Total SKUs <a href="#" class="alert-link" data-toggle="modal" data-target="#tota
                 <!-- Card Content - Collapse -->
                 <div class="collapse" id="collapseCardExample2">
                   <div class="card-body">
-                   
+
  <div class="row">
     <div class="col-sm">
 <center><p><b>Curva #A</b></p></center>
@@ -2886,7 +2886,7 @@ Total SKUs <a href="#" class="alert-link" data-toggle="modal" data-target="#tota
     </tr>
     <tr>
       <th scope="row">Receita:</th>
-    
+
       <td>R$ <?php echo number_format($preco_pagueapenas_medicamento_a, 2, ',', '.');?></td>
     </tr>
     <tr>
@@ -2929,7 +2929,7 @@ Total SKUs <a href="#" class="alert-link" data-toggle="modal" data-target="#tota
   <tr>
   <th scope="row">Estoque Marcas:</th>
 
-    
+
       <td><?php echo number_format($qtd_geral_estoquemarc_a, 0, ',', '.');?></td>
 </tr>
  <tr>
@@ -2941,7 +2941,7 @@ Total SKUs <a href="#" class="alert-link" data-toggle="modal" data-target="#tota
   <th scope="row">Estoque AutoCuidado:</th>
 
             <td><?php echo number_format($qtd_geral_estoqueautocu_a, 0, ',', '.');?></td>
-      
+
     </tr>
     </tr>
 
@@ -2978,7 +2978,7 @@ Total SKUs <a href="#" class="alert-link" data-toggle="modal" data-target="#tota
     </tr>
     <tr>
       <th scope="row">Receita:</th>
-    
+
       <td>R$ <?php echo number_format($preco_pagueapenas_medicamento_b, 2, ',', '.');?></td>
     </tr>
     <tr>
@@ -3019,7 +3019,7 @@ Total SKUs <a href="#" class="alert-link" data-toggle="modal" data-target="#tota
   <tr>
   <th scope="row">Estoque Marcas:</th>
 
-    
+
       <td><?php echo number_format($qtd_geral_estoquemarc_b, 0, ',', '.');?></td>
 </tr>
  <tr>
@@ -3031,15 +3031,15 @@ Total SKUs <a href="#" class="alert-link" data-toggle="modal" data-target="#tota
   <th scope="row">Estoque AutoCuidado:</th>
 
             <td><?php echo number_format($qtd_geral_estoqueautocu_b, 0, ',', '.');?></td>
-      
+
     </tr>
     </tr>
 <tr>
       <th scope="row">Qtd Ruptura:</th>
 
       <td><?php echo number_format($qtd_geral_b_ruptura_medicamentos, 0, ',', '.');?></td>
-    
-    
+
+
     </tr>
 
 <tr>
@@ -3069,7 +3069,7 @@ Total SKUs <a href="#" class="alert-link" data-toggle="modal" data-target="#tota
     </tr>
     <tr>
       <th scope="row">Receita:</th>
-    
+
       <td>R$ <?php echo number_format($preco_pagueapenas_medicamento_c, 2, ',', '.');?></td>
     </tr>
     <tr>
@@ -3105,7 +3105,7 @@ Total SKUs <a href="#" class="alert-link" data-toggle="modal" data-target="#tota
   <tr>
   <th scope="row">Estoque Marcas:</th>
 
-    
+
       <td><?php echo number_format($qtd_geral_estoquemarc_c, 0, ',', '.');?></td>
 </tr>
  <tr>
@@ -3117,7 +3117,7 @@ Total SKUs <a href="#" class="alert-link" data-toggle="modal" data-target="#tota
   <th scope="row">Estoque AutoCuidado:</th>
 
             <td><?php echo number_format($qtd_geral_estoqueautocu_c, 0, ',', '.');?></td>
-      
+
     </tr>
     </tr>
 <tr>
@@ -3166,7 +3166,7 @@ Total SKUs <a href="#" class="alert-link" data-toggle="modal" data-target="#tota
                 <!-- Card Content - Collapse -->
                 <div class="collapse" id="collapseCardExample1">
                                     <div class="card-body">
-                   
+
  <div class="row">
     <div class="col-sm">
 <center><p><b>Curva #A</b></p></center>
@@ -3181,7 +3181,7 @@ Total SKUs <a href="#" class="alert-link" data-toggle="modal" data-target="#tota
     </tr>
     <tr>
       <th scope="row">Receita:</th>
-    
+
       <td>R$ <?php echo number_format($preco_pagueapenas_naomedicamento_a, 2, ',', '.');?></td>
     </tr>
     <tr>
@@ -3252,7 +3252,7 @@ Total SKUs <a href="#" class="alert-link" data-toggle="modal" data-target="#tota
     </tr>
     <tr>
       <th scope="row">Receita:</th>
-    
+
       <td>R$ <?php echo number_format($preco_pagueapenas_naomedicamento_b, 2, ',', '.');?></td>
     </tr>
     <tr>
@@ -3325,7 +3325,7 @@ Total SKUs <a href="#" class="alert-link" data-toggle="modal" data-target="#tota
     </tr>
     <tr>
       <th scope="row">Receita:</th>
-    
+
       <td>R$ <?php echo number_format($preco_pagueapenas_naomedicamento_c, 2, ',', '.');?></td>
     </tr>
     <tr>
@@ -3411,7 +3411,7 @@ Total SKUs <a href="#" class="alert-link" data-toggle="modal" data-target="#tota
                 <!-- Card Content - Collapse -->
                 <div class="collapse" id="collapseCardExample">
                   <div class="card-body">
-                   
+
  <div class="row">
     <div class="col-sm">
 <center><p><b>Curva #A</b></p></center>
@@ -3426,7 +3426,7 @@ Total SKUs <a href="#" class="alert-link" data-toggle="modal" data-target="#tota
     </tr>
     <tr>
       <th scope="row">Receita:</th>
-    
+
       <td>R$ <?php echo number_format($preco_pagueapenas_perfumaria_a, 2, ',', '.');?></td>
     </tr>
     <tr>
@@ -3479,7 +3479,7 @@ Total SKUs <a href="#" class="alert-link" data-toggle="modal" data-target="#tota
 
       <td><?php echo number_format($qtd_geral_estoquemamae_a, 0, ',', '.');?></td>
     </tr>
-    
+
 <tr>
       <th scope="row">Qtd Ruptura:</th>
 
@@ -3513,7 +3513,7 @@ Total SKUs <a href="#" class="alert-link" data-toggle="modal" data-target="#tota
     </tr>
     <tr>
       <th scope="row">Receita:</th>
-    
+
       <td>R$ <?php echo number_format($preco_pagueapenas_perfumaria_b, 2, ',', '.');?></td>
     </tr>
     <tr>
@@ -3567,7 +3567,7 @@ Total SKUs <a href="#" class="alert-link" data-toggle="modal" data-target="#tota
 
       <td><?php echo number_format($qtd_geral_estoquemamae_b, 0, ',', '.');?></td>
     </tr>
-    
+
 <tr>
       <th scope="row">Qtd Ruptura:</th>
 
@@ -3601,7 +3601,7 @@ Total SKUs <a href="#" class="alert-link" data-toggle="modal" data-target="#tota
     </tr>
     <tr>
       <th scope="row">Receita:</th>
-    
+
       <td>R$ <?php echo number_format($preco_pagueapenas_perfumaria_c, 2, ',', '.');?></td>
     </tr>
     <tr>
@@ -3629,7 +3629,7 @@ Total SKUs <a href="#" class="alert-link" data-toggle="modal" data-target="#tota
 
       <td><?php echo number_format($qtd_geral_estoquef_c, 0, ',', '.');?></td>
     </tr>
-    
+
      <tr>
       <th scope="row">Estoque:</th>
 
@@ -3655,8 +3655,8 @@ Total SKUs <a href="#" class="alert-link" data-toggle="modal" data-target="#tota
 
       <td><?php echo number_format($qtd_geral_estoquemamae_c, 0, ',', '.');?></td>
     </tr>
-    
-    
+
+
 <tr>
       <th scope="row">Qtd Ruptura:</th>
 
@@ -3694,8 +3694,8 @@ Total SKUs <a href="#" class="alert-link" data-toggle="modal" data-target="#tota
           <!-- Content Row -->
 
 
-           
-       
+
+
         <!-- /.container-fluid -->
 
       </div>
@@ -3766,7 +3766,7 @@ Total SKUs <a href="#" class="alert-link" data-toggle="modal" data-target="#tota
     </div>
     <div class="col-sm">
 <div class="card-header">
-                 Rupturas Disponíveis Nos Concorrentes 
+                 Rupturas Disponíveis Nos Concorrentes
                 </div>
 
 <table class="table table-sm">
@@ -3813,7 +3813,7 @@ Total SKUs <a href="#" class="alert-link" data-toggle="modal" data-target="#tota
 
   </tbody>
 </table>
-   
+
 </div>
 
   </div>
@@ -3825,7 +3825,7 @@ Total SKUs <a href="#" class="alert-link" data-toggle="modal" data-target="#tota
  <table class="display table table-bordered table-sm table-hover" id="" width="100%" cellspacing="0">
                   <thead class="thead-dark">
                     <tr>
-                      
+
                              <th>SKU</th>
                       <th>TITULO</th>
                       <th>DEPARTAMENTO</th>
@@ -3853,7 +3853,7 @@ Total SKUs <a href="#" class="alert-link" data-toggle="modal" data-target="#tota
                     </tr>
                   </thead>
                   <tfoot class="thead-dark">
-                  
+
   <tr>
                                         <th>SKU</th>
                       <th>TITULO</th>
@@ -3883,7 +3883,7 @@ Total SKUs <a href="#" class="alert-link" data-toggle="modal" data-target="#tota
                   <tbody>
 
 <?php
-  
+
 
 $consultatotalprodutosruptura = "SELECT Products.sku, Products.title, Products.department, Products.category, Products.price_cost, Products.sale_price, Products.current_price_pay_only,
  Products.current_less_price_around, Products.lowest_price_competitor, Products.current_gross_margin_percent, Products.diff_current_pay_only_lowest, Products.curve,
@@ -3891,7 +3891,7 @@ $consultatotalprodutosruptura = "SELECT Products.sku, Products.title, Products.d
 vendas.sku=Products.sku where active='1' and qty_stock_rms=0 and pbm <> $pbma group by vendas.sku";
 $res_datatotalruptura = mysqli_query($conn,$consultatotalprodutosruptura);
         while($rowr = mysqli_fetch_array($res_datatotalruptura)){
-     
+
                 echo    '<tr>';
                                     echo  '<td><a target="_blank" href=https://www.qualidoc.com.br/cadastro/product/'.$rowr[0].'>'.$rowr[0].'</a></td>';
                     echo  '<td>'. $rowr[1].'</td>';
@@ -3912,9 +3912,9 @@ echo  '<td>'.$rowr[14].'</td>';
 echo  '<td>'.$rowr[15].'</td>';
 
 echo  '</tr>';
- 
+
 }
-?>               
+?>
                   </tbody>
                 </table></div>
         <div class="modal-footer">
@@ -3955,7 +3955,7 @@ echo  '</tr>';
 <canvas id="financiandoChart"></canvas>
 
 </div>
-              <span class="mr-2">     
+              <span class="mr-2">
   <table class="table table-sm">
 
 
@@ -4002,7 +4002,7 @@ echo  '</tr>';
 <div class="card-header">
 Concorrentes Com Menor Preço
                 </div>
-   
+
 <div class="chart-pie pt-4 pb-2">
 <canvas id="financiandoChartc"></canvas>
 
@@ -4019,7 +4019,7 @@ Concorrentes Com Menor Preço
  <table class="display table table-bordered table-sm table-hover" id="" width="100%" cellspacing="0">
                   <thead class="thead-dark">
                     <tr>
-                      
+
                              <th>SKU</th>
                       <th>TITULO</th>
                       <th>DEPARTAMENTO</th>
@@ -4045,7 +4045,7 @@ Concorrentes Com Menor Preço
                     </tr>
                   </thead>
                   <tfoot class="thead-dark">
-                  
+
   <tr>
                                         <th>SKU</th>
                       <th>TITULO</th>
@@ -4079,7 +4079,7 @@ Concorrentes Com Menor Preço
 $consultatotalprodutosfinanciando = "SELECT sku, title, department, category, price_cost, sale_price, current_price_pay_only, current_less_price_around, lowest_price_competitor, current_gross_margin_percent, diff_current_pay_only_lowest, curve, marca, qty_stock_rms from Products where active='1' and current_gross_margin_percent < 0 and qty_stock_rms > 0 and pbm <> $pbma";
 $res_datatotalfinanciando = mysqli_query($conn,$consultatotalprodutosfinanciando);
         while($rowf = mysqli_fetch_array($res_datatotalfinanciando)){
-     
+
                 echo    '<tr>';
                 echo  '<td><a target="_blank" href=https://www.qualidoc.com.br/cadastro/product/'.$rowf[0].'>'.$rowf[0].'</a></td>';
                     echo  '<td>'. $rowf[1].'</td>';
@@ -4096,9 +4096,9 @@ echo  '<td>'.$rowf[11].'</td>';
 echo  "<td>". number_format($rowf[13], 0, ',', '.') ."</td>";
 echo  '<td>'.$rowf[12].'</td>';
 echo  '</tr>';
- 
+
 }
-?>               
+?>
                   </tbody>
                 </table></div>
         <div class="modal-footer">
@@ -4171,9 +4171,9 @@ echo  '</tr>';
                                     <div class="card-body">
                                       <strong> Regra 1 - </strong>Proibidos os itens que incentivem a desmamação; chupeta, mamadeiras, compostos lácteos pediátricos e Medicamentos.<br>
 <strong>Regra 2 - </strong>Possuir margem de operação positiva e maior que 3%.<br>
-<strong>Regra 3 - </strong>Possuir pelo menos 0,50 centavos de espaço na margem de operação.<br> 
-<strong>Regra 4 - </strong>Possuir pelo menos um concorrente com estoque disponível. 
-                                   
+<strong>Regra 3 - </strong>Possuir pelo menos 0,50 centavos de espaço na margem de operação.<br>
+<strong>Regra 4 - </strong>Possuir pelo menos um concorrente com estoque disponível.
+
  </div>
                                 </div>
                             </div>
@@ -4653,7 +4653,7 @@ var vpbm= "<?php echo ($pbma); ?>";
 
 
 $consultatotalprodutosc1 = "SELECT Products.sku, Products.title, Products.department, Products.category, Products.price_cost, Products.sale_price, Products.current_price_pay_only, Products.current_less_price_around,
- Products.lowest_price_competitor, Products.current_gross_margin_percent, Products.diff_current_pay_only_lowest, Products.curve, Products.qty_stock_rms, Products.qty_competitors, marca.marca, sum(vendas.qtd) from Products inner join vendas on vendas.sku=Products.sku inner join marca on marca.sku=Products.sku 
+ Products.lowest_price_competitor, Products.current_gross_margin_percent, Products.diff_current_pay_only_lowest, Products.curve, Products.qty_stock_rms, Products.qty_competitors, marca.marca, sum(vendas.qtd) from Products inner join vendas on vendas.sku=Products.sku inner join marca on marca.sku=Products.sku
  where active='1' and pbm <> $pbma and curve='C' group by vendas.sku";
 $res_datatotalc1 = mysqli_query($conn,$consultatotalprodutosc1);
 
@@ -4726,13 +4726,13 @@ echo    '</tr>';
         <div class="modal-body"><div class="btn-group btn-group-toggle" data-toggle="buttons">
 <button type="button" class="btn btn-outline-success">
 <a href='relatorio/exportrupturaaxls.php'>Exportar</a></button></div><br><br><div class="dropdown-divider"></div>
-                
+
 
 
 <table class="display table table-bordered table-sm table-hover" id="" width="100%" cellspacing="0">
                   <thead class="thead-dark">
                     <tr>
-                      
+
                              <th>SKU</th>
                       <th>TITULO</th>
                       <th>DEPARTAMENTO</th>
@@ -4760,7 +4760,7 @@ echo    '</tr>';
                     </tr>
                   </thead>
                   <tfoot class="thead-dark">
-                  
+
   <tr>
                                         <th>SKU</th>
                       <th>TITULO</th>
@@ -4775,7 +4775,7 @@ echo    '</tr>';
 
 <th>CONCORRENTE</th>
 
-                     
+
 <th>MARGEM OP.</th>
 <th>DIF. MENOR PRECO</th>
 
@@ -4790,7 +4790,7 @@ echo    '</tr>';
                   <tbody>
 
 <?php
-  
+
 
 $consultatotalprodutosrupturab1 = "SELECT Products.sku, Products.title, Products.department, Products.category, Products.price_cost, Products.sale_price, Products.current_price_pay_only,
  Products.current_less_price_around, Products.lowest_price_competitor, Products.current_gross_margin_percent, Products.diff_current_pay_only_lowest, Products.curve,
@@ -4798,7 +4798,7 @@ $consultatotalprodutosrupturab1 = "SELECT Products.sku, Products.title, Products
  and qty_stock_rms=0 and pbm <> $pbma and curve='B'";
 $res_datatotalrupturab1 = mysqli_query($conn,$consultatotalprodutosrupturab1);
         while($rowrb1 = mysqli_fetch_array($res_datatotalrupturab1)){
-     
+
                 echo    '<tr>';
                                     echo  '<td><a target="_blank" href=https://www.qualidoc.com.br/cadastro/product/'.$rowrb1[0].'>'.$rowrb1[0].'</a></td>';
                     echo  '<td>'. $rowrb1[1].'</td>';
@@ -4818,12 +4818,12 @@ echo  '<td>'.$rowrb1[13].'</td>';
 echo  '<td>'.$rowrb1[14].'</td>';
 
 echo  '</tr>';
- 
+
 }
-?>               
+?>
                   </tbody>
                 </table>
- 
+
 
 
 
@@ -4864,13 +4864,13 @@ echo  '</tr>';
         <div class="modal-body"><div class="btn-group btn-group-toggle" data-toggle="buttons">
 <button type="button" class="btn btn-outline-success">
 <a href='relatorio/exportrupturaaxls.php'>Exportar</a></button></div><br><br><div class="dropdown-divider"></div>
-                
+
 
 
 <table class="display table table-bordered table-sm table-hover" id="" width="100%" cellspacing="0">
                   <thead class="thead-dark">
                     <tr>
-                      
+
                              <th>SKU</th>
                       <th>TITULO</th>
                       <th>DEPARTAMENTO</th>
@@ -4898,7 +4898,7 @@ echo  '</tr>';
                     </tr>
                   </thead>
                   <tfoot class="thead-dark">
-                  
+
   <tr>
                                         <th>SKU</th>
                       <th>TITULO</th>
@@ -4913,7 +4913,7 @@ echo  '</tr>';
 
 <th>CONCORRENTE</th>
 
-                     
+
 <th>MARGEM OP.</th>
 <th>DIF. MENOR PRECO</th>
 
@@ -4928,14 +4928,14 @@ echo  '</tr>';
                   <tbody>
 
 <?php
-  
+
 
 $consultatotalprodutosruptura = "SELECT Products.sku, Products.title, Products.department, Products.category, Products.price_cost, Products.sale_price, Products.current_price_pay_only,
  Products.current_less_price_around, Products.lowest_price_competitor, Products.current_gross_margin_percent, Products.diff_current_pay_only_lowest, Products.curve,
  marca.marca, marca.fabricante, Products.qty_competitors from Products Inner join marca on marca.sku=Products.sku where active='1' and qty_stock_rms=0 and pbm <> $pbma and curve='A'";
 $res_datatotalruptura = mysqli_query($conn,$consultatotalprodutosruptura);
         while($rowr = mysqli_fetch_array($res_datatotalruptura)){
-     
+
                 echo    '<tr>';
                                     echo  '<td><a target="_blank" href=https://www.qualidoc.com.br/cadastro/product/'.$rowr[0].'>'.$rowr[0].'</a></td>';
                     echo  '<td>'. $rowr[1].'</td>';
@@ -4955,12 +4955,12 @@ echo  '<td>'.$rowr[13].'</td>';
 echo  '<td>'.$rowr[14].'</td>';
 
 echo  '</tr>';
- 
+
 }
-?>               
+?>
                   </tbody>
                 </table>
- 
+
 
 
 
@@ -5066,7 +5066,7 @@ $resultado_pbmtotaldsc = mysqli_fetch_array($resultado_pbmtotaldsc1)[0];
 <div class="container">
   <div class="row">
     <div class="col-sm">
-   
+
      <p> <b>PBM's Ativos</b> - <?php echo $resultado_pbmactive; ?></p>
 <p> <b>PBM's Inativos</b> - <?php echo $resultado_pbminactive; ?></p>
    <p> <b>PBM's Vendas Ativos</b> - <?php echo $resultado_pbmsellactive; ?></p>
@@ -5081,16 +5081,16 @@ $resultado_pbmtotaldsc = mysqli_fetch_array($resultado_pbmtotaldsc1)[0];
    </p>
    <p>   <b>Curva C </b> ( <?php $resultado_pbmtotalmpc=($resultado_pbmtotalmpc * 100); echo  number_format($resultado_pbmtotalmpc, 2, ',', '.') . '%';?>)
    </p>
-    
+
     </div>
 
     <div class="col-sm">
-    
+
    <p>   <b>Discrepância </b> ( <?php $resultado_pbmtotalds=($resultado_pbmtotalds * 100); echo  number_format($resultado_pbmtotalds, 2, ',', '.') . '%';?>)</p>
    <p>   <b>Curva A </b>( <?php $resultado_pbmtotaldsa=($resultado_pbmtotaldsa * 100); echo  number_format($resultado_pbmtotaldsa, 2, ',', '.') . '%';?>)</p>
    <p>   <b>Curva B </b>( <?php $resultado_pbmtotaldsb=($resultado_pbmtotaldsb * 100); echo  number_format($resultado_pbmtotaldsb, 2, ',', '.') . '%';?>)</p>
    <p>   <b>Curva C </b>( <?php $resultado_pbmtotaldsc=($resultado_pbmtotaldsc * 100); echo  number_format($resultado_pbmtotaldsc, 2, ',', '.') . '%';?>)</p>
-    
+
     </div>
   </div>
 </div>
@@ -5103,7 +5103,7 @@ $resultado_pbmtotaldsc = mysqli_fetch_array($resultado_pbmtotaldsc1)[0];
  <table class="display table table-bordered table-sm table-hover" id="" width="100%" cellspacing="0">
                   <thead class="thead-dark">
                     <tr>
-                      
+
                              <th>SKU</th>
                       <th>TITULO</th>
                       <th>DEPARTAMENTO</th>
@@ -5134,7 +5134,7 @@ $resultado_pbmtotaldsc = mysqli_fetch_array($resultado_pbmtotaldsc1)[0];
                     </tr>
                   </thead>
                   <tfoot class="thead-dark">
-                  
+
   <tr>
                                         <th>SKU</th>
                       <th>TITULO</th>
@@ -5165,11 +5165,11 @@ $resultado_pbmtotaldsc = mysqli_fetch_array($resultado_pbmtotaldsc1)[0];
                   <tbody>
 
 <?php
- 
+
 $consultatotalpbm = "SELECT pbm.sku, Products.title, Products.department, Products.category, Products.price_cost, Products.sale_price, Products.current_price_pay_only, Products.current_less_price_around, Products.lowest_price_competitor, Products.current_gross_margin_percent, Products.diff_current_pay_only_lowest, Products.curve, Products.marca, Products.qty_stock_rms, pbm.nome_da_van, pbm.programa, pbm.active, sum(vendas.qtd) from pbm INNER JOIN Products ON pbm.sku=Products.sku inner join vendas on vendas.sku=pbm.sku group by vendas.sku ";
 $res_datapbmt = mysqli_query($conn,$consultatotalpbm);
         while($rowterm = mysqli_fetch_array($res_datapbmt)){
-     
+
                 echo    '<tr>';
                 echo  '<td><a target="_blank" href=https://www.qualidoc.com.br/cadastro/product/'.$rowterm[0].'>'.$rowterm[0].'</a></td>';
                     echo  '<td>'. $rowterm[1].'</td>';
@@ -5190,9 +5190,9 @@ echo  '<td>'.$rowterm[15].'</td>';
 echo  '<td>'.$rowterm[16].'</td>';
 echo  '<td>'.$rowterm[17].'</td>';
 echo  '</tr>';
- 
+
 }
-?>               
+?>
                   </tbody>
                 </table></div>
         <div class="modal-footer">
@@ -5273,7 +5273,7 @@ echo  '</tr>';
                   </tfoot>
                   <tbody>
 <?php
- 
+
 $consultatotalotc = "SELECT Products.sku, Products.title, Products.department, Products.category, Products.qty_stock_rms, Products.price_cost,
  Products.sale_price, Products.current_price_pay_only, Products.current_less_price_around,
 Products.lowest_price_competitor, Products.current_gross_margin_percent, Products.diff_current_pay_only_lowest, Products.curve,sum(vendas.qtd) from Products
@@ -5298,7 +5298,7 @@ echo  '<td>'.round((float)$rowotc[11] * 100).'%</td>';
 echo  '<td>'.$rowotc[12].'</td>';
 echo  '<td>'.$rowotc[13].'</td>';
 echo  '</tr>';
- 
+
 }
 ?>
                   </tbody>
@@ -5379,7 +5379,7 @@ echo  '</tr>';
                   </tfoot>
                   <tbody>
 <?php
- 
+
 $consultatotaldesc = "SELECT Products.sku, Products.title, Products.department, Products.category, Products.qty_stock_rms, Products.price_cost, Products.sale_price,
  Products.current_price_pay_only, Products.current_less_price_around, Products.lowest_price_competitor, Products.current_gross_margin_percent,
  Products.diff_current_pay_only_lowest, Products.curve, descontinuado.situation from Products INNER JOIN descontinuado on descontinuado.sku = Products.sku where Products.descontinuado=1";
@@ -5404,7 +5404,7 @@ echo  '<td>'.$rowdesc[12].'</td>';
 echo '<td>'.$rowdesc[13].'</td>';
 
 echo  '</tr>';
- 
+
 }
 ?>
                   </tbody>
@@ -5549,7 +5549,7 @@ echo  '</tr>';
 
 
 
-   
+
 
 
 
@@ -5577,17 +5577,17 @@ $updatapromo = "SELECT update_time FROM Products limit 1";
 $resultado_updatepromo = mysqli_query($conn,$updatapromo);
 $updata_promo = mysqli_fetch_array($resultado_updatepromo)[0];
 
-$selectpromo = "SELECT nome, COUNT(id) 
+$selectpromo = "SELECT nome, COUNT(id)
 FROM promo where active=1
 GROUP BY nome;";
 $resultado_selectpromo = mysqli_query($conn,$selectpromo);
 
 
-$selectpromo24hs = "SELECT sku, nome, inicio, validade, local 
+$selectpromo24hs = "SELECT sku, nome, inicio, validade, local
 FROM promo where active=1 and relampago=1";
 $resultado_selectpromo24hs = mysqli_query($conn,$selectpromo24hs);
 
-$selectpromo24hsi = "SELECT sku, inicio, validade,nome,  local 
+$selectpromo24hsi = "SELECT sku, inicio, validade,nome,  local
 FROM promo where active=1 and relampago=1";
 $resultado_selectpromo24hsi = mysqli_query($conn,$selectpromo24hsi);
 
@@ -5597,10 +5597,10 @@ $resultado_selectpromo24hsi = mysqli_query($conn,$selectpromo24hsi);
 <div class="container">
   <div class="row">
     <div class="col-sm">
-     
+
     </div>
     <div class="col-sm">
-     
+
     </div>
 
   </div>
@@ -5612,12 +5612,12 @@ $resultado_selectpromo24hsi = mysqli_query($conn,$selectpromo24hsi);
 <br>
 <div class="card shadow mb-4">
   <div class="row">
-    
+
     <div class="card-body">
 
                                     <h6 class="m-0 font-weight-bold text-primary">Promoções Ativas</h6>
 <br>
-<?php 
+<?php
 
 while($rowsp = mysqli_fetch_array($resultado_selectpromo)){
 
@@ -5629,10 +5629,10 @@ echo "<br>";
 }
 ?>
 </div>
-     
+
     <div class="card-body">
-     
-                                    
+
+
 
 
 
@@ -5640,25 +5640,25 @@ echo "<br>";
 <style>
 .tableFixHead          { overflow-y: auto; height: 100px; }
 .tableFixHead thead th { position: sticky; top: 0; }
-</style>    
+</style>
 <div class="card-body">
 
-                                    <h6 class="m-0 font-weight-bold text-primary">Promoções 24hs</h6>   
+                                    <h6 class="m-0 font-weight-bold text-primary">Promoções 24hs</h6>
 <br>
 
   <table style="width:100%">
     <thead>
       <tr><th style="text-align:center">SKU</th><th style="text-align:center">Inicio</th><th style="text-align:center">Validade</th></tr>
-   
+
  </thead>
 </table>
 <div class="tableFixHead">
   <table style="width:100%">
     <tbody>
-      
-  
 
-<?php 
+
+
+<?php
 
 while($rowsp24i = mysqli_fetch_array($resultado_selectpromo24hsi)){
 
@@ -5673,7 +5673,7 @@ echo "<tr><td><a target=_blank href=https://www.qualidoc.com.br/cadastro/product
 </div>
 
 
-       
+
     </div>
   </div>
 </div>
@@ -5743,7 +5743,7 @@ echo "<tr><td><a target=_blank href=https://www.qualidoc.com.br/cadastro/product
 <th>CASHBACK</th>
 <th>TABELADO</th>
 <th>PROMO</th>
-<th>DESC</th>              
+<th>DESC</th>
       </tr>
                   </tfoot>
                   <tbody>
@@ -5810,7 +5810,7 @@ echo  '</tr>';
 
                   <thead class="thead-dark">
                     <tr>
-                      
+
                              <th>SKU</th>
                       <th>TITULO</th>
                       <th>DEPARTAMENTO</th>
@@ -5836,7 +5836,7 @@ echo  '</tr>';
                     </tr>
                   </thead>
                   <tfoot class="thead-dark">
-                  
+
   <tr>
                                         <th>SKU</th>
                       <th>TITULO</th>
@@ -5865,14 +5865,14 @@ echo  '</tr>';
                   <tbody>
 
 <?php
-  
+
 
 $consultatotalcashback = "SELECT sku, title, department, category, price_cost, sale_price, current_price_pay_only, current_less_price_around,
  lowest_price_competitor, current_gross_margin_percent, diff_current_pay_only_lowest, curve, current_cashback, qty_stock_rms,
  tabulated_price from Products where active='1' and current_cashback>'0' and pbm <> $pbma and descontinuado<>1";
 $res_datacashbackt = mysqli_query($conn,$consultatotalcashback);
         while($rowterm = mysqli_fetch_array($res_datacashbackt)){
-     
+
                 echo    '<tr>';
                 echo  '<td><a target="_blank" href=https://www.qualidoc.com.br/cadastro/product/'.$rowterm[0].'>'.$rowterm[0].'</a></td>';
                     echo  '<td>'. $rowterm[1].'</td>';
@@ -5891,9 +5891,9 @@ echo  '<td>'.$rowterm[12].'</td>';
 echo  '<td>'.$rowterm[14].'</td>';
 
 echo  '</tr>';
- 
+
 }
-?>               
+?>
                   </tbody>
                 </table></div>
         <div class="modal-footer">
@@ -5930,13 +5930,13 @@ echo  '</tr>';
 
                   <thead class="thead-dark">
                     <tr>
-                      
+
         <th>SKU</th>
 <th>EAN</th>
                       <th>NOME</th>
                       <th>PRINCIPIO ATIVO</th>
 
-                      
+
                       <th>MARCA</th>
 
                       <th>VENDA</th>
@@ -5948,7 +5948,7 @@ echo  '</tr>';
                                          </tr>
                   </thead>
                   <tfoot class="thead-dark">
-                  
+
   <tr>
 
         <th>SKU</th>
@@ -5956,7 +5956,7 @@ echo  '</tr>';
                       <th>NOME</th>
                       <th>PRINCIPIO ATIVO</th>
 
-                     
+
                       <th>MARCA</th>
 
                       <th>VENDA</th>
@@ -5965,14 +5965,14 @@ echo  '</tr>';
 
 
 
-                     
+
 
                     </tr>
                   </tfoot>
                   <tbody>
 
 <?php
-  
+
 
 $consultatotalprincipio = "SELECT principio_ativo.sku, Products.reference_code, Products.title, principio_ativo.uniao,
 marca.marca, sum(vendas.qtd), Products.current_gross_margin_percent,
@@ -5988,7 +5988,7 @@ WHERE principio_ativo.principio_ativo <> '' and Products.active=1 and Products.d
 )group by vendas.sku order by principio_ativo.uniao desc";
 $res_dataprincipio = mysqli_query($conn,$consultatotalprincipio);
         while($rowpri = mysqli_fetch_array($res_dataprincipio)){
-     
+
                 echo    '<tr>';
                 echo  '<td><a target="_blank" href=https://www.qualidoc.com.br/cadastro/product/'.$rowpri[0].'>'.$rowpri[0].'</a></td>';
                     echo  '<td>'. $rowpri[1].'</td>';
@@ -6001,9 +6001,9 @@ echo  '<td>'.round((float)$rowpri[6] * 100).'%</td>';
 echo  '<td>'.round((float)$rowpri[7] * 100).'%</td>';
 
 echo  '</tr>';
- 
+
 }
-?>               
+?>
                   </tbody>
                 </table></div>
         <div class="modal-footer">
@@ -6043,7 +6043,7 @@ echo  '</tr>';
 
                   <thead class="thead-dark">
                     <tr>
-                      
+
                              <th>SKU</th>
                       <th>TITULO</th>
                       <th>DEPARTAMENTO</th>
@@ -6070,7 +6070,7 @@ echo  '</tr>';
                     </tr>
                   </thead>
                   <tfoot class="thead-dark">
-                  
+
   <tr>
                                         <th>SKU</th>
                       <th>TITULO</th>
@@ -6100,7 +6100,7 @@ echo  '</tr>';
                   <tbody>
 
 <?php
-  
+
 
 $consultatotaltermo = "SELECT termolabo.sku, Products.title, Products.department, Products.category, Products.price_cost, Products.sale_price,
  Products.current_price_pay_only, Products.current_less_price_around, Products.lowest_price_competitor, Products.current_gross_margin_percent,
@@ -6108,7 +6108,7 @@ $consultatotaltermo = "SELECT termolabo.sku, Products.title, Products.department
  from termolabo inner join Products on Products.sku = termolabo.sku inner join vendas on vendas.sku=termolabo.sku group by sku";
 $res_datatermo = mysqli_query($conn,$consultatotaltermo);
         while($rowterm = mysqli_fetch_array($res_datatermo)){
-     
+
                 echo    '<tr>';
                 echo  '<td><a target="_blank" href=https://www.qualidoc.com.br/cadastro/product/'.$rowterm[0].'>'.$rowterm[0].'</a></td>';
                     echo  '<td>'. $rowterm[1].'</td>';
@@ -6128,9 +6128,9 @@ echo  '<td>'.$rowterm[13].'</td>';
 
 
 echo  '</tr>';
- 
+
 }
-?>               
+?>
                   </tbody>
                 </table></div>
         <div class="modal-footer">
@@ -6172,7 +6172,7 @@ echo  '</tr>';
 
                   <thead class="thead-dark">
                     <tr>
-                      
+
               <th>QTD. SKU</th>
                       <th>MARCA</th>
                       <th>MARGEM OP.</th>
@@ -6181,7 +6181,7 @@ echo  '</tr>';
                     </tr>
                   </thead>
                   <tfoot class="thead-dark">
-                  
+
   <tr>
                                         <th>QTD. SKU</th>
                       <th>MARCA</th>
@@ -6194,7 +6194,7 @@ echo  '</tr>';
                   <tbody>
 
 <?php
- 
+
 
 $consultatotalmarca = "Select count(Products.sku), marca.marca, avg(Products.current_gross_margin_percent),
  avg(Products.diff_current_pay_only_lowest)
@@ -6202,7 +6202,7 @@ $consultatotalmarca = "Select count(Products.sku), marca.marca, avg(Products.cur
  Products.descontinuado<>1 group by marca.marca order by marca.marca DESC";
 $res_datamarca = mysqli_query($conn,$consultatotalmarca);
         while($rowmarca = mysqli_fetch_array($res_datamarca)){
-     
+
                 echo    '<tr>';
                     echo  '<td>'. $rowmarca[0].'</td>';
  echo  '<td>'. $rowmarca[1].'</td>';
@@ -6214,9 +6214,9 @@ echo '</tr>';
 
 }
 
- 
 
-?>               
+
+?>
 
 
 
@@ -6225,7 +6225,7 @@ echo '</tr>';
 
 
  <div class="col-sm">
-      
+
 
       <div class="btn-group btn-group-toggle" data-toggle="buttons">
 <button type="button" class="btn btn-outline-success">
@@ -6255,7 +6255,7 @@ echo '</tr>';
                   <tbody>
 
 <?php
- 
+
 
 $consultatotalmarcav = "Select marca.marca, sum(vendas.qtd) from marca inner join vendas on vendas.sku=marca.sku inner join Products on
 Products.sku=marca.sku where Products.active=1 and
@@ -6279,7 +6279,7 @@ echo  '<td>Venda Acumulada</td>';
     </div>
   </div>
 </div>
-</div>      
+</div>
   <div class="modal-footer">
 
           <button class="btn btn-secondary" type="button" data-dismiss="modal">Fechar</button>
@@ -6318,7 +6318,7 @@ echo  '<td>Venda Acumulada</td>';
  <table class="display table table-bordered table-sm table-hover" id="" width="100%" cellspacing="0">
                   <thead class="thead-dark">
                     <tr>
-                      
+
                              <th>SKU</th>
                       <th>TITULO</th>
                       <th>DEPARTAMENTO</th>
@@ -6346,7 +6346,7 @@ echo  '<td>Venda Acumulada</td>';
                     </tr>
                   </thead>
                   <tfoot class="thead-dark">
-                  
+
   <tr>
                                         <th>SKU</th>
                       <th>TITULO</th>
@@ -6377,17 +6377,17 @@ echo  '<td>Venda Acumulada</td>';
                   <tbody>
 
 <?php
-  
 
-$consultatotaltabelado = "SELECT Products.sku, Products.title, Products.department, Products.category, Products.price_cost, 
+
+$consultatotaltabelado = "SELECT Products.sku, Products.title, Products.department, Products.category, Products.price_cost,
 Products.sale_price, Products.current_price_pay_only,
  Products.current_less_price_around, Products.lowest_price_competitor, Products.current_gross_margin_percent,
  Products.diff_current_pay_only_lowest, Products.curve, Products.tabulated_price, Products.qty_stock_rms, Products.current_cashback, sum(vendas.qtd)
- from Products inner join vendas on vendas.sku=Products.sku where Products.active='1' 
+ from Products inner join vendas on vendas.sku=Products.sku where Products.active='1'
  and controlled_substance = 1 and Products.pbm <> $pbma group by vendas.sku";
 $res_datatabelado = mysqli_query($conn,$consultatotaltabelado);
         while($rowta = mysqli_fetch_array($res_datatabelado)){
-     
+
                 echo    '<tr>';
                     echo  '<td><a target="_blank" href=https://www.qualidoc.com.br/cadastro/product/'.$rowta[0].'>'.$rowta[0].'</a></td>';;
                     echo  '<td>'. $rowta[1].'</td>';
@@ -6408,9 +6408,9 @@ echo  '<td>'.$rowta[14].'</td>';
 echo  '<td>'.$rowta[15].'</td>';
 
 echo  '</tr>';
- 
+
 }
-?>               
+?>
                   </tbody>
                 </table></div>
         <div class="modal-footer">
@@ -6451,7 +6451,7 @@ echo  '</tr>';
  <table class="display table table-bordered table-sm table-hover" id="" width="100%" cellspacing="0">
                   <thead class="thead-dark">
                     <tr>
-                      
+
                              <th>SKU</th>
                       <th>TITULO</th>
                       <th>DEPARTAMENTO</th>
@@ -6477,7 +6477,7 @@ echo  '</tr>';
                     </tr>
                   </thead>
                   <tfoot class="thead-dark">
-                  
+
   <tr>
                                         <th>SKU</th>
                       <th>TITULO</th>
@@ -6506,12 +6506,12 @@ echo  '</tr>';
                   <tbody>
 
 <?php
-  
+
 
 $consultatotalprodutosexclusivo = "SELECT sku, title, department, category, price_cost, sale_price, current_price_pay_only, current_less_price_around, lowest_price_competitor, current_gross_margin_percent, diff_current_pay_only_lowest, curve, situation_code_fk,qty_stock_rms from Products where active='1' and qty_stock_rms > '0' and qty_competitors='0' and pbm <> $pbma";
 $res_datatotalexclusivo = mysqli_query($conn,$consultatotalprodutosexclusivo);
         while($rowe = mysqli_fetch_array($res_datatotalexclusivo)){
-     
+
                 echo    '<tr>';
                     echo  '<td><a target="_blank" href=https://www.qualidoc.com.br/cadastro/product/'.$rowe[0].'>'.$rowe[0].'</a></td>';
                     echo  '<td>'. $rowe[1].'</td>';
@@ -6528,9 +6528,9 @@ echo  '<td>'.$rowe[11].'</td>';
 echo  "<td>". number_format($rowe[13], 0, ',', '.') ."</td>";
 echo  '<td>'.$rowe[12].'</td>';
 echo  '</tr>';
- 
+
 }
-?>               
+?>
                   </tbody>
                 </table></div>
         <div class="modal-footer">
@@ -6585,7 +6585,7 @@ echo  '</tr>';
 
 
 
-  <div class="tab-pane active" id="DROGARAIA" role="tabpanel">  
+  <div class="tab-pane active" id="DROGARAIA" role="tabpanel">
 
 <div class="container">
 <br>
@@ -6628,7 +6628,7 @@ echo  '</tr>';
     <td>
        <table cellspacing="0" cellpadding="1" border="1" width="100%" >
          <tr style="color:white;background-color:grey">
-           
+
          </tr>
        </table>
     </td>
@@ -6639,12 +6639,12 @@ echo  '</tr>';
          <table cellspacing="0" cellpadding="0" class="table table-sm">
           <tr><th>COD</th><th>EAN</th><th>TITULO</th><th>VALOR</th><th>VALORP</th>
 
-<?php                   
+<?php
 $consultadrogaraiamv = "SELECT cod, ean, titulo, valor, valor_p from drogaraia_products where mv=1";
 $res_datadrogaraiamv = mysqli_query($conn,$consultadrogaraiamv);
 
 
-        while($row = mysqli_fetch_array($res_datadrogaraiamv)){  
+        while($row = mysqli_fetch_array($res_datadrogaraiamv)){
 
 echo '<tr>';
 
@@ -6655,11 +6655,11 @@ echo'<td>'. $row[2];
 echo'<td>'. $row[3];
 echo'<td>'. $row[4];
 
-echo '</tr>';  
+echo '</tr>';
 
 }
-?>               
-                        </table>  
+?>
+                        </table>
        </div>
     </td>
   </tr>
@@ -6677,7 +6677,7 @@ echo '</tr>';
  <table class="display table table-bordered table-sm table-hover" id="" width="100%" cellspacing="0">
                   <thead class="thead-dark">
                     <tr>
-                      
+
                       <th>COD. DROGARAIA</th>
                       <th>EAN</th>
                       <th>TITULO</th>
@@ -6695,9 +6695,9 @@ echo '</tr>';
                     </tr>
                   </thead>
                   <tfoot class="thead-dark">
-                  
+
   <tr>
-                      
+
                       <th>COD. DROGARAIA</th>
                       <th>EAN</th>
                       <th>TITULO</th>
@@ -6716,13 +6716,13 @@ echo '</tr>';
                   <tbody>
 
 <?php
-  
+
 
 $consultadrogaraia = "SELECT cod, ean, titulo, marca, fabricante, quantidade, dosagem, valor, valor_p, curva from drogaraia_products WHERE sku_quali = ''";
 $res_dataraia = mysqli_query($conn,$consultadrogaraia);
 
 
-        while($row = mysqli_fetch_array($res_dataraia)){                 
+        while($row = mysqli_fetch_array($res_dataraia)){
                 echo    '<tr>';
                     echo  '<td>'.$row[0].'</td>';
                     echo  '<td>'.$row[1].'</td>';
@@ -6739,7 +6739,7 @@ echo  '<td>'.$row[7].'</td>';
 echo  '<td>'.$row[8].'</td>';
 
 echo '<td>'.$row[9].'</td>';
-   if ($row[7]=='' and $row[8]==''){ 
+   if ($row[7]=='' and $row[8]==''){
 
 $stock='Indisponivel';
 }else{
@@ -6748,10 +6748,10 @@ $stock='Ativo';
 }
 echo '<td>'.$stock.'</td>';
      echo              ' </tr>';
- 
+
 isset($stock);
 }
-?>               
+?>
                   </tbody>
                 </table>
 
@@ -6804,7 +6804,7 @@ isset($stock);
     <td>
        <table cellspacing="0" cellpadding="1" border="1" width="100%" >
          <tr style="color:white;background-color:grey">
-           
+
          </tr>
        </table>
     </td>
@@ -6815,12 +6815,12 @@ isset($stock);
          <table cellspacing="0" cellpadding="0" class="table table-sm">
           <tr><th>COD</th><th>EAN</th><th>TITULO</th><th>VALOR</th><th>VALORP</th>
 
-<?php                   
+<?php
 $consultadrogasilmv = "SELECT cod, ean, titulo, valor from drogasil_products where mv=1";
 $res_datadrogasilmv = mysqli_query($conn,$consultadrogasilmv);
 
 
-        while($row = mysqli_fetch_array($res_datadrogasilmv)){  
+        while($row = mysqli_fetch_array($res_datadrogasilmv)){
 
 echo '<tr>';
 
@@ -6831,11 +6831,11 @@ echo'<td>'. $row[2].'</td>';
 echo'<td>'. $row[3].'</td>';
 
 
-echo '</tr>';  
+echo '</tr>';
 
 }
-?>               
-                        </table>  
+?>
+                        </table>
        </div>
     </td>
   </tr>
@@ -6851,7 +6851,7 @@ echo '</tr>';
  <table class="display table table-bordered table-sm table-hover" id="" width="100%" cellspacing="0">
                   <thead class="thead-dark">
                     <tr>
-                      
+
                       <th>COD. DROGASIL</th>
                       <th>EAN</th>
                       <th>TITULO</th>
@@ -6869,9 +6869,9 @@ echo '</tr>';
                     </tr>
                   </thead>
                   <tfoot class="thead-dark">
-                  
+
   <tr>
-                      
+
                       <th>COD. DROGASIL</th>
                       <th>EAN</th>
                       <th>TITULO</th>
@@ -6890,13 +6890,13 @@ echo '</tr>';
                   <tbody>
 
 <?php
-  
+
 
 $consultadrogasil = "SELECT cod, ean, titulo, marca, fabricante, quantidade, dosagem, valor curva from drogasil_products WHERE sku_quali = ''";
 $res_datasil = mysqli_query($conn,$consultadrogasil);
 
 
-        while($row = mysqli_fetch_array($res_datasil)){                 
+        while($row = mysqli_fetch_array($res_datasil)){
                 echo    '<tr>';
                     echo  '<td>'.$row[0].'</td>';
                     echo  '<td>'.$row[1].'</td>';
@@ -6911,7 +6911,7 @@ echo  '<td>'.$row[7].'</td>';
 
 
 echo '<td>'.$row[9].'</td>';
-   if ($row[7]=='' and $row[8]==''){ 
+   if ($row[7]=='' and $row[8]==''){
 
 $stock='Indisponivel';
 }else{
@@ -6920,10 +6920,10 @@ $stock='Ativo';
 }
 echo '<td>'.$stock.'</td>';
      echo              ' </tr>';
- 
+
 isset($stock);
 }
-?>               
+?>
                   </tbody>
                 </table>
 
@@ -6973,7 +6973,7 @@ isset($stock);
     <td>
        <table cellspacing="0" cellpadding="1" border="1" width="100%" >
          <tr style="color:white;background-color:grey">
-           
+
          </tr>
        </table>
     </td>
@@ -6984,12 +6984,12 @@ isset($stock);
          <table cellspacing="0" cellpadding="0" class="table table-sm">
           <tr><th>COD</th><th>EAN</th><th>TITULO</th><th>VALOR</th><th>VALORP</th>
 
-<?php                   
+<?php
 $consultaonofremv = "SELECT cod, ean, titulo, valor from onofre_products where mv=1";
 $res_dataonofremv = mysqli_query($conn,$consultaonofremv);
 
 
-        while($row = mysqli_fetch_array($res_dataonofremv)){  
+        while($row = mysqli_fetch_array($res_dataonofremv)){
 
 echo '<tr>';
 
@@ -7000,11 +7000,11 @@ echo'<td>'. $row[2].'</td>';
 echo'<td>'. $row[3].'</td>';
 
 
-echo '</tr>';  
+echo '</tr>';
 
 }
-?>               
-                        </table>  
+?>
+                        </table>
        </div>
     </td>
   </tr>
@@ -7021,7 +7021,7 @@ echo '</tr>';
  <table class="display table table-bordered table-sm table-hover" id="" width="100%" cellspacing="0">
                   <thead class="thead-dark">
                     <tr>
-                      
+
                       <th>COD. ONOFRE</th>
                       <th>EAN</th>
                       <th>TITULO</th>
@@ -7039,9 +7039,9 @@ echo '</tr>';
                     </tr>
                   </thead>
                   <tfoot class="thead-dark">
-                  
+
   <tr>
-                      
+
                       <th>COD. ONOFRE</th>
                       <th>EAN</th>
                       <th>TITULO</th>
@@ -7060,13 +7060,13 @@ echo '</tr>';
                   <tbody>
 
 <?php
-  
+
 
 $consultaonofre = "SELECT cod, ean, titulo, marca, fabricante, quantidade, dosagem, valor,  curva from onofre_products WHERE sku_quali = ''";
 $res_dataonofre = mysqli_query($conn,$consultaonofre);
 
 
-        while($row = mysqli_fetch_array($res_dataonofre)){                 
+        while($row = mysqli_fetch_array($res_dataonofre)){
                 echo    '<tr>';
                     echo  '<td>'.$row[0].'</td>';
                     echo  '<td>'.$row[1].'</td>';
@@ -7081,7 +7081,7 @@ echo  '<td>'.$row[7].'</td>';
 
 
 echo '<td>'.$row[9].'</td>';
-   if ($row[7]=='' and $row[8]==''){ 
+   if ($row[7]=='' and $row[8]==''){
 
 $stock='Indisponivel';
 }else{
@@ -7090,10 +7090,10 @@ $stock='Ativo';
 }
 echo '<td>'.$stock.'</td>';
      echo              ' </tr>';
- 
+
 isset($stock);
 }
-?>               
+?>
                   </tbody>
                 </table></div>
 
@@ -7148,7 +7148,7 @@ isset($stock);
  <table class="display table table-bordered table-sm table-hover" id="" width="100%" cellspacing="0">
                   <thead class="thead-dark">
                     <tr>
-                      
+
                       <th>COD. ULTRAFARMA</th>
                       <th>EAN</th>
                       <th>TITULO</th>
@@ -7167,9 +7167,9 @@ isset($stock);
                     </tr>
                   </thead>
                   <tfoot class="thead-dark">
-                  
+
   <tr>
-                      
+
                       <th>COD. ULTRAFARMA</th>
                       <th>EAN</th>
                       <th>TITULO</th>
@@ -7189,13 +7189,13 @@ isset($stock);
                   <tbody>
 
 <?php
-  
+
 
 $consultaultrafarma = "SELECT cod, ean, titulo, marca, fabricante, quantidade, dosagem, valor, valor_p, curva from ultrafarma_products WHERE sku_quali = ''";
 $res_dataultrafarma = mysqli_query($conn,$consultaultrafarma);
 
 
-        while($row = mysqli_fetch_array($res_dataultrafarma)){                 
+        while($row = mysqli_fetch_array($res_dataultrafarma)){
                 echo    '<tr>';
                     echo  '<td>'.$row[0].'</td>';
                     echo  '<td>'.$row[1].'</td>';
@@ -7210,7 +7210,7 @@ echo  '<td>'.$row[8].'</td>';
 echo  '<td>'.$row[7].'</td>';
 
 echo '<td>'.$row[9].'</td>';
-   if ($row[7]=='' and $row[8]==''){ 
+   if ($row[7]=='' and $row[8]==''){
 
 $stock='Indisponivel';
 }else{
@@ -7219,10 +7219,10 @@ $stock='Ativo';
 }
 echo '<td>'.$stock.'</td>';
      echo              ' </tr>';
- 
+
 isset($stock);
 }
-?>               
+?>
                   </tbody>
                 </table></div>
 
@@ -7266,13 +7266,13 @@ isset($stock);
                 </div>
 
 
-              <span class="mr-2">     
+              <span class="mr-2">
 <table cellspacing="0" cellpadding="0" border="0" width="100%">
   <tr>
     <td>
        <table cellspacing="0" cellpadding="1" border="1" width="100%" >
          <tr style="color:white;background-color:grey">
-           
+
          </tr>
        </table>
     </td>
@@ -7283,12 +7283,12 @@ isset($stock);
          <table cellspacing="0" cellpadding="0" class="table table-sm">
           <tr><th>COD</th><th>EAN</th><th>TITULO</th><th>VALOR</th><th>VALORP</th>
 
-<?php                   
+<?php
 $consultadrogariaspmv = "SELECT cod, ean, titulo, valor, valor_p from drogariasp_products where mv=1";
 $res_datadrogariaspmv = mysqli_query($conn,$consultadrogariaspmv);
 
 
-        while($row = mysqli_fetch_array($res_datadrogariaspmv)){  
+        while($row = mysqli_fetch_array($res_datadrogariaspmv)){
 
 echo '<tr>';
 
@@ -7299,11 +7299,11 @@ echo'<td>'. $row[2].'</td>';
 echo'<td>'. $row[3].'</td>';
 echo'<td>'. $row[4].'</td>';
 
-echo '</tr>';  
+echo '</tr>';
 
 }
-?>               
-                        </table>  
+?>
+                        </table>
        </div>
     </td>
   </tr>
@@ -7311,8 +7311,8 @@ echo '</tr>';
 
                     </span>
                   </div>
- 
-                
+
+
                   </div>
 
     </div></div>
@@ -7325,7 +7325,7 @@ echo '</tr>';
  <table class="display table table-bordered table-sm table-hover" id="" width="100%" cellspacing="0">
                   <thead class="thead-dark">
                     <tr>
-                      
+
                       <th>COD. DROGARIASP</th>
                       <th>EAN</th>
                       <th>TITULO</th>
@@ -7343,9 +7343,9 @@ echo '</tr>';
                     </tr>
                   </thead>
                   <tfoot class="thead-dark">
-                  
+
   <tr>
-                      
+
                       <th>COD. DROGARIASP</th>
                       <th>EAN</th>
                       <th>TITULO</th>
@@ -7364,13 +7364,13 @@ echo '</tr>';
                   <tbody>
 
 <?php
-  
+
 
 $consultadrogariasp = "SELECT cod, ean, titulo, marca, fabricante, quantidade, dosagem, valor, valor_p, curva from drogariasp_products WHERE sku_quali = ''";
 $res_datadrogariasp = mysqli_query($conn,$consultadrogariasp);
 
 
-        while($row = mysqli_fetch_array($res_datadrogariasp)){                 
+        while($row = mysqli_fetch_array($res_datadrogariasp)){
                 echo    '<tr>';
                     echo  '<td>'.$row[0].'</td>';
                     echo  '<td>'.$row[1].'</td>';
@@ -7387,7 +7387,7 @@ echo  '<td>'.$row[8].'</td>';
 
 
 echo '<td>'.$row[9].'</td>';
-   if ($row[7]=='' and $row[8]==''){ 
+   if ($row[7]=='' and $row[8]==''){
 
 $stock='Indisponivel';
 }else{
@@ -7396,10 +7396,10 @@ $stock='Ativo';
 }
 echo '<td>'.$stock.'</td>';
      echo              ' </tr>';
- 
+
 isset($stock);
 }
-?>               
+?>
                   </tbody>
                 </table></div>
 
@@ -7454,7 +7454,7 @@ isset($stock);
  <table class="display table table-bordered table-sm table-hover" id="" width="100%" cellspacing="0">
                   <thead class="thead-dark">
                     <tr>
-                      
+
                       <th>COD. BELEZANAWEB</th>
                       <th>EAN</th>
                       <th>TITULO</th>
@@ -7472,9 +7472,9 @@ isset($stock);
                     </tr>
                   </thead>
                   <tfoot class="thead-dark">
-                  
+
   <tr>
-                      
+
                       <th>COD. BELEZANAWEB</th>
                       <th>EAN</th>
                       <th>TITULO</th>
@@ -7493,13 +7493,13 @@ isset($stock);
                   <tbody>
 
 <?php
-  
+
 
 $consultapaguemenos = "SELECT cod, ean, titulo, marca, fabricante, quantidade, dosagem, valor, valor_p from paguemenos_products WHERE sku_quali = ''";
 $res_datapaguemenos = mysqli_query($conn,$consultapaguemenos);
 
 
-        while($row = mysqli_fetch_array($res_datapaguemenos)){                 
+        while($row = mysqli_fetch_array($res_datapaguemenos)){
                 echo    '<tr>';
                     echo  '<td>'.$row[0].'</td>';
                     echo  '<td>'.$row[1].'</td>';
@@ -7513,7 +7513,7 @@ echo  '<td>'.$row[7].'</td>';
 
 echo  '<td>'.$row[8].'</td>';
 echo '<td>'.$row[8].'</td>';
-   if ($row[7]=='' and $row[8]==''){ 
+   if ($row[7]=='' and $row[8]==''){
 
 $stock='Indisponivel';
 }else{
@@ -7522,10 +7522,10 @@ $stock='Ativo';
 }
 echo '<td>'.$stock.'</td>';
      echo              ' </tr>';
- 
+
 isset($stock);
 }
-?>               
+?>
                   </tbody>
                 </table></div>
 
@@ -7615,10 +7615,10 @@ isset($stock);
 </th>
 </tr>
 </table>
-<?php 
+<?php
 
 
-?> 
+?>
 <table border=1>
 <tr>
 <th>Estoque total - </th><td ><b><font color=red><?php echo number_format($qtd_geral_estoque, 0, ',', '.');?></font></b> </td><th>Custo Total</th><td><b><font color=red>R$ <?php echo number_format($valoritem, 2, ',', '.');?></font></b> </td></th>
@@ -7635,12 +7635,12 @@ isset($stock);
 <div class="card mb-4">
 
                 <div class="card-header">
-Ranking de Menor Preço por Concorrente 
+Ranking de Menor Preço por Concorrente
                 </div>
 <div class="chart-pie pt-4 pb-2">
                     <canvas id="menorconcorrenteChart"></canvas>
                   </div>  <div class="mt-4 text-center ">
-              <span class="mr-2">     
+              <span class="mr-2">
   <table class="table table-sm">
 
 
@@ -7705,7 +7705,7 @@ Ranking de Menor Preço por Concorrente
  <table class="display table table-bordered table-sm table-hover" id="" width="100%" cellspacing="0">
                   <thead class="thead-dark">
                     <tr>
-                      
+
                              <th>SKU</th>
                       <th>TITULO</th>
                       <th>DEPARTAMENTO</th>
@@ -7732,7 +7732,7 @@ Ranking de Menor Preço por Concorrente
                     </tr>
                   </thead>
                   <tfoot class="thead-dark">
-                  
+
   <tr>
                                         <th>SKU</th>
                       <th>TITULO</th>
@@ -7762,12 +7762,12 @@ Ranking de Menor Preço por Concorrente
                   <tbody>
 
 <?php
-  
+
 
 $consultatotalprodutos = "SELECT Products.sku, Products.title, Products.department, Products.category, Products.price_cost, Products.sale_price, Products.current_price_pay_only, Products.current_less_price_around, Products.lowest_price_competitor, Products.current_gross_margin_percent, Products.diff_current_pay_only_lowest, Products.curve, Products.qty_stock_rms, Products.qty_competitors, marca.marca, sum(vendas.qtd) from Products inner join vendas on vendas.sku=Products.sku inner join marca on marca.sku=Products.sku where pbm <> $pbma group by vendas.sku";
 $res_datatotal = mysqli_query($conn,$consultatotalprodutos);
         while($row = mysqli_fetch_array($res_datatotal)){
-     
+
                 echo    '<tr>';
                     echo  '<td><a target="_blank" href=https://www.qualidoc.com.br/cadastro/product/'.$row[0].'>'.$row[0].'</a></td>';
                     echo  '<td>'.$row[1].'</td>';
@@ -7786,9 +7786,9 @@ echo  '<td>'.$row[13].'</td>';
 echo  '<td>'.$row[14].'</td>';
 echo  '<td>'.$row[15].'</td>';
 echo  '</tr>';
- 
+
 }
-?>               
+?>
                   </tbody>
                 </table>
 
@@ -7918,17 +7918,17 @@ var data = {
     label: "Abaixo/Igual Custo",
     backgroundColor: "red",
     data: [financiando, financiandoA, financiandoB, financiandoC]
-  
+
  }, {
 label: "Sacrificando Margem de OP.",
     backgroundColor: "green",
     data: [sacrificandomo,sacrificandomoA,sacrificandomoB,sacrificandomoC]
-  
+
  }, {
     label: "Sacrificando Margem Lucro",
     backgroundColor: "purple",
     data: [sacrificandoml, sacrificandomlA, sacrificandomlB, sacrificandomlC]
- 
+
  }, {
     label: "Estoque Exclusivo",
     backgroundColor: "black",
@@ -7959,7 +7959,7 @@ var myBarChart = new Chart(ctx, {
 
 /* 3 donut charts */
 var donutOptions = {
-  cutoutPercentage: 85, 
+  cutoutPercentage: 85,
   legend: {position:'bottom', padding:5, labels: {pointStyle:'circle', usePointStyle:true}}
 };
 
@@ -8049,7 +8049,7 @@ var chDonutDataMC12 = {
         backgroundColor: colors.slice(0,5),
         borderWidth: 0,
         data: [financiando5, financiando10, financiando20, financiando30, financiando30a],
-          render: 'percentage',      
+          render: 'percentage',
 }
     ]
 };
@@ -8064,52 +8064,52 @@ if (financiandoChart) {
 
 
 var cfpague=<?php echo $qtd_geral_concorrente_paguemenosf;?>;
-var cfultra=<?php echo $qtd_geral_concorrente_ultrafarmaf;?>;                  
-var cfraia=<?php echo $qtd_geral_concorrente_drogaraiaf;?>;                  
-var cfsil=<?php echo $qtd_geral_concorrente_drogasilf;?>;                  
-var cfsp=<?php echo $qtd_geral_concorrente_drogariaspf;?>;                  
+var cfultra=<?php echo $qtd_geral_concorrente_ultrafarmaf;?>;
+var cfraia=<?php echo $qtd_geral_concorrente_drogaraiaf;?>;
+var cfsil=<?php echo $qtd_geral_concorrente_drogasilf;?>;
+var cfsp=<?php echo $qtd_geral_concorrente_drogariaspf;?>;
 
 var cfpague5=<?php echo $qtd_geral_concorrente_paguemenosf5;?>;
 
-var cfultra5=<?php echo $qtd_geral_concorrente_ultrafarmaf5;?>;                  
-var cfraia5=<?php echo $qtd_geral_concorrente_drogaraiaf5;?>;                  
-var cfsil5=<?php echo $qtd_geral_concorrente_drogasilf5;?>;                  
-var cfsp5=<?php echo $qtd_geral_concorrente_drogariaspf5;?>;                  
+var cfultra5=<?php echo $qtd_geral_concorrente_ultrafarmaf5;?>;
+var cfraia5=<?php echo $qtd_geral_concorrente_drogaraiaf5;?>;
+var cfsil5=<?php echo $qtd_geral_concorrente_drogasilf5;?>;
+var cfsp5=<?php echo $qtd_geral_concorrente_drogariaspf5;?>;
 
 var cfpague10=<?php echo $qtd_geral_concorrente_paguemenosf10;?>;
 
-var cfultra10=<?php echo $qtd_geral_concorrente_ultrafarmaf10;?>;                  
-var cfraia10=<?php echo $qtd_geral_concorrente_drogaraiaf10;?>;                  
-var cfsil10=<?php echo $qtd_geral_concorrente_drogasilf10;?>;                  
-var cfsp10=<?php echo $qtd_geral_concorrente_drogariaspf10;?>;                  
+var cfultra10=<?php echo $qtd_geral_concorrente_ultrafarmaf10;?>;
+var cfraia10=<?php echo $qtd_geral_concorrente_drogaraiaf10;?>;
+var cfsil10=<?php echo $qtd_geral_concorrente_drogasilf10;?>;
+var cfsp10=<?php echo $qtd_geral_concorrente_drogariaspf10;?>;
 
 var cfpague20=<?php echo $qtd_geral_concorrente_paguemenosf20;?>;
 
-var cfultra20=<?php echo $qtd_geral_concorrente_ultrafarmaf20;?>;                  
-var cfraia20=<?php echo $qtd_geral_concorrente_drogaraiaf20;?>;                  
-var cfsil20=<?php echo $qtd_geral_concorrente_drogasilf20;?>;                  
-var cfsp20=<?php echo $qtd_geral_concorrente_drogariaspf20;?>;                  
+var cfultra20=<?php echo $qtd_geral_concorrente_ultrafarmaf20;?>;
+var cfraia20=<?php echo $qtd_geral_concorrente_drogaraiaf20;?>;
+var cfsil20=<?php echo $qtd_geral_concorrente_drogasilf20;?>;
+var cfsp20=<?php echo $qtd_geral_concorrente_drogariaspf20;?>;
 
 var cfpague30=<?php echo $qtd_geral_concorrente_paguemenosf30;?>;
 
-var cfultra30=<?php echo $qtd_geral_concorrente_ultrafarmaf30;?>;                  
-var cfraia30=<?php echo $qtd_geral_concorrente_drogaraiaf30;?>;                  
-var cfsil30=<?php echo $qtd_geral_concorrente_drogasilf30;?>;                  
-var cfsp30=<?php echo $qtd_geral_concorrente_drogariaspf30;?>;                  
+var cfultra30=<?php echo $qtd_geral_concorrente_ultrafarmaf30;?>;
+var cfraia30=<?php echo $qtd_geral_concorrente_drogaraiaf30;?>;
+var cfsil30=<?php echo $qtd_geral_concorrente_drogasilf30;?>;
+var cfsp30=<?php echo $qtd_geral_concorrente_drogariaspf30;?>;
 
 var cfpague30a=<?php echo $qtd_geral_concorrente_paguemenosf30a;?>;
 
-var cfultra30a=<?php echo $qtd_geral_concorrente_ultrafarmaf30a;?>;                  
-var cfraia30a=<?php echo $qtd_geral_concorrente_drogaraiaf30a;?>;                  
-var cfsil30a=<?php echo $qtd_geral_concorrente_drogasilf30a;?>;                  
-var cfsp30a=<?php echo $qtd_geral_concorrente_drogariaspf30a;?>;                  
+var cfultra30a=<?php echo $qtd_geral_concorrente_ultrafarmaf30a;?>;
+var cfraia30a=<?php echo $qtd_geral_concorrente_drogaraiaf30a;?>;
+var cfsil30a=<?php echo $qtd_geral_concorrente_drogasilf30a;?>;
+var cfsp30a=<?php echo $qtd_geral_concorrente_drogariaspf30a;?>;
 
-var cfbnw=<?php echo $qtd_geral_concorrente_belezanawebf;?>;    
-var cfbnw5=<?php echo $qtd_geral_concorrente_belezanawebf5;?>;                  
-var cfbnw10=<?php echo $qtd_geral_concorrente_belezanawebf10;?>;                  
-var cfbnw20=<?php echo $qtd_geral_concorrente_belezanawebf20;?>;                  
-var cfbnw30=<?php echo $qtd_geral_concorrente_belezanawebf30;?>;                  
-var cfbnw30a=<?php echo $qtd_geral_concorrente_belezanawebf30a;?>;                  
+var cfbnw=<?php echo $qtd_geral_concorrente_belezanawebf;?>;
+var cfbnw5=<?php echo $qtd_geral_concorrente_belezanawebf5;?>;
+var cfbnw10=<?php echo $qtd_geral_concorrente_belezanawebf10;?>;
+var cfbnw20=<?php echo $qtd_geral_concorrente_belezanawebf20;?>;
+var cfbnw30=<?php echo $qtd_geral_concorrente_belezanawebf30;?>;
+var cfbnw30a=<?php echo $qtd_geral_concorrente_belezanawebf30a;?>;
 
 /* bar chart */
 var ctxfc = document.getElementById("financiandoChartc").getContext("2d");
