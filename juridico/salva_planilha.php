@@ -47,7 +47,7 @@ else {
                                            trim(explode(';"', $fields[0])[0]) ?? 0,
                                            '"'.trim(explode(';"', $fields[0])[1]).'"' ?? '',
                                            '"'.trim(implode('-', array_reverse(explode('/', str_replace('"', '', $fields[25]))))).'"' ?? '""',
-                                           '"'.trim(str_replace('";', '', $fields[31])).'"' ?? '',
+                                           '"'.trim(str_replace('";', '', $fields[32])).'"' ?? '',
                                            str_replace('"', '', $fields[16]) != "" ? trim(str_replace(",", ".", str_replace('"', '', $fields[16]))) : 0,
                                            '"'.trim($fields[23]).'"' ?? '',
                                            '"'.trim($fields[24]).'"' ?? '',
