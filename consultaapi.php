@@ -802,7 +802,7 @@ header('Content-Type: text/html; charset=utf-8'); ?>
                     qtd_nf: item.quantityDayBefore,
                     total_faturado: "R$ " + item.valueDayBefore.toFixed(2).replace(".", ","),
                     tkm: "R$ " + item.avgTicketDayBefore.toFixed(2).replace(".", ","),
-                    fat: (item.valueDayBefore/item.value).toFixed(2)*100,
+                    fat: ((item.valueDayBefore/item.value)*100).toFixed(2),
                   })
                   t.total_final_qtd_nf_2 += item.quantityDayBefore
                   t.total_faturado_final_2 += item.valueDayBefore
@@ -813,8 +813,8 @@ header('Content-Type: text/html; charset=utf-8'); ?>
                     qtd_nf: item.quantityWeekAgo,
                     total_faturado: "R$ " + item.valueWeekAgo.toFixed(2).replace(".", ","),
                     tkm: "R$ " + item.avgTicketWeekAgo.toFixed(2).replace(".", ","),
-                    fat: (item.valueWeekAgo/item.value).toFixed(2)*100,
-                    fat2: (item.valueWeekAgo/item.valueDayBefore).toFixed(2)*100,
+                    fat: ((item.valueWeekAgo/item.value)*100).toFixed(2),
+                    fat2: ((item.valueWeekAgo/item.valueDayBefore)*100).toFixed(2),
                   })
                   t.total_final_qtd_nf_3 += item.quantityWeekAgo
                   t.total_faturado_final_3 += item.valueWeekAgo
