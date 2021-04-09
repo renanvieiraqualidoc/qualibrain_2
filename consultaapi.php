@@ -281,6 +281,14 @@ header('Content-Type: text/html; charset=utf-8'); ?>
               "item":null
             }
             console.log(response.items)
+            response.items.forEach((item) => {
+              t.data.push({
+                hora: item.hour,
+                qtd_nf: item.descricao,
+                total_faturado: item.url_monitor,
+                tkm: item.url_monitor
+              })
+            })
             // axios.get("api.php?data=" + ((this.date == null) ? '' : this.date.toLocaleDateString())).then((response) => {
                 // t.emptyData()
                 // t.data_group = []
