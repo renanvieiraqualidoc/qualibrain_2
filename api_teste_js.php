@@ -37,7 +37,7 @@
         },
         methods: {
           loadAsyncData() {
-            axios.get('http://ultraclinica.totvscloud.com.br:2001/RMS/RMSSERVICES/ReportWebAPI/api/v1/SaleHistory/GetCompareSales/RMS/RMSSERVICES/ReportWebAPI/api/v1/SaleHistory/GetByDate?filial=1007&dataVenda=2021-04-08').then((response) => {
+            axios.get('http://ultraclinica.totvscloud.com.br:2000/RMS/RMSSERVICES/PDV/stockprice?MainStore=1007&Store=1007&productid="1039911"').then((response) => {
 
             }).catch((error) => {
                 throw error
