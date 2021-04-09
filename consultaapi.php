@@ -298,7 +298,7 @@ header('Content-Type: text/html; charset=utf-8'); ?>
             // }
 
             axios.get("api.php?filial=" + this.filial + "&data=" + ((this.date == null) ? '' : this.date.toLocaleDateString())).then((response) => {
-                response.items.forEach((item) => {
+                response.data.items.forEach((item) => {
                   // Tabela de hoje
                   t.data_1.push({
                     hora: item.hour,
@@ -338,11 +338,11 @@ header('Content-Type: text/html; charset=utf-8'); ?>
                 t.fat_comp_hj_2 = (t.total_faturado_final_3/t.total_faturado_final_1).toFixed(2)*100 + "%"
                 t.fat_comp_ontem = (t.total_faturado_final_3/t.total_faturado_final_2).toFixed(2)*100 + "%"
                 t.total_faturado_final_1 = "R$ " + t.total_faturado_final_1.toFixed(2).replace(".", ",")
-                t.avg_ticket = "R$ " + (t.avg_ticket/response.items.length).toFixed(2).replace(".", ",")
+                t.avg_ticket = "R$ " + (t.avg_ticket/response.data.items.length).toFixed(2).replace(".", ",")
                 t.total_faturado_final_2 = "R$ " + t.total_faturado_final_2.toFixed(2).replace(".", ",")
-                t.avg_ticket_2 = "R$ " + (t.avg_ticket_2/response.items.length).toFixed(2).replace(".", ",")
+                t.avg_ticket_2 = "R$ " + (t.avg_ticket_2/response.data.items.length).toFixed(2).replace(".", ",")
                 t.total_faturado_final_3 = "R$ " + t.total_faturado_final_3.toFixed(2).replace(".", ",")
-                t.avg_ticket_3 = "R$ " + (t.avg_ticket_3/response.items.length).toFixed(2).replace(".", ",")
+                t.avg_ticket_3 = "R$ " + (t.avg_ticket_3/response.data.items.length).toFixed(2).replace(".", ",")
                 t.loading = false
             }).catch((error) => {
                 t.data_1 = []
