@@ -38,7 +38,7 @@
         methods: {
           loadAsyncData() {
             axios.get('http://ultraclinica.totvscloud.com.br:2000/RMS/RMSSERVICES/PDV/stockprice?MainStore=1007&Store=1007&productid="1039911"').then((response) => {
-
+              console.log(response)
             }).catch((error) => {
                 throw error
             })
