@@ -785,6 +785,21 @@ header('Content-Type: text/html; charset=utf-8'); ?>
             // }
 
             axios.get("api.php?filial=" + this.filial + "&data=" + ((this.date == null) ? '' : this.date.toLocaleDateString())).then((response) => {
+                t.data_1 = []
+                t.data_2 = []
+                t.data_3 = []
+                t.total_final_qtd_nf_1 = 0
+                t.total_faturado_final_1 = 0
+                t.avg_ticket = 0
+                t.total_final_qtd_nf_2 = 0
+                t.total_faturado_final_2 = 0
+                t.avg_ticket_2 = 0
+                t.fat_comp_hj_1 = 0
+                t.total_final_qtd_nf_3 = 0
+                t.total_faturado_final_3 = 0
+                t.avg_ticket_3 = 0
+                t.fat_comp_hj_2 = 0
+                t.fat_comp_ontem = 0
                 response.data.items.forEach((item) => {
                   // Tabela de hoje
                   t.data_1.push({
@@ -830,7 +845,6 @@ header('Content-Type: text/html; charset=utf-8'); ?>
                 t.avg_ticket_2 = "R$ " + (t.avg_ticket_2/response.data.items.length).toFixed(2).replace(".", ",")
                 t.total_faturado_final_3 = "R$ " + t.total_faturado_final_3.toFixed(2).replace(".", ",")
                 t.avg_ticket_3 = "R$ " + (t.avg_ticket_3/response.data.items.length).toFixed(2).replace(".", ",")
-                t.loading = false
             }).catch((error) => {
                 t.data_1 = []
                 t.data_2 = []
@@ -847,9 +861,9 @@ header('Content-Type: text/html; charset=utf-8'); ?>
                 t.avg_ticket_3 = 0
                 t.fat_comp_hj_2 = 0
                 t.fat_comp_ontem = 0
-                t.loading = false
                 throw error
             })
+            t.loading = false
           }
         },
         mounted() {
