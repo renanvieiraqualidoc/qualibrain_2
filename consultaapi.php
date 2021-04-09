@@ -31,12 +31,12 @@ header('Content-Type: text/html; charset=utf-8'); ?>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@5.8.55/css/materialdesignicons.min.css">
 
     <!-- Custom fonts for this template-->
-    <link href="./vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
-    <link href="./vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+    <link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
     <!-- Custom styles for this template-->
-    <link href="./css/sb-admin-2.min.css" rel="stylesheet">
-    <link href="./css/comum.css" rel="stylesheet">
+    <link href="css/sb-admin-2.min.css" rel="stylesheet">
+    <link href="css/comum.css" rel="stylesheet">
 </head>
 
 <body id="page-top">
@@ -49,70 +49,123 @@ header('Content-Type: text/html; charset=utf-8'); ?>
           <div id="app" >
             <h1 class="title">Consulta de Faturamento</h1>
             <b-field>
+                <b-input placeholder="Código da Filial"
+                    type="search"
+                    @input="loadAsyncData"
+                    v-model="filial"
+                    icon="magnify"
+                    icon-right-clickable
+                    @icon-right-click="this.filial = ''">
+                </b-input>
+                &nbsp;&nbsp;&nbsp;&nbsp;
                 <b-datepicker
                     v-model="date"
                     @blur="loadAsyncData"
                     placeholder="Data">
                 </b-datepicker>
             </b-field>
-            <!-- <section>
-                <b-table
-                    bordered
-                    striped
-                    narrowed
-                    sticky-header
-                    paginated
-                    backend-pagination
-                    backend-sorting
-                    detailed
-                    detail-key="codigo"
-                    @details-open="(row) => set_data_items(row)"
-                    @page-change="onPageChange"
-                    @sort="onSort"
-                    :default-sort-direction="defaultSortOrder"
-                    :default-sort="[sortField, sortOrder]"
-                    :per-page="perPage"
-                    :total="total"
-                    :loading="loading"
-                    :data="data"
-                    :columns="columns">
-                    <template slot="detail" slot-scope="props">
-                        <b-table sortable :data="data_items" :selected.sync="selected">
-                          <b-table-column centered subheading="Média:"><template v-slot="props"></template></b-table-column>
-                          <b-table-column field="items.preco_custo" label="Preço Custo" sortable centered>
-                              <template v-slot="props">
-                                  {{ props.row.preco_custo }}
-                              </template>
-                          </b-table-column>
-                          <b-table-column field="items.website_monitorado" label="Website Monitorado" centered>
-                              <template v-slot="props">
-                                  {{ props.row.website_monitorado }}
-                              </template>
-                          </b-table-column>
-                          <b-table-column field="items.url_monitorado" label="URL Produto Monitorado" centered>
-                              <template v-slot="props">
-                                  {{ props.row.url_monitorado }}
-                              </template>
-                          </b-table-column>
-                          <b-table-column field="items.data" label="Data" centered sortable>
-                              <template v-slot="props">
-                                  {{ props.row.data }}
-                              </template>
-                          </b-table-column>
-                          <b-table-column field="items.hora" label="Hora" centered sortable>
-                              <template v-slot="props">
-                                  {{ props.row.hora }}
-                              </template>
-                          </b-table-column>
-                          <b-table-column field="items.preco_oferta" label="Preço Oferta" centered :subheading="media(props.row)" sortable>
-                              <template v-slot="props">
-                                  {{ props.row.preco_oferta }}
-                              </template>
-                          </b-table-column>
-                        </b-table>
-                    </template>
+            <section>
+                <!-- Tabela de hoje -->
+                <b-table bordered striped narrowed sticky-header :data="data_1">
+                  <b-table-column centered subheading="Total:"><template v-slot="props"></template></b-table-column>
+                  <b-table-column field="hora" label="Hora" centered>
+                      <template v-slot="props">
+                          {{ props.row.hora }}
+                      </template>
+                  </b-table-column>
+                  <b-table-column field="qtd_nf" label="Quantidade NF" centered :subheading="total_final_qtd_nf_1">
+                      <template v-slot="props">
+                          {{ props.row.qtd_nf }}
+                      </template>
+                  </b-table-column>
+                  <b-table-column field="total_faturado" label="Total Faturado" centered :subheading="total_faturado_final_1">
+                      <template v-slot="props">
+                          {{ props.row.total_faturado }}
+                      </template>
+                  </b-table-column>
+                  <b-table-column field="tkm" label="TKM" centered :subheading="avg_ticket">
+                      <template v-slot="props">
+                          {{ props.row.tkm }}
+                      </template>
+                  </b-table-column>
                 </b-table>
-            </section> -->
+
+                <!-- Tabela de ontem -->
+                <b-table bordered striped narrowed sticky-header :data="data_2">
+                  <b-table-column centered subheading="Total:"><template v-slot="props"></template></b-table-column>
+                  <b-table-column field="qtd_nf" label="Quantidade NF" centered :subheading="total_final_qtd_nf_2">
+                      <template v-slot="props">
+                          {{ props.row.qtd_nf }}
+                      </template>
+                  </b-table-column>
+                  <b-table-column field="total_faturado" label="Total Faturado" centered :subheading="total_faturado_final_2">
+                      <template v-slot="props">
+                          {{ props.row.total_faturado }}
+                      </template>
+                  </b-table-column>
+                  <b-table-column field="tkm" label="TKM" centered :subheading="avg_ticket_2">
+                      <template v-slot="props">
+                          {{ props.row.tkm }}
+                      </template>
+                  </b-table-column>
+                  <b-table-column field="fat" label="Fat. Comp. Hoje" centered :subheading="fat_comp_hj_1">
+                      <template v-slot="props">
+                        <span :class="
+                                [
+                                    'tag',
+                                    {'is-warning': props.row.fat >= 101 && props.row.fat <= 110},
+                                    {'is-danger': props.row.fat > 110}
+                                ]">
+                            {{ props.row.fat }}%
+                        </span>
+                      </template>
+                  </b-table-column>
+                </b-table>
+
+                <!-- Tabela da semana passada -->
+                <b-table bordered striped narrowed sticky-header :data="data_3">
+                  <b-table-column centered subheading="Total:"><template v-slot="props"></template></b-table-column>
+                  <b-table-column field="qtd_nf" label="Quantidade NF" centered :subheading="total_final_qtd_nf_3">
+                      <template v-slot="props">
+                          {{ props.row.qtd_nf }}
+                      </template>
+                  </b-table-column>
+                  <b-table-column field="total_faturado" label="Total Faturado" centered :subheading="total_faturado_final_3">
+                      <template v-slot="props">
+                          {{ props.row.total_faturado }}
+                      </template>
+                  </b-table-column>
+                  <b-table-column field="tkm" label="TKM" centered :subheading="avg_ticket_3">
+                      <template v-slot="props">
+                          {{ props.row.tkm }}
+                      </template>
+                  </b-table-column>
+                  <b-table-column field="fat" label="Fat. Comp. Hoje" centered :subheading="fat_comp_hj_2">
+                      <template v-slot="props">
+                        <span :class="
+                                [
+                                    'tag',
+                                    {'is-warning': props.row.fat >= 101 && props.row.fat <= 110},
+                                    {'is-danger': props.row.fat > 110}
+                                ]">
+                            {{ props.row.fat }}%
+                        </span>
+                      </template>
+                  </b-table-column>
+                  <b-table-column field="fat2" label="Fat. Comp. Ontem" centered :subheading="fat_comp_ontem">
+                      <template v-slot="props">
+                        <span :class="
+                                [
+                                    'tag',
+                                    {'is-warning': props.row.fat2 >= 101 && props.row.fat2 <= 110},
+                                    {'is-danger': props.row.fat2 > 110}
+                                ]">
+                            {{ props.row.fat2 }}%
+                        </span>
+                      </template>
+                  </b-table-column>
+                </b-table>
+            </section>
           </div>
         </div>
       </div>
@@ -155,194 +208,161 @@ header('Content-Type: text/html; charset=utf-8'); ?>
         data() {
             return {
                 date: new Date(),
-                // data: [],
-                // loading: false,
-                // total: 0,
-                // perPage: 1000,
-                // page: 1,
-                // defaultSortOrder: 'desc',
-                // sortField: 'data',
-                // codigo: '',
-                // sortOrder: 'desc',
-                // data_group: [],
-                // data_items: [],
-                // selected: null,
-                // columns: [{ field: 'codigo', label: 'Código SKU', sortable: true, centered: true },
-                //           { field: 'descricao', label: 'Descrição do Produto', sortable: true, centered: true },
-                //           { field: 'url_monitor', label: 'URL Monitor', centered: true }]
+                data_1: [],
+                total_final_qtd_nf_1: 0,
+                total_faturado_final_1: 0,
+                avg_ticket: 0,
+                data_2: [],
+                total_final_qtd_nf_2: 0,
+                total_faturado_final_2: 0,
+                avg_ticket_2: 0,
+                fat_comp_hj_1: 0,
+                data_3: [],
+                total_final_qtd_nf_3: 0,
+                total_faturado_final_3: 0,
+                avg_ticket_3: 0,
+                fat_comp_hj_2: 0,
+                fat_comp_ontem: 0,
+                loading: false,
+                filial: 1007
             }
         },
         methods: {
-          // set_data_items(row) {
-          //   this.data_group.filter(r => {
-          //     if (r.codigo == row.codigo) {
-          //       this.data_items = r.items
-          //     }
-          //   })
-          // },
-          // media(row) {
-          //   let soma = 0
-          //   let it = 0
-          //   let items = []
-          //   this.data_group.filter(r => {
-          //     if (r.codigo == row.codigo) {
-          //       items = r.items
-          //     }
-          //   })
-          //
-          //   items.filter(i => {
-          //     if(!i.website_monitorado.includes("qualidoc") && i.preco_oferta.replace( /^\D+/g, '').replace(",", ".") != 0) {
-          //       soma += parseFloat(i.preco_oferta.replace( /^\D+/g, '').replace(",", "."))
-          //       it++
-          //     }
-          //   })
-          //   return "R$ " + (soma/it).toFixed(2).replace(".", ",")
-          // },
-          // onPageChange(page) {
-          //     this.page = page
-          //     this.loadAsyncData()
-          // },
-          // onSort(field, order) {
-          //     this.sortField = field
-          //     this.sortOrder = order
-          //     this.loadAsyncData()
-          // },
-          // emptyData() {
-          //     while(this.data.length > 0) {
-          //         this.data.pop();
-          //     }
-          // },
           loadAsyncData() {
             const t = this
-            // this.loading = true
-            let response = {
-              "items": [{
-                    "hour":0,
-                    "date":"08/04/2021 00:00:00",
-                    "quantity":20,
-                    "value":2346.86,
-                    "avgTicket":117.34,
-                    "dayBefore":"07/04/2021 00:00:00",
-                    "quantityDayBefore":7,
-                    "valueDayBefore":487.23,
-                    "avgTicketDayBefore":69.6,
-                    "weekAgo":"01/04/2021 00:00:00",
-                    "quantityWeekAgo":28,
-                    "valueWeekAgo":3606.4,
-                    "avgTicketWeekAgo":128.8
-                },
-                {
-                    "hour":1,
-                    "date":"08/04/2021 00:00:00",
-                    "quantity":5,
-                    "value":2040.6,
-                    "avgTicket":408.12,
-                    "dayBefore":"07/04/2021 00:00:00",
-                    "quantityDayBefore":3,
-                    "valueDayBefore":352.49,
-                    "avgTicketDayBefore":117.5,
-                    "weekAgo":"01/04/2021 00:00:00",
-                    "quantityWeekAgo":6,
-                    "valueWeekAgo":497.82,
-                    "avgTicketWeekAgo":82.97
-                },
-                {
-                    "hour":2,
-                    "date":"08/04/2021 00:00:00",
-                    "quantity":5,
-                    "value":783.25,
-                    "avgTicket":156.65,
-                    "dayBefore":"07/04/2021 00:00:00",
-                    "quantityDayBefore":3,
-                    "valueDayBefore":168.92,
-                    "avgTicketDayBefore":56.31,
-                    "weekAgo":"01/04/2021 00:00:00",
-                    "quantityWeekAgo":3,
-                    "valueWeekAgo":260.17,
-                    "avgTicketWeekAgo":86.72
-                },
-                {
-                    "hour":3,
-                    "date":"08/04/2021 00:00:00",
-                    "quantity":3,
-                    "value":261.58,
-                    "avgTicket":87.19,
-                    "dayBefore":"07/04/2021 00:00:00",
-                    "quantityDayBefore":1,
-                    "valueDayBefore":47.72,
-                    "avgTicketDayBefore":47.72,
-                    "weekAgo":"01/04/2021 00:00:00",
-                    "quantityWeekAgo":3,
-                    "valueWeekAgo":126.77,
-                    "avgTicketWeekAgo":42.26
-                }
-              ],
-              "quantityItems":4,
-              "item":null
-            }
-            console.log(response.items)
-            response.items.forEach((item) => {
-              t.data.push({
-                hora: item.hour,
-                qtd_nf: item.descricao,
-                total_faturado: item.url_monitor,
-                tkm: item.url_monitor
-              })
+            this.loading = true
+            // let response = {
+            //   "items": [{
+            //         "hour":0,
+            //         "date":"08/04/2021 00:00:00",
+            //         "quantity":20,
+            //         "value":2346.86,
+            //         "avgTicket":117.34,
+            //         "dayBefore":"07/04/2021 00:00:00",
+            //         "quantityDayBefore":7,
+            //         "valueDayBefore":487.23,
+            //         "avgTicketDayBefore":69.6,
+            //         "weekAgo":"01/04/2021 00:00:00",
+            //         "quantityWeekAgo":28,
+            //         "valueWeekAgo":3606.4,
+            //         "avgTicketWeekAgo":128.8
+            //     },
+            //     {
+            //         "hour":1,
+            //         "date":"08/04/2021 00:00:00",
+            //         "quantity":5,
+            //         "value":2040.6,
+            //         "avgTicket":408.12,
+            //         "dayBefore":"07/04/2021 00:00:00",
+            //         "quantityDayBefore":3,
+            //         "valueDayBefore":352.49,
+            //         "avgTicketDayBefore":117.5,
+            //         "weekAgo":"01/04/2021 00:00:00",
+            //         "quantityWeekAgo":6,
+            //         "valueWeekAgo":497.82,
+            //         "avgTicketWeekAgo":82.97
+            //     },
+            //     {
+            //         "hour":2,
+            //         "date":"08/04/2021 00:00:00",
+            //         "quantity":5,
+            //         "value":783.25,
+            //         "avgTicket":156.65,
+            //         "dayBefore":"07/04/2021 00:00:00",
+            //         "quantityDayBefore":3,
+            //         "valueDayBefore":168.92,
+            //         "avgTicketDayBefore":56.31,
+            //         "weekAgo":"01/04/2021 00:00:00",
+            //         "quantityWeekAgo":3,
+            //         "valueWeekAgo":260.17,
+            //         "avgTicketWeekAgo":86.72
+            //     },
+            //     {
+            //         "hour":3,
+            //         "date":"08/04/2021 00:00:00",
+            //         "quantity":3,
+            //         "value":261.58,
+            //         "avgTicket":87.19,
+            //         "dayBefore":"07/04/2021 00:00:00",
+            //         "quantityDayBefore":1,
+            //         "valueDayBefore":47.72,
+            //         "avgTicketDayBefore":47.72,
+            //         "weekAgo":"01/04/2021 00:00:00",
+            //         "quantityWeekAgo":3,
+            //         "valueWeekAgo":126.77,
+            //         "avgTicketWeekAgo":42.26
+            //     }
+            //   ],
+            //   "quantityItems":4,
+            //   "item":null
+            // }
+
+            axios.get("api.php?filial=" + this.filial + "&data=" + ((this.date == null) ? '' : this.date.toLocaleDateString())).then((response) => {
+                response.items.forEach((item) => {
+                  // Tabela de hoje
+                  t.data_1.push({
+                    hora: item.hour,
+                    qtd_nf: item.quantity,
+                    total_faturado: "R$ " + item.value.toFixed(2).replace(".", ","),
+                    tkm: "R$ " + (item.value/item.quantity).toFixed(2).replace(".", ",")
+                  })
+                  t.total_final_qtd_nf_1 += item.quantity
+                  t.total_faturado_final_1 += item.value
+                  t.avg_ticket += item.avgTicket
+
+                  // Tabela de ontem
+                  t.data_2.push({
+                    qtd_nf: item.quantityDayBefore,
+                    total_faturado: "R$ " + item.valueDayBefore.toFixed(2).replace(".", ","),
+                    tkm: "R$ " + item.avgTicketDayBefore.toFixed(2).replace(".", ","),
+                    fat: (item.valueDayBefore/item.value).toFixed(2)*100,
+                  })
+                  t.total_final_qtd_nf_2 += item.quantityDayBefore
+                  t.total_faturado_final_2 += item.valueDayBefore
+                  t.avg_ticket_2 += item.avgTicketDayBefore
+
+                  // Tabela da semana passada
+                  t.data_3.push({
+                    qtd_nf: item.quantityWeekAgo,
+                    total_faturado: "R$ " + item.valueWeekAgo.toFixed(2).replace(".", ","),
+                    tkm: "R$ " + item.avgTicketWeekAgo.toFixed(2).replace(".", ","),
+                    fat: (item.valueWeekAgo/item.value).toFixed(2)*100,
+                    fat2: (item.valueWeekAgo/item.valueDayBefore).toFixed(2)*100,
+                  })
+                  t.total_final_qtd_nf_3 += item.quantityWeekAgo
+                  t.total_faturado_final_3 += item.valueWeekAgo
+                  t.avg_ticket_3 += item.avgTicketWeekAgo
+                })
+
+                t.fat_comp_hj_1 = (t.total_faturado_final_2/t.total_faturado_final_1).toFixed(2)*100 + "%"
+                t.fat_comp_hj_2 = (t.total_faturado_final_3/t.total_faturado_final_1).toFixed(2)*100 + "%"
+                t.fat_comp_ontem = (t.total_faturado_final_3/t.total_faturado_final_2).toFixed(2)*100 + "%"
+                t.total_faturado_final_1 = "R$ " + t.total_faturado_final_1.toFixed(2).replace(".", ",")
+                t.avg_ticket = "R$ " + (t.avg_ticket/response.items.length).toFixed(2).replace(".", ",")
+                t.total_faturado_final_2 = "R$ " + t.total_faturado_final_2.toFixed(2).replace(".", ",")
+                t.avg_ticket_2 = "R$ " + (t.avg_ticket_2/response.items.length).toFixed(2).replace(".", ",")
+                t.total_faturado_final_3 = "R$ " + t.total_faturado_final_3.toFixed(2).replace(".", ",")
+                t.avg_ticket_3 = "R$ " + (t.avg_ticket_3/response.items.length).toFixed(2).replace(".", ",")
+                t.loading = false
+            }).catch((error) => {
+                t.data_1 = []
+                t.data_2 = []
+                t.data_3 = []
+                t.total_final_qtd_nf_1 = 0
+                t.total_faturado_final_1 = 0
+                t.avg_ticket = 0
+                t.total_final_qtd_nf_2 = 0
+                t.total_faturado_final_2 = 0
+                t.avg_ticket_2 = 0
+                t.fat_comp_hj_1 = 0
+                t.total_final_qtd_nf_3 = 0
+                t.total_faturado_final_3 = 0
+                t.avg_ticket_3 = 0
+                t.fat_comp_hj_2 = 0
+                t.fat_comp_ontem = 0
+                t.loading = false
+                throw error
             })
-            // axios.get("api.php?data=" + ((this.date == null) ? '' : this.date.toLocaleDateString())).then((response) => {
-                // t.emptyData()
-                // t.data_group = []
-                // t.data_items = []
-                // let currentTotal = response.data.total_results
-                // if (response.data.total_results / t.perPage > 1000) {
-                //     currentTotal = t.perPage * 1000
-                // }
-                // t.total = currentTotal
-                // response.data.results.forEach((item) => {
-                //   if(!t.data_group.some(d => d.codigo == item.codigo)) { // Não existe
-                //     t.data.push({
-                //       codigo: item.codigo,
-                //       descricao: item.descricao,
-                //       url_monitor: item.url_monitor
-                //     })
-                //     t.data_group.push({
-                //       codigo: item.codigo,
-                //       descricao: item.descricao,
-                //       url_monitor: item.url_monitor,
-                //       items: [{
-                //         preco_custo: item.preco_custo,
-                //         website_monitorado: item.website_monitorado,
-                //         url_monitorado: item.url_monitorado,
-                //         preco_oferta: item.preco_oferta,
-                //         hora: item.hora,
-                //         data: item.data
-                //       }]
-                //     })
-                //   }
-                //   else { // Já existe
-                //     t.data_group.map(d => {
-                //       if(d.codigo == item.codigo) {
-                //         d.items.push({
-                //           preco_custo: item.preco_custo,
-                //           website_monitorado: item.website_monitorado,
-                //           url_monitorado: item.url_monitorado,
-                //           preco_oferta: item.preco_oferta,
-                //           hora: item.hora,
-                //           data: item.data
-                //         })
-                //       }
-                //     })
-                //   }
-                // })
-                // t.loading = false
-            // }).catch((error) => {
-                // t.emptyData()
-                // t.data_group = []
-                // t.data_items = []
-                // t.total = 0
-                // t.loading = false
-            //     throw error
-            // })
           }
         },
         mounted() {
