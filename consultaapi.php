@@ -65,106 +65,157 @@ header('Content-Type: text/html; charset=utf-8'); ?>
                 </b-datepicker>
             </b-field>
             <section>
+              <div class="columns is-desktop is-mobile">
                 <!-- Tabela de hoje -->
-                <b-table bordered striped narrowed sticky-header :data="data_1">
-                  <b-table-column centered subheading="Total:"><template v-slot="props"></template></b-table-column>
-                  <b-table-column field="hora" label="Hora" centered>
-                      <template v-slot="props">
-                          {{ props.row.hora }}
-                      </template>
-                  </b-table-column>
-                  <b-table-column field="qtd_nf" label="Quantidade NF" centered :subheading="total_final_qtd_nf_1">
-                      <template v-slot="props">
-                          {{ props.row.qtd_nf }}
-                      </template>
-                  </b-table-column>
-                  <b-table-column field="total_faturado" label="Total Faturado" centered :subheading="total_faturado_final_1">
-                      <template v-slot="props">
-                          {{ props.row.total_faturado }}
-                      </template>
-                  </b-table-column>
-                  <b-table-column field="tkm" label="TKM" centered :subheading="avg_ticket">
-                      <template v-slot="props">
-                          {{ props.row.tkm }}
-                      </template>
-                  </b-table-column>
-                </b-table>
-
-                <!-- Tabela de ontem -->
-                <b-table bordered striped narrowed sticky-header :data="data_2">
-                  <b-table-column centered subheading="Total:"><template v-slot="props"></template></b-table-column>
-                  <b-table-column field="qtd_nf" label="Quantidade NF" centered :subheading="total_final_qtd_nf_2">
-                      <template v-slot="props">
-                          {{ props.row.qtd_nf }}
-                      </template>
-                  </b-table-column>
-                  <b-table-column field="total_faturado" label="Total Faturado" centered :subheading="total_faturado_final_2">
-                      <template v-slot="props">
-                          {{ props.row.total_faturado }}
-                      </template>
-                  </b-table-column>
-                  <b-table-column field="tkm" label="TKM" centered :subheading="avg_ticket_2">
-                      <template v-slot="props">
-                          {{ props.row.tkm }}
-                      </template>
-                  </b-table-column>
-                  <b-table-column field="fat" label="Fat. Comp. Hoje" centered :subheading="fat_comp_hj_1">
-                      <template v-slot="props">
-                        <span :class="
-                                [
-                                    'tag',
-                                    {'is-warning': props.row.fat >= 101 && props.row.fat <= 110},
-                                    {'is-danger': props.row.fat > 110}
-                                ]">
-                            {{ props.row.fat }}%
-                        </span>
-                      </template>
-                  </b-table-column>
-                </b-table>
-
-                <!-- Tabela da semana passada -->
-                <b-table bordered striped narrowed sticky-header :data="data_3">
-                  <b-table-column centered subheading="Total:"><template v-slot="props"></template></b-table-column>
-                  <b-table-column field="qtd_nf" label="Quantidade NF" centered :subheading="total_final_qtd_nf_3">
-                      <template v-slot="props">
-                          {{ props.row.qtd_nf }}
-                      </template>
-                  </b-table-column>
-                  <b-table-column field="total_faturado" label="Total Faturado" centered :subheading="total_faturado_final_3">
-                      <template v-slot="props">
-                          {{ props.row.total_faturado }}
-                      </template>
-                  </b-table-column>
-                  <b-table-column field="tkm" label="TKM" centered :subheading="avg_ticket_3">
-                      <template v-slot="props">
-                          {{ props.row.tkm }}
-                      </template>
-                  </b-table-column>
-                  <b-table-column field="fat" label="Fat. Comp. Hoje" centered :subheading="fat_comp_hj_2">
-                      <template v-slot="props">
-                        <span :class="
-                                [
-                                    'tag',
-                                    {'is-warning': props.row.fat >= 101 && props.row.fat <= 110},
-                                    {'is-danger': props.row.fat > 110}
-                                ]">
-                            {{ props.row.fat }}%
-                        </span>
-                      </template>
-                  </b-table-column>
-                  <b-table-column field="fat2" label="Fat. Comp. Ontem" centered :subheading="fat_comp_ontem">
-                      <template v-slot="props">
-                        <span :class="
-                                [
-                                    'tag',
-                                    {'is-warning': props.row.fat2 >= 101 && props.row.fat2 <= 110},
-                                    {'is-danger': props.row.fat2 > 110}
-                                ]">
-                            {{ props.row.fat2 }}%
-                        </span>
-                      </template>
-                  </b-table-column>
-                </b-table>
+                <div class="column">
+                  <b-table bordered striped narrowed sticky-header :data="data_1">
+                    <b-table-column centered subheading="Total:"><template v-slot="props"></template></b-table-column>
+                    <b-table-column field="hora" label="Hora" centered>
+                        <template v-slot="props">
+                            {{ props.row.hora }}
+                        </template>
+                    </b-table-column>
+                    <b-table-column field="qtd_nf" label="NF" centered :subheading="total_final_qtd_nf_1">
+                        <template v-slot:header="{ column }">
+                          <b-tooltip label="Quantidade de notas faturadas" append-to-body dashed>
+                            {{ column.label }}
+                          </b-tooltip>
+                        </template>
+                        <template v-slot="props">
+                            {{ props.row.qtd_nf }}
+                        </template>
+                    </b-table-column>
+                    <b-table-column field="total_faturado" label="Faturado" centered :subheading="total_faturado_final_1">
+                        <template v-slot:header="{ column }">
+                          <b-tooltip label="Total faturado" append-to-body dashed>
+                            {{ column.label }}
+                          </b-tooltip>
+                        </template>
+                        <template v-slot="props">
+                            {{ props.row.total_faturado }}
+                        </template>
+                    </b-table-column>
+                    <b-table-column field="tkm" label="TKM" centered :subheading="avg_ticket">
+                        <template v-slot="props">
+                            {{ props.row.tkm }}
+                        </template>
+                    </b-table-column>
+                  </b-table>
+                </div>
+                <div class="column">
+                  <!-- Tabela de ontem -->
+                  <b-table bordered striped narrowed sticky-header :data="data_2">
+                    <b-table-column centered subheading="Total:"><template v-slot="props"></template></b-table-column>
+                    <b-table-column field="qtd_nf" label="NF" centered :subheading="total_final_qtd_nf_2">
+                        <template v-slot:header="{ column }">
+                          <b-tooltip label="Quantidade de notas faturadas" append-to-body dashed>
+                            {{ column.label }}
+                          </b-tooltip>
+                        </template>
+                        <template v-slot="props">
+                            {{ props.row.qtd_nf }}
+                        </template>
+                    </b-table-column>
+                    <b-table-column field="total_faturado" label="Faturado" centered :subheading="total_faturado_final_2">
+                        <template v-slot:header="{ column }">
+                          <b-tooltip label="Total faturado" append-to-body dashed>
+                            {{ column.label }}
+                          </b-tooltip>
+                        </template>
+                        <template v-slot="props">
+                            {{ props.row.total_faturado }}
+                        </template>
+                    </b-table-column>
+                    <b-table-column field="tkm" label="TKM" centered :subheading="avg_ticket_2">
+                        <template v-slot="props">
+                            {{ props.row.tkm }}
+                        </template>
+                    </b-table-column>
+                    <b-table-column field="fat" label="Hoje" centered :subheading="fat_comp_hj_1">
+                        <template v-slot:header="{ column }">
+                          <b-tooltip label="Faturamento comparado a hoje" append-to-body dashed>
+                            {{ column.label }}
+                          </b-tooltip>
+                        </template>
+                        <template v-slot="props">
+                          <span :class="
+                                  [
+                                      'tag',
+                                      {'is-warning': props.row.fat >= 101 && props.row.fat <= 110},
+                                      {'is-danger': props.row.fat > 110}
+                                  ]">
+                              {{ props.row.fat }}%
+                          </span>
+                        </template>
+                    </b-table-column>
+                  </b-table>
+                </div>
+                <div class="column">
+                  <!-- Tabela da semana passada -->
+                  <b-table bordered striped narrowed sticky-header :data="data_3">
+                    <b-table-column centered subheading="Total:"><template v-slot="props"></template></b-table-column>
+                    <b-table-column field="qtd_nf" label="NF" centered :subheading="total_final_qtd_nf_3">
+                        <template v-slot:header="{ column }">
+                          <b-tooltip label="Quantidade de notas faturadas" append-to-body dashed>
+                            {{ column.label }}
+                          </b-tooltip>
+                        </template>
+                        <template v-slot="props">
+                            {{ props.row.qtd_nf }}
+                        </template>
+                    </b-table-column>
+                    <b-table-column field="total_faturado" label="Faturado" centered :subheading="total_faturado_final_3">
+                        <template v-slot:header="{ column }">
+                          <b-tooltip label="Total faturado" append-to-body dashed>
+                            {{ column.label }}
+                          </b-tooltip>
+                        </template>
+                        <template v-slot="props">
+                            {{ props.row.total_faturado }}
+                        </template>
+                    </b-table-column>
+                    <b-table-column field="tkm" label="TKM" centered :subheading="avg_ticket_3">
+                        <template v-slot="props">
+                            {{ props.row.tkm }}
+                        </template>
+                    </b-table-column>
+                    <b-table-column field="fat" label="Hoje" centered :subheading="fat_comp_hj_2">
+                        <template v-slot:header="{ column }">
+                          <b-tooltip label="Faturamento comparado a hoje" append-to-body dashed>
+                            {{ column.label }}
+                          </b-tooltip>
+                        </template>
+                        <template v-slot="props">
+                          <span :class="
+                                  [
+                                      'tag',
+                                      {'is-warning': props.row.fat >= 101 && props.row.fat <= 110},
+                                      {'is-danger': props.row.fat > 110}
+                                  ]">
+                              {{ props.row.fat }}%
+                          </span>
+                        </template>
+                    </b-table-column>
+                    <b-table-column field="fat2" label="Ontem" centered :subheading="fat_comp_ontem">
+                        <template v-slot:header="{ column }">
+                          <b-tooltip label="Faturamento comparado a ontem" append-to-body dashed>
+                            {{ column.label }}
+                          </b-tooltip>
+                        </template>
+                        <template v-slot="props">
+                          <span :class="
+                                  [
+                                      'tag',
+                                      {'is-warning': props.row.fat2 >= 101 && props.row.fat2 <= 110},
+                                      {'is-danger': props.row.fat2 > 110}
+                                  ]">
+                              {{ props.row.fat2 }}%
+                          </span>
+                        </template>
+                    </b-table-column>
+                  </b-table>
+                </div>
+              </div>
             </section>
           </div>
         </div>
@@ -231,7 +282,8 @@ header('Content-Type: text/html; charset=utf-8'); ?>
           loadAsyncData() {
             const t = this
             this.loading = true
-            // let response = {
+            // let response = []
+            // response.data = {
             //   "items": [{
             //         "hour":0,
             //         "date":"08/04/2021 00:00:00",
@@ -246,6 +298,441 @@ header('Content-Type: text/html; charset=utf-8'); ?>
             //         "quantityWeekAgo":28,
             //         "valueWeekAgo":3606.4,
             //         "avgTicketWeekAgo":128.8
+            //     },
+            //     {
+            //         "hour":1,
+            //         "date":"08/04/2021 00:00:00",
+            //         "quantity":5,
+            //         "value":2040.6,
+            //         "avgTicket":408.12,
+            //         "dayBefore":"07/04/2021 00:00:00",
+            //         "quantityDayBefore":3,
+            //         "valueDayBefore":352.49,
+            //         "avgTicketDayBefore":117.5,
+            //         "weekAgo":"01/04/2021 00:00:00",
+            //         "quantityWeekAgo":6,
+            //         "valueWeekAgo":497.82,
+            //         "avgTicketWeekAgo":82.97
+            //     },
+            //     {
+            //         "hour":1,
+            //         "date":"08/04/2021 00:00:00",
+            //         "quantity":5,
+            //         "value":2040.6,
+            //         "avgTicket":408.12,
+            //         "dayBefore":"07/04/2021 00:00:00",
+            //         "quantityDayBefore":3,
+            //         "valueDayBefore":352.49,
+            //         "avgTicketDayBefore":117.5,
+            //         "weekAgo":"01/04/2021 00:00:00",
+            //         "quantityWeekAgo":6,
+            //         "valueWeekAgo":497.82,
+            //         "avgTicketWeekAgo":82.97
+            //     },
+            //     {
+            //         "hour":1,
+            //         "date":"08/04/2021 00:00:00",
+            //         "quantity":5,
+            //         "value":2040.6,
+            //         "avgTicket":408.12,
+            //         "dayBefore":"07/04/2021 00:00:00",
+            //         "quantityDayBefore":3,
+            //         "valueDayBefore":352.49,
+            //         "avgTicketDayBefore":117.5,
+            //         "weekAgo":"01/04/2021 00:00:00",
+            //         "quantityWeekAgo":6,
+            //         "valueWeekAgo":497.82,
+            //         "avgTicketWeekAgo":82.97
+            //     },
+            //     {
+            //         "hour":1,
+            //         "date":"08/04/2021 00:00:00",
+            //         "quantity":5,
+            //         "value":2040.6,
+            //         "avgTicket":408.12,
+            //         "dayBefore":"07/04/2021 00:00:00",
+            //         "quantityDayBefore":3,
+            //         "valueDayBefore":352.49,
+            //         "avgTicketDayBefore":117.5,
+            //         "weekAgo":"01/04/2021 00:00:00",
+            //         "quantityWeekAgo":6,
+            //         "valueWeekAgo":497.82,
+            //         "avgTicketWeekAgo":82.97
+            //     },
+            //     {
+            //         "hour":1,
+            //         "date":"08/04/2021 00:00:00",
+            //         "quantity":5,
+            //         "value":2040.6,
+            //         "avgTicket":408.12,
+            //         "dayBefore":"07/04/2021 00:00:00",
+            //         "quantityDayBefore":3,
+            //         "valueDayBefore":352.49,
+            //         "avgTicketDayBefore":117.5,
+            //         "weekAgo":"01/04/2021 00:00:00",
+            //         "quantityWeekAgo":6,
+            //         "valueWeekAgo":497.82,
+            //         "avgTicketWeekAgo":82.97
+            //     },
+            //     {
+            //         "hour":1,
+            //         "date":"08/04/2021 00:00:00",
+            //         "quantity":5,
+            //         "value":2040.6,
+            //         "avgTicket":408.12,
+            //         "dayBefore":"07/04/2021 00:00:00",
+            //         "quantityDayBefore":3,
+            //         "valueDayBefore":352.49,
+            //         "avgTicketDayBefore":117.5,
+            //         "weekAgo":"01/04/2021 00:00:00",
+            //         "quantityWeekAgo":6,
+            //         "valueWeekAgo":497.82,
+            //         "avgTicketWeekAgo":82.97
+            //     },
+            //     {
+            //         "hour":1,
+            //         "date":"08/04/2021 00:00:00",
+            //         "quantity":5,
+            //         "value":2040.6,
+            //         "avgTicket":408.12,
+            //         "dayBefore":"07/04/2021 00:00:00",
+            //         "quantityDayBefore":3,
+            //         "valueDayBefore":352.49,
+            //         "avgTicketDayBefore":117.5,
+            //         "weekAgo":"01/04/2021 00:00:00",
+            //         "quantityWeekAgo":6,
+            //         "valueWeekAgo":497.82,
+            //         "avgTicketWeekAgo":82.97
+            //     },
+            //     {
+            //         "hour":1,
+            //         "date":"08/04/2021 00:00:00",
+            //         "quantity":5,
+            //         "value":2040.6,
+            //         "avgTicket":408.12,
+            //         "dayBefore":"07/04/2021 00:00:00",
+            //         "quantityDayBefore":3,
+            //         "valueDayBefore":352.49,
+            //         "avgTicketDayBefore":117.5,
+            //         "weekAgo":"01/04/2021 00:00:00",
+            //         "quantityWeekAgo":6,
+            //         "valueWeekAgo":497.82,
+            //         "avgTicketWeekAgo":82.97
+            //     },
+            //     {
+            //         "hour":1,
+            //         "date":"08/04/2021 00:00:00",
+            //         "quantity":5,
+            //         "value":2040.6,
+            //         "avgTicket":408.12,
+            //         "dayBefore":"07/04/2021 00:00:00",
+            //         "quantityDayBefore":3,
+            //         "valueDayBefore":352.49,
+            //         "avgTicketDayBefore":117.5,
+            //         "weekAgo":"01/04/2021 00:00:00",
+            //         "quantityWeekAgo":6,
+            //         "valueWeekAgo":497.82,
+            //         "avgTicketWeekAgo":82.97
+            //     },
+            //     {
+            //         "hour":1,
+            //         "date":"08/04/2021 00:00:00",
+            //         "quantity":5,
+            //         "value":2040.6,
+            //         "avgTicket":408.12,
+            //         "dayBefore":"07/04/2021 00:00:00",
+            //         "quantityDayBefore":3,
+            //         "valueDayBefore":352.49,
+            //         "avgTicketDayBefore":117.5,
+            //         "weekAgo":"01/04/2021 00:00:00",
+            //         "quantityWeekAgo":6,
+            //         "valueWeekAgo":497.82,
+            //         "avgTicketWeekAgo":82.97
+            //     },
+            //     {
+            //         "hour":1,
+            //         "date":"08/04/2021 00:00:00",
+            //         "quantity":5,
+            //         "value":2040.6,
+            //         "avgTicket":408.12,
+            //         "dayBefore":"07/04/2021 00:00:00",
+            //         "quantityDayBefore":3,
+            //         "valueDayBefore":352.49,
+            //         "avgTicketDayBefore":117.5,
+            //         "weekAgo":"01/04/2021 00:00:00",
+            //         "quantityWeekAgo":6,
+            //         "valueWeekAgo":497.82,
+            //         "avgTicketWeekAgo":82.97
+            //     },
+            //     {
+            //         "hour":1,
+            //         "date":"08/04/2021 00:00:00",
+            //         "quantity":5,
+            //         "value":2040.6,
+            //         "avgTicket":408.12,
+            //         "dayBefore":"07/04/2021 00:00:00",
+            //         "quantityDayBefore":3,
+            //         "valueDayBefore":352.49,
+            //         "avgTicketDayBefore":117.5,
+            //         "weekAgo":"01/04/2021 00:00:00",
+            //         "quantityWeekAgo":6,
+            //         "valueWeekAgo":497.82,
+            //         "avgTicketWeekAgo":82.97
+            //     },
+            //     {
+            //         "hour":1,
+            //         "date":"08/04/2021 00:00:00",
+            //         "quantity":5,
+            //         "value":2040.6,
+            //         "avgTicket":408.12,
+            //         "dayBefore":"07/04/2021 00:00:00",
+            //         "quantityDayBefore":3,
+            //         "valueDayBefore":352.49,
+            //         "avgTicketDayBefore":117.5,
+            //         "weekAgo":"01/04/2021 00:00:00",
+            //         "quantityWeekAgo":6,
+            //         "valueWeekAgo":497.82,
+            //         "avgTicketWeekAgo":82.97
+            //     },
+            //     {
+            //         "hour":1,
+            //         "date":"08/04/2021 00:00:00",
+            //         "quantity":5,
+            //         "value":2040.6,
+            //         "avgTicket":408.12,
+            //         "dayBefore":"07/04/2021 00:00:00",
+            //         "quantityDayBefore":3,
+            //         "valueDayBefore":352.49,
+            //         "avgTicketDayBefore":117.5,
+            //         "weekAgo":"01/04/2021 00:00:00",
+            //         "quantityWeekAgo":6,
+            //         "valueWeekAgo":497.82,
+            //         "avgTicketWeekAgo":82.97
+            //     },
+            //     {
+            //         "hour":1,
+            //         "date":"08/04/2021 00:00:00",
+            //         "quantity":5,
+            //         "value":2040.6,
+            //         "avgTicket":408.12,
+            //         "dayBefore":"07/04/2021 00:00:00",
+            //         "quantityDayBefore":3,
+            //         "valueDayBefore":352.49,
+            //         "avgTicketDayBefore":117.5,
+            //         "weekAgo":"01/04/2021 00:00:00",
+            //         "quantityWeekAgo":6,
+            //         "valueWeekAgo":497.82,
+            //         "avgTicketWeekAgo":82.97
+            //     },
+            //     {
+            //         "hour":1,
+            //         "date":"08/04/2021 00:00:00",
+            //         "quantity":5,
+            //         "value":2040.6,
+            //         "avgTicket":408.12,
+            //         "dayBefore":"07/04/2021 00:00:00",
+            //         "quantityDayBefore":3,
+            //         "valueDayBefore":352.49,
+            //         "avgTicketDayBefore":117.5,
+            //         "weekAgo":"01/04/2021 00:00:00",
+            //         "quantityWeekAgo":6,
+            //         "valueWeekAgo":497.82,
+            //         "avgTicketWeekAgo":82.97
+            //     },
+            //     {
+            //         "hour":1,
+            //         "date":"08/04/2021 00:00:00",
+            //         "quantity":5,
+            //         "value":2040.6,
+            //         "avgTicket":408.12,
+            //         "dayBefore":"07/04/2021 00:00:00",
+            //         "quantityDayBefore":3,
+            //         "valueDayBefore":352.49,
+            //         "avgTicketDayBefore":117.5,
+            //         "weekAgo":"01/04/2021 00:00:00",
+            //         "quantityWeekAgo":6,
+            //         "valueWeekAgo":497.82,
+            //         "avgTicketWeekAgo":82.97
+            //     },
+            //     {
+            //         "hour":1,
+            //         "date":"08/04/2021 00:00:00",
+            //         "quantity":5,
+            //         "value":2040.6,
+            //         "avgTicket":408.12,
+            //         "dayBefore":"07/04/2021 00:00:00",
+            //         "quantityDayBefore":3,
+            //         "valueDayBefore":352.49,
+            //         "avgTicketDayBefore":117.5,
+            //         "weekAgo":"01/04/2021 00:00:00",
+            //         "quantityWeekAgo":6,
+            //         "valueWeekAgo":497.82,
+            //         "avgTicketWeekAgo":82.97
+            //     },
+            //     {
+            //         "hour":1,
+            //         "date":"08/04/2021 00:00:00",
+            //         "quantity":5,
+            //         "value":2040.6,
+            //         "avgTicket":408.12,
+            //         "dayBefore":"07/04/2021 00:00:00",
+            //         "quantityDayBefore":3,
+            //         "valueDayBefore":352.49,
+            //         "avgTicketDayBefore":117.5,
+            //         "weekAgo":"01/04/2021 00:00:00",
+            //         "quantityWeekAgo":6,
+            //         "valueWeekAgo":497.82,
+            //         "avgTicketWeekAgo":82.97
+            //     },
+            //     {
+            //         "hour":1,
+            //         "date":"08/04/2021 00:00:00",
+            //         "quantity":5,
+            //         "value":2040.6,
+            //         "avgTicket":408.12,
+            //         "dayBefore":"07/04/2021 00:00:00",
+            //         "quantityDayBefore":3,
+            //         "valueDayBefore":352.49,
+            //         "avgTicketDayBefore":117.5,
+            //         "weekAgo":"01/04/2021 00:00:00",
+            //         "quantityWeekAgo":6,
+            //         "valueWeekAgo":497.82,
+            //         "avgTicketWeekAgo":82.97
+            //     },
+            //     {
+            //         "hour":1,
+            //         "date":"08/04/2021 00:00:00",
+            //         "quantity":5,
+            //         "value":2040.6,
+            //         "avgTicket":408.12,
+            //         "dayBefore":"07/04/2021 00:00:00",
+            //         "quantityDayBefore":3,
+            //         "valueDayBefore":352.49,
+            //         "avgTicketDayBefore":117.5,
+            //         "weekAgo":"01/04/2021 00:00:00",
+            //         "quantityWeekAgo":6,
+            //         "valueWeekAgo":497.82,
+            //         "avgTicketWeekAgo":82.97
+            //     },
+            //     {
+            //         "hour":1,
+            //         "date":"08/04/2021 00:00:00",
+            //         "quantity":5,
+            //         "value":2040.6,
+            //         "avgTicket":408.12,
+            //         "dayBefore":"07/04/2021 00:00:00",
+            //         "quantityDayBefore":3,
+            //         "valueDayBefore":352.49,
+            //         "avgTicketDayBefore":117.5,
+            //         "weekAgo":"01/04/2021 00:00:00",
+            //         "quantityWeekAgo":6,
+            //         "valueWeekAgo":497.82,
+            //         "avgTicketWeekAgo":82.97
+            //     },
+            //     {
+            //         "hour":1,
+            //         "date":"08/04/2021 00:00:00",
+            //         "quantity":5,
+            //         "value":2040.6,
+            //         "avgTicket":408.12,
+            //         "dayBefore":"07/04/2021 00:00:00",
+            //         "quantityDayBefore":3,
+            //         "valueDayBefore":352.49,
+            //         "avgTicketDayBefore":117.5,
+            //         "weekAgo":"01/04/2021 00:00:00",
+            //         "quantityWeekAgo":6,
+            //         "valueWeekAgo":497.82,
+            //         "avgTicketWeekAgo":82.97
+            //     },
+            //     {
+            //         "hour":1,
+            //         "date":"08/04/2021 00:00:00",
+            //         "quantity":5,
+            //         "value":2040.6,
+            //         "avgTicket":408.12,
+            //         "dayBefore":"07/04/2021 00:00:00",
+            //         "quantityDayBefore":3,
+            //         "valueDayBefore":352.49,
+            //         "avgTicketDayBefore":117.5,
+            //         "weekAgo":"01/04/2021 00:00:00",
+            //         "quantityWeekAgo":6,
+            //         "valueWeekAgo":497.82,
+            //         "avgTicketWeekAgo":82.97
+            //     },
+            //     {
+            //         "hour":1,
+            //         "date":"08/04/2021 00:00:00",
+            //         "quantity":5,
+            //         "value":2040.6,
+            //         "avgTicket":408.12,
+            //         "dayBefore":"07/04/2021 00:00:00",
+            //         "quantityDayBefore":3,
+            //         "valueDayBefore":352.49,
+            //         "avgTicketDayBefore":117.5,
+            //         "weekAgo":"01/04/2021 00:00:00",
+            //         "quantityWeekAgo":6,
+            //         "valueWeekAgo":497.82,
+            //         "avgTicketWeekAgo":82.97
+            //     },
+            //     {
+            //         "hour":1,
+            //         "date":"08/04/2021 00:00:00",
+            //         "quantity":5,
+            //         "value":2040.6,
+            //         "avgTicket":408.12,
+            //         "dayBefore":"07/04/2021 00:00:00",
+            //         "quantityDayBefore":3,
+            //         "valueDayBefore":352.49,
+            //         "avgTicketDayBefore":117.5,
+            //         "weekAgo":"01/04/2021 00:00:00",
+            //         "quantityWeekAgo":6,
+            //         "valueWeekAgo":497.82,
+            //         "avgTicketWeekAgo":82.97
+            //     },
+            //     {
+            //         "hour":1,
+            //         "date":"08/04/2021 00:00:00",
+            //         "quantity":5,
+            //         "value":2040.6,
+            //         "avgTicket":408.12,
+            //         "dayBefore":"07/04/2021 00:00:00",
+            //         "quantityDayBefore":3,
+            //         "valueDayBefore":352.49,
+            //         "avgTicketDayBefore":117.5,
+            //         "weekAgo":"01/04/2021 00:00:00",
+            //         "quantityWeekAgo":6,
+            //         "valueWeekAgo":497.82,
+            //         "avgTicketWeekAgo":82.97
+            //     },
+            //     {
+            //         "hour":1,
+            //         "date":"08/04/2021 00:00:00",
+            //         "quantity":5,
+            //         "value":2040.6,
+            //         "avgTicket":408.12,
+            //         "dayBefore":"07/04/2021 00:00:00",
+            //         "quantityDayBefore":3,
+            //         "valueDayBefore":352.49,
+            //         "avgTicketDayBefore":117.5,
+            //         "weekAgo":"01/04/2021 00:00:00",
+            //         "quantityWeekAgo":6,
+            //         "valueWeekAgo":497.82,
+            //         "avgTicketWeekAgo":82.97
+            //     },
+            //     {
+            //         "hour":1,
+            //         "date":"08/04/2021 00:00:00",
+            //         "quantity":5,
+            //         "value":2040.6,
+            //         "avgTicket":408.12,
+            //         "dayBefore":"07/04/2021 00:00:00",
+            //         "quantityDayBefore":3,
+            //         "valueDayBefore":352.49,
+            //         "avgTicketDayBefore":117.5,
+            //         "weekAgo":"01/04/2021 00:00:00",
+            //         "quantityWeekAgo":6,
+            //         "valueWeekAgo":497.82,
+            //         "avgTicketWeekAgo":82.97
             //     },
             //     {
             //         "hour":1,
@@ -334,9 +821,9 @@ header('Content-Type: text/html; charset=utf-8'); ?>
                   t.avg_ticket_3 += item.avgTicketWeekAgo
                 })
 
-                t.fat_comp_hj_1 = (t.total_faturado_final_2/t.total_faturado_final_1).toFixed(2)*100 + "%"
-                t.fat_comp_hj_2 = (t.total_faturado_final_3/t.total_faturado_final_1).toFixed(2)*100 + "%"
-                t.fat_comp_ontem = (t.total_faturado_final_3/t.total_faturado_final_2).toFixed(2)*100 + "%"
+                t.fat_comp_hj_1 = ((t.total_faturado_final_2/t.total_faturado_final_1)*100).toFixed(2).replace(".", ",") + "%"
+                t.fat_comp_hj_2 = ((t.total_faturado_final_3/t.total_faturado_final_1)*100).toFixed(2).replace(".", ",") + "%"
+                t.fat_comp_ontem = ((t.total_faturado_final_3/t.total_faturado_final_2)*100).toFixed(2).replace(".", ",") + "%"
                 t.total_faturado_final_1 = "R$ " + t.total_faturado_final_1.toFixed(2).replace(".", ",")
                 t.avg_ticket = "R$ " + (t.avg_ticket/response.data.items.length).toFixed(2).replace(".", ",")
                 t.total_faturado_final_2 = "R$ " + t.total_faturado_final_2.toFixed(2).replace(".", ",")
