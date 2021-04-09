@@ -60,14 +60,16 @@ header('Content-Type: text/html; charset=utf-8'); ?>
                 &nbsp;&nbsp;&nbsp;&nbsp;
                 <b-datepicker
                     v-model="date"
+                    locale="pt-BR"
                     @blur="loadAsyncData"
                     placeholder="Data">
                 </b-datepicker>
             </b-field>
+            <br/>
             <section>
               <div class="columns is-desktop is-mobile">
-                <h1 class="title">Tabela de hoje</h1>
                 <div class="column">
+                  <h1 class="title">Tabela de hoje</h1>
                   <b-table bordered striped narrowed sticky-header :data="data_1">
                     <b-table-column centered subheading="Total:"><template v-slot="props"></template></b-table-column>
                     <b-table-column field="hora" label="Hora" centered>
