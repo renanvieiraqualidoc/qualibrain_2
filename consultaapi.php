@@ -808,7 +808,7 @@ header('Content-Type: text/html; charset=utf-8'); ?>
                     hora: item.hour,
                     qtd_nf: item.quantity,
                     total_faturado: "R$ " + item.value.toFixed(2).replace(".", ","),
-                    tkm: item.value != 0 ? "R$ " + (item.value/item.quantity).toFixed(2).replace(".", ",") : '-'
+                    tkm: "R$ " + (item.value/item.quantity).toFixed(2).replace(".", ",")
                   })
                   t.total_final_qtd_nf_1 += item.quantity
                   t.total_faturado_final_1 += item.value
@@ -819,7 +819,7 @@ header('Content-Type: text/html; charset=utf-8'); ?>
                     qtd_nf: item.quantityDayBefore,
                     total_faturado: "R$ " + item.valueDayBefore.toFixed(2).replace(".", ","),
                     tkm: "R$ " + item.avgTicketDayBefore.toFixed(2).replace(".", ","),
-                    fat: item.value != 0 ? ((item.valueDayBefore/item.value)*100).toFixed(2).replace(".", ",") : '-',
+                    fat: ((item.valueDayBefore/item.value)*100).toFixed(2),
                   })
                   t.total_final_qtd_nf_2 += item.quantityDayBefore
                   t.total_faturado_final_2 += item.valueDayBefore
@@ -830,8 +830,8 @@ header('Content-Type: text/html; charset=utf-8'); ?>
                     qtd_nf: item.quantityWeekAgo,
                     total_faturado: "R$ " + item.valueWeekAgo.toFixed(2).replace(".", ","),
                     tkm: "R$ " + item.avgTicketWeekAgo.toFixed(2).replace(".", ","),
-                    fat: item.value != 0 ? ((item.valueWeekAgo/item.value)*100).toFixed(2).replace(".", ",") : '-',
-                    fat2: item.valueDayBefore != 0 ? ((item.valueWeekAgo/item.valueDayBefore)*100).toFixed(2).replace(".", ",") : '-',
+                    fat: ((item.valueWeekAgo/item.value)*100).toFixed(2),
+                    fat2: ((item.valueWeekAgo/item.valueDayBefore)*100).toFixed(2),
                   })
                   t.total_final_qtd_nf_3 += item.quantityWeekAgo
                   t.total_faturado_final_3 += item.valueWeekAgo
