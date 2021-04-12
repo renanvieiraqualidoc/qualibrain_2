@@ -70,7 +70,7 @@ header('Content-Type: text/html; charset=utf-8'); ?>
               <div class="columns is-desktop is-mobile">
                 <div class="column">
                   <h1 class="title">Tabela de hoje</h1>
-                  <b-table bordered striped narrowed sticky-header :data="data_1">
+                  <b-table bordered striped narrowed sticky-header :loading="loading" :data="data_1">
                     <b-table-column centered subheading="Total:"><template v-slot="props"></template></b-table-column>
                     <b-table-column field="hora" label="Hora" centered>
                         <template v-slot="props">
@@ -106,7 +106,7 @@ header('Content-Type: text/html; charset=utf-8'); ?>
                 </div>
                 <div class="column">
                   <h1 class="title">Tabela de ontem</h1>
-                  <b-table bordered striped narrowed sticky-header :data="data_2">
+                  <b-table bordered striped narrowed sticky-header :loading="loading" :data="data_2">
                     <b-table-column centered subheading="Total:"><template v-slot="props"></template></b-table-column>
                     <b-table-column field="qtd_nf" label="NF" centered :subheading="total_final_qtd_nf_2">
                         <template v-slot:header="{ column }">
@@ -154,7 +154,7 @@ header('Content-Type: text/html; charset=utf-8'); ?>
                 </div>
                 <div class="column">
                   <h1 class="title">Tabela da semana passada</h1>
-                  <b-table bordered striped narrowed sticky-header :data="data_3">
+                  <b-table bordered striped narrowed sticky-header :loading="loading" :data="data_3">
                     <b-table-column centered subheading="Total:"><template v-slot="props"></template></b-table-column>
                     <b-table-column field="qtd_nf" label="NF" centered :subheading="total_final_qtd_nf_3">
                         <template v-slot:header="{ column }">
