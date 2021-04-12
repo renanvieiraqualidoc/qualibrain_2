@@ -808,7 +808,7 @@ header('Content-Type: text/html; charset=utf-8'); ?>
                     hora: item.hour,
                     qtd_nf: item.quantity,
                     total_faturado: "R$ " + item.value.toFixed(2).replace(".", ","),
-                    tkm: "R$ " + (item.value/item.quantity).toFixed(2).replace(".", ",")
+                    tkm: item.value != 0 ? "R$ " + (item.value/item.quantity).toFixed(2).replace(".", ",") : '-'
                   })
                   t.total_final_qtd_nf_1 += item.quantity
                   t.total_faturado_final_1 += item.value
