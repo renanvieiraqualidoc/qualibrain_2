@@ -847,6 +847,7 @@ header('Content-Type: text/html; charset=utf-8'); ?>
                 t.avg_ticket_2 = "R$ " + (t.avg_ticket_2/response.data.items.length).toFixed(2).replace(".", ",")
                 t.total_faturado_final_3 = "R$ " + t.total_faturado_final_3.toFixed(2).replace(".", ",")
                 t.avg_ticket_3 = "R$ " + (t.avg_ticket_3/response.data.items.length).toFixed(2).replace(".", ",")
+                t.loading = false
             }).catch((error) => {
                 t.data_1 = []
                 t.data_2 = []
@@ -863,9 +864,9 @@ header('Content-Type: text/html; charset=utf-8'); ?>
                 t.avg_ticket_3 = 0
                 t.fat_comp_hj_2 = 0
                 t.fat_comp_ontem = 0
+                t.loading = false
                 throw error
             })
-            t.loading = false
           }
         },
         mounted() {
