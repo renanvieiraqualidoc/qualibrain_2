@@ -146,7 +146,7 @@ header('Content-Type: text/html; charset=utf-8'); ?>
                                       {'is-warning': props.row.fat >= 101 && props.row.fat <= 110},
                                       {'is-danger': props.row.fat > 110}
                                   ]">
-                              {{ props.row.fat }}%
+                              {{ props.row.fat == '-' ? '-' : props.row.fat.replace(".", ",") + '%' }}
                           </span>
                         </template>
                     </b-table-column>
@@ -194,7 +194,7 @@ header('Content-Type: text/html; charset=utf-8'); ?>
                                       {'is-warning': props.row.fat >= 101 && props.row.fat <= 110},
                                       {'is-danger': props.row.fat > 110}
                                   ]">
-                              {{ props.row.fat }}%
+                            {{ props.row.fat == '-' ? '-' : props.row.fat.replace(".", ",") + '%' }}
                           </span>
                         </template>
                     </b-table-column>
@@ -211,7 +211,7 @@ header('Content-Type: text/html; charset=utf-8'); ?>
                                       {'is-warning': props.row.fat2 >= 101 && props.row.fat2 <= 110},
                                       {'is-danger': props.row.fat2 > 110}
                                   ]">
-                              {{ props.row.fat2 }}%
+                              {{ props.row.fat2 == '-' ? '-' : props.row.fat2.replace(".", ",") + '%' }}
                           </span>
                         </template>
                     </b-table-column>
@@ -819,7 +819,7 @@ header('Content-Type: text/html; charset=utf-8'); ?>
                     qtd_nf: item.quantityDayBefore,
                     total_faturado: "R$ " + item.valueDayBefore.toFixed(2).replace(".", ","),
                     tkm: "R$ " + item.avgTicketDayBefore.toFixed(2).replace(".", ","),
-                    fat: ((item.valueDayBefore/item.value)*100).toFixed(2),
+                    fat: item.value != 0 ? ((item.valueDayBefore/item.value)*100).toFixed(2) : '-',
                   })
                   t.total_final_qtd_nf_2 += item.quantityDayBefore
                   t.total_faturado_final_2 += item.valueDayBefore
@@ -830,8 +830,8 @@ header('Content-Type: text/html; charset=utf-8'); ?>
                     qtd_nf: item.quantityWeekAgo,
                     total_faturado: "R$ " + item.valueWeekAgo.toFixed(2).replace(".", ","),
                     tkm: "R$ " + item.avgTicketWeekAgo.toFixed(2).replace(".", ","),
-                    fat: ((item.valueWeekAgo/item.value)*100).toFixed(2),
-                    fat2: ((item.valueWeekAgo/item.valueDayBefore)*100).toFixed(2),
+                    fat: item.value != 0 ? ((item.valueWeekAgo/item.value)*100).toFixed(2) : '-',
+                    fat2: item.valueDayBefore != 0 ? ((item.valueWeekAgo/item.valueDayBefore)*100).toFixed(2) : '-',
                   })
                   t.total_final_qtd_nf_3 += item.quantityWeekAgo
                   t.total_faturado_final_3 += item.valueWeekAgo
