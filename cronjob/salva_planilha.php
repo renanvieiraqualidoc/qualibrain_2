@@ -25,10 +25,6 @@ if($conn_id) { // Valida se o FTP realmente existe
              $zip->extractTo("../upload");
              $zip->close();
              $filenamecsv = '../upload/relatorio_qualidoc.csv';
-             // echo "<pre>";
-             // print_r($res);
-             // echo "</pre>";
-             // die("teste");
              $file = fopen($filenamecsv, "r");
              $sql = "INSERT INTO produtos_juridico (codigo, descricao, data, url_monitor, preco_custo, website_monitorado, url_monitorado, hora, preco_oferta) VALUES ";
              $i = 0;
@@ -37,7 +33,6 @@ if($conn_id) { // Valida se o FTP realmente existe
                  $fields = explode('";"', $getData[0]);
                  if(strpos(trim(explode(';"', $fields[0])[0]), 'IA-') === false) {
                    $fields_array = array();
-                   $data_csv = trim(implode('-', array_reverse(explode('/', str_replace('"', '', $fields[25])))));
                    array_push($fields_array,
                                              trim(explode(';"', $fields[0])[0]) ?? 0,
                                              '"'.trim(explode(';"', $fields[0])[1]).'"' ?? '',
@@ -56,11 +51,12 @@ if($conn_id) { // Valida se o FTP realmente existe
              fclose($file);
              $sql = substr($sql, 0, -2);
              $sql .= ";";
-             $dump = "../export_sql/data_".$data_csv.".txt";
+             $dump = "../export_sql/data.txt";
              $file_dump = fopen($dump, 'w');
              fwrite($file_dump, $sql);
              fclose($file_dump);
-             if(trim(shell_exec("mysql -h ".substr($DATABASE_HOST, 0, strpos($DATABASE_HOST, ':'))." -u$DATABASE_USER -p'$DATABASE_PASS' $DATABASE_NAME < $dump 2>&1"))
+             $host = ($DATABASE_HOST == "localhost") ? $DATABASE_HOST : substr($DATABASE_HOST, 0, strpos($DATABASE_HOST, ':'));
+             if(trim(shell_exec("mysql -h $host -u$DATABASE_USER -p'$DATABASE_PASS' $DATABASE_NAME < $dump 2>&1"))
                           == "mysql: [Warning] Using a password on the command line interface can be insecure.") {
                $msg = 'Planilha atualizada com sucesso!';
                $success = true;
@@ -70,6 +66,7 @@ if($conn_id) { // Valida se o FTP realmente existe
                $success = false;
              }
              unlink($filenamecsv);
+             unlink($file_path);
              ftp_close($conn_id);
          }
          else {
