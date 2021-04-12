@@ -6,7 +6,7 @@ error_reporting(E_ALL);
 //set_time_limit(0);
 
 // Iniciamos a função do CURL:
-$chA = curl_init("http://ultraclinica.totvscloud.com.br:2000/RMS/RMSSERVICES/ReportWebAPI/api/v1/SaleHistory/GetCompareSales?filial={$_GET['filial']}&dataVenda=".implode('-', array_reverse(explode('/', $_GET['data']))));
+$chA = curl_init("http://ultraclinica.totvscloud.com.br:2000/RMS/RMSSERVICES/ReportWebAPI/api/v1/SaleHistory/GetCompareSales?filial={$_GET['filial']}&dataVenda={$_GET['data']}");
 
 curl_setopt_array($chA, [
     CURLOPT_CUSTOMREQUEST => 'GET', // Equivalente ao -X:

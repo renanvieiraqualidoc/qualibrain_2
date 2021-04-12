@@ -60,7 +60,7 @@ header('Content-Type: text/html; charset=utf-8'); ?>
                 &nbsp;&nbsp;&nbsp;&nbsp;
                 <b-datepicker
                     v-model="date"
-                    locale="pt-BR"
+                    locale="pt-CA"
                     @blur="loadAsyncData"
                     placeholder="Data">
                 </b-datepicker>
@@ -786,7 +786,7 @@ header('Content-Type: text/html; charset=utf-8'); ?>
             //   "item":null
             // }
 
-            axios.get("api.php?filial=" + this.filial + "&data=" + ((this.date == null) ? '' : this.date.toLocaleDateString())).then((response) => {
+            axios.get("api.php?filial=" + this.filial + "&data=" + this.date.toLocaleDateString('en-CA')).then((response) => {
                 t.data_1 = []
                 t.data_2 = []
                 t.data_3 = []
