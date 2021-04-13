@@ -77,7 +77,7 @@ header('Content-Type: text/html; charset=utf-8'); ?>
             <section>
               <div class="columns is-desktop is-mobile">
                 <div class="column">
-                  <b-table bordered striped narrowed sticky-header :loading="loading" :data="data">
+                  <b-table bordered striped narrowed sticky-header focusable :selected.sync="selected" :loading="loading" :data="data">
                     <b-table-column centered :label="date.toLocaleDateString('pt-BR')" cell-class="is-sticky-column-one" header-class="is-sticky-column-one"><template v-slot="props"></template></b-table-column>
                     <b-table-column field="hora" label="Hora" :td-attrs="columnTdAttrs" centered>
                         <template v-slot="props">
@@ -101,12 +101,12 @@ header('Content-Type: text/html; charset=utf-8'); ?>
                           </b-tooltip>
                         </template>
                         <template v-slot="props">
-                            {{ props.row.total_faturado_1 }}
+                            {{ props.row.total_faturado_1.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) }}
                         </template>
                     </b-table-column>
                     <b-table-column field="tkm" label="TKM" centered :td-attrs="columnTdAttrs">
                         <template v-slot="props">
-                            {{ props.row.tkm_1 }}
+                            {{ props.row.tkm_1.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) }}
                         </template>
                     </b-table-column>
                     <b-table-column centered :label="date_ontem.toLocaleDateString('pt-BR')" cell-class="is-sticky-column-two" header-class="is-sticky-column-two"><template v-slot="props"></template></b-table-column>
@@ -127,12 +127,12 @@ header('Content-Type: text/html; charset=utf-8'); ?>
                           </b-tooltip>
                         </template>
                         <template v-slot="props">
-                            {{ props.row.total_faturado_2 }}
+                            {{ props.row.total_faturado_2.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) }}
                         </template>
                     </b-table-column>
                     <b-table-column field="tkm" label="TKM" centered :td-attrs="columnTdAttrs">
                         <template v-slot="props">
-                            {{ props.row.tkm_2 }}
+                            {{ props.row.tkm_2.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) }}
                         </template>
                     </b-table-column>
                     <b-table-column field="fat" label="Fat. Comp. Hoje" centered :td-attrs="columnTdAttrs">
@@ -170,12 +170,12 @@ header('Content-Type: text/html; charset=utf-8'); ?>
                           </b-tooltip>
                         </template>
                         <template v-slot="props">
-                            {{ props.row.total_faturado_3 }}
+                            {{ props.row.total_faturado_3.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) }}
                         </template>
                     </b-table-column>
                     <b-table-column field="tkm" label="TKM" centered :td-attrs="columnTdAttrs">
                         <template v-slot="props">
-                            {{ props.row.tkm_3 }}
+                            {{ props.row.tkm_3.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) }}
                         </template>
                     </b-table-column>
                     <b-table-column field="fat" label="Fat. Comp. Hoje" centered :td-attrs="columnTdAttrs">
@@ -257,6 +257,7 @@ header('Content-Type: text/html; charset=utf-8'); ?>
         el: '#app',
         data() {
             return {
+                selected: null,
                 date: new Date(),
                 date_ontem: new Date(),
                 date_semana_passada: new Date(),
@@ -284,115 +285,225 @@ header('Content-Type: text/html; charset=utf-8'); ?>
                       return {
                           class: 'has-text-weight-bold',
                           style: {
-                              'text-align': 'left !important'
+                              'font-size': '0.75rem'
                           }
                       }
                   }
               }
-              return null
+              return {
+                  style: {
+                      'font-size': '0.75rem'
+                  }
+              }
+          },
+          clear() {
+              this.data = []
+              this.total_final_qtd_nf_1 = 0
+              this.total_faturado_final_1 = 0
+              this.avg_ticket = 0
+              this.total_final_qtd_nf_2 = 0
+              this.total_faturado_final_2 = 0
+              this.avg_ticket_2 = 0
+              this.fat_comp_hj_1 = 0
+              this.total_final_qtd_nf_3 = 0
+              this.total_faturado_final_3 = 0
+              this.avg_ticket_3 = 0
+              this.fat_comp_hj_2 = 0
+              this.fat_comp_ontem = 0
           },
           loadAsyncData() {
             const t = this
             this.loading = true
-            // let response = []
-            // response.data = {
-            //   "items": [{
-            //         "hour":0,
-            //         "date":"08/04/2021 00:00:00",
-            //         "quantity":20,
-            //         "value":2346.86,
-            //         "avgTicket":117.34,
-            //         "dayBefore":"07/04/2021 00:00:00",
-            //         "quantityDayBefore":7,
-            //         "valueDayBefore":487.23,
-            //         "avgTicketDayBefore":69.6,
-            //         "weekAgo":"01/04/2021 00:00:00",
-            //         "quantityWeekAgo":28,
-            //         "valueWeekAgo":3606.4,
-            //         "avgTicketWeekAgo":128.8
-            //     },
-            //     {
-            //         "hour":1,
-            //         "date":"08/04/2021 00:00:00",
-            //         "quantity":5,
-            //         "value":2040.6,
-            //         "avgTicket":408.12,
-            //         "dayBefore":"07/04/2021 00:00:00",
-            //         "quantityDayBefore":3,
-            //         "valueDayBefore":352.49,
-            //         "avgTicketDayBefore":117.5,
-            //         "weekAgo":"01/04/2021 00:00:00",
-            //         "quantityWeekAgo":6,
-            //         "valueWeekAgo":497.82,
-            //         "avgTicketWeekAgo":82.97
-            //     },
-            //     {
-            //         "hour":2,
-            //         "date":"08/04/2021 00:00:00",
-            //         "quantity":5,
-            //         "value":783.25,
-            //         "avgTicket":156.65,
-            //         "dayBefore":"07/04/2021 00:00:00",
-            //         "quantityDayBefore":3,
-            //         "valueDayBefore":168.92,
-            //         "avgTicketDayBefore":56.31,
-            //         "weekAgo":"01/04/2021 00:00:00",
-            //         "quantityWeekAgo":3,
-            //         "valueWeekAgo":260.17,
-            //         "avgTicketWeekAgo":86.72
-            //     },
-            //     {
-            //         "hour":3,
-            //         "date":"08/04/2021 00:00:00",
-            //         "quantity":3,
-            //         "value":261.58,
-            //         "avgTicket":87.19,
-            //         "dayBefore":"07/04/2021 00:00:00",
-            //         "quantityDayBefore":1,
-            //         "valueDayBefore":47.72,
-            //         "avgTicketDayBefore":47.72,
-            //         "weekAgo":"01/04/2021 00:00:00",
-            //         "quantityWeekAgo":3,
-            //         "valueWeekAgo":126.77,
-            //         "avgTicketWeekAgo":42.26
-            //     }
-            //   ],
-            //   "quantityItems":4,
-            //   "item":null
-            // }
+            let response = []
+            response.data = {
+              "items": [{
+                    "hour":0,
+                    "date":"08/04/2021 00:00:00",
+                    "quantity":20,
+                    "value":2346.86,
+                    "avgTicket":117.34,
+                    "dayBefore":"07/04/2021 00:00:00",
+                    "quantityDayBefore":7,
+                    "valueDayBefore":487.23,
+                    "avgTicketDayBefore":69.6,
+                    "weekAgo":"01/04/2021 00:00:00",
+                    "quantityWeekAgo":28,
+                    "valueWeekAgo":3606.4,
+                    "avgTicketWeekAgo":128.8
+                },
+                {
+                    "hour":1,
+                    "date":"08/04/2021 00:00:00",
+                    "quantity":5,
+                    "value":2040.6,
+                    "avgTicket":408.12,
+                    "dayBefore":"07/04/2021 00:00:00",
+                    "quantityDayBefore":3,
+                    "valueDayBefore":352.49,
+                    "avgTicketDayBefore":117.5,
+                    "weekAgo":"01/04/2021 00:00:00",
+                    "quantityWeekAgo":6,
+                    "valueWeekAgo":497.82,
+                    "avgTicketWeekAgo":82.97
+                },
+                {
+                    "hour":1,
+                    "date":"08/04/2021 00:00:00",
+                    "quantity":5,
+                    "value":2040.6,
+                    "avgTicket":408.12,
+                    "dayBefore":"07/04/2021 00:00:00",
+                    "quantityDayBefore":3,
+                    "valueDayBefore":352.49,
+                    "avgTicketDayBefore":117.5,
+                    "weekAgo":"01/04/2021 00:00:00",
+                    "quantityWeekAgo":6,
+                    "valueWeekAgo":497.82,
+                    "avgTicketWeekAgo":82.97
+                },
+                {
+                    "hour":1,
+                    "date":"08/04/2021 00:00:00",
+                    "quantity":5,
+                    "value":2040.6,
+                    "avgTicket":408.12,
+                    "dayBefore":"07/04/2021 00:00:00",
+                    "quantityDayBefore":3,
+                    "valueDayBefore":352.49,
+                    "avgTicketDayBefore":117.5,
+                    "weekAgo":"01/04/2021 00:00:00",
+                    "quantityWeekAgo":6,
+                    "valueWeekAgo":497.82,
+                    "avgTicketWeekAgo":82.97
+                },
+                {
+                    "hour":1,
+                    "date":"08/04/2021 00:00:00",
+                    "quantity":5,
+                    "value":2040.6,
+                    "avgTicket":408.12,
+                    "dayBefore":"07/04/2021 00:00:00",
+                    "quantityDayBefore":3,
+                    "valueDayBefore":352.49,
+                    "avgTicketDayBefore":117.5,
+                    "weekAgo":"01/04/2021 00:00:00",
+                    "quantityWeekAgo":6,
+                    "valueWeekAgo":497.82,
+                    "avgTicketWeekAgo":82.97
+                },
+                {
+                    "hour":1,
+                    "date":"08/04/2021 00:00:00",
+                    "quantity":5,
+                    "value":2040.6,
+                    "avgTicket":408.12,
+                    "dayBefore":"07/04/2021 00:00:00",
+                    "quantityDayBefore":3,
+                    "valueDayBefore":352.49,
+                    "avgTicketDayBefore":117.5,
+                    "weekAgo":"01/04/2021 00:00:00",
+                    "quantityWeekAgo":6,
+                    "valueWeekAgo":497.82,
+                    "avgTicketWeekAgo":82.97
+                },
+                {
+                    "hour":1,
+                    "date":"08/04/2021 00:00:00",
+                    "quantity":5,
+                    "value":2040.6,
+                    "avgTicket":408.12,
+                    "dayBefore":"07/04/2021 00:00:00",
+                    "quantityDayBefore":3,
+                    "valueDayBefore":352.49,
+                    "avgTicketDayBefore":117.5,
+                    "weekAgo":"01/04/2021 00:00:00",
+                    "quantityWeekAgo":6,
+                    "valueWeekAgo":497.82,
+                    "avgTicketWeekAgo":82.97
+                },
+                {
+                    "hour":1,
+                    "date":"08/04/2021 00:00:00",
+                    "quantity":5,
+                    "value":2040.6,
+                    "avgTicket":408.12,
+                    "dayBefore":"07/04/2021 00:00:00",
+                    "quantityDayBefore":3,
+                    "valueDayBefore":352.49,
+                    "avgTicketDayBefore":117.5,
+                    "weekAgo":"01/04/2021 00:00:00",
+                    "quantityWeekAgo":6,
+                    "valueWeekAgo":497.82,
+                    "avgTicketWeekAgo":82.97
+                },
+                {
+                    "hour":1,
+                    "date":"08/04/2021 00:00:00",
+                    "quantity":5,
+                    "value":2040.6,
+                    "avgTicket":408.12,
+                    "dayBefore":"07/04/2021 00:00:00",
+                    "quantityDayBefore":3,
+                    "valueDayBefore":352.49,
+                    "avgTicketDayBefore":117.5,
+                    "weekAgo":"01/04/2021 00:00:00",
+                    "quantityWeekAgo":6,
+                    "valueWeekAgo":497.82,
+                    "avgTicketWeekAgo":82.97
+                },
+                {
+                    "hour":2,
+                    "date":"08/04/2021 00:00:00",
+                    "quantity":5,
+                    "value":783.25,
+                    "avgTicket":156.65,
+                    "dayBefore":"07/04/2021 00:00:00",
+                    "quantityDayBefore":3,
+                    "valueDayBefore":168.92,
+                    "avgTicketDayBefore":56.31,
+                    "weekAgo":"01/04/2021 00:00:00",
+                    "quantityWeekAgo":3,
+                    "valueWeekAgo":260.17,
+                    "avgTicketWeekAgo":86.72
+                },
+                {
+                    "hour":3,
+                    "date":"08/04/2021 00:00:00",
+                    "quantity":3,
+                    "value":261.58,
+                    "avgTicket":87.19,
+                    "dayBefore":"07/04/2021 00:00:00",
+                    "quantityDayBefore":1,
+                    "valueDayBefore":47.72,
+                    "avgTicketDayBefore":47.72,
+                    "weekAgo":"01/04/2021 00:00:00",
+                    "quantityWeekAgo":3,
+                    "valueWeekAgo":126.77,
+                    "avgTicketWeekAgo":42.26
+                }
+              ],
+              "quantityItems":4,
+              "item":null
+            }
 
-            axios.get("api.php?filial=" + this.filial + "&data=" + this.date.toLocaleDateString('en-CA')).then((response) => {
-                t.data_1 = []
-                t.data_2 = []
-                t.data_3 = []
-                t.total_final_qtd_nf_1 = 0
-                t.total_faturado_final_1 = 0
-                t.avg_ticket = 0
-                t.total_final_qtd_nf_2 = 0
-                t.total_faturado_final_2 = 0
-                t.avg_ticket_2 = 0
-                t.fat_comp_hj_1 = 0
-                t.total_final_qtd_nf_3 = 0
-                t.total_faturado_final_3 = 0
-                t.avg_ticket_3 = 0
-                t.fat_comp_hj_2 = 0
-                t.fat_comp_ontem = 0
+            // axios.get("api.php?filial=" + this.filial + "&data=" + this.date.toLocaleDateString('en-CA')).then((response) => {
+                t.clear()
                 response.data.items.forEach((item) => {
                   t.data.push({
                     // Tabela de hoje
                     hora: item.hour,
                     qtd_nf_1: item.quantity,
-                    total_faturado_1: "R$ " + item.value.toFixed(2).replace(".", ","),
-                    tkm_1: item.value != 0 ? "R$ " + (item.value/item.quantity).toFixed(2).replace(".", ",") : '-',
+                    total_faturado_1: item.value,
+                    tkm_1: item.value != 0 ? (item.value/item.quantity) : '-',
                     // Tabela de ontem
                     qtd_nf_2: item.quantityDayBefore,
-                    total_faturado_2: "R$ " + item.valueDayBefore.toFixed(2).replace(".", ","),
-                    tkm_2: "R$ " + item.avgTicketDayBefore.toFixed(2).replace(".", ","),
+                    total_faturado_2: item.valueDayBefore,
+                    tkm_2: item.avgTicketDayBefore,
                     fat_1: item.value != 0 ? ((item.valueDayBefore/item.value)*100).toFixed(2) : '-',
                     // Tabela da semana passada
                     qtd_nf_3: item.quantityWeekAgo,
-                    total_faturado_3: "R$ " + item.valueWeekAgo.toFixed(2).replace(".", ","),
-                    tkm_3: "R$ " + item.avgTicketWeekAgo.toFixed(2).replace(".", ","),
+                    total_faturado_3: item.valueWeekAgo,
+                    tkm_3: item.avgTicketWeekAgo,
                     fat_2: item.value != 0 ? ((item.valueWeekAgo/item.value)*100).toFixed(2) : '-',
                     fat_3: item.valueDayBefore != 0 ? ((item.valueWeekAgo/item.valueDayBefore)*100).toFixed(2) : '-'
                   })
@@ -411,12 +522,9 @@ header('Content-Type: text/html; charset=utf-8'); ?>
                 t.fat_comp_hj_1 = ((t.total_faturado_final_2/t.total_faturado_final_1)*100).toFixed(2)
                 t.fat_comp_hj_2 = ((t.total_faturado_final_3/t.total_faturado_final_1)*100).toFixed(2)
                 t.fat_comp_ontem = ((t.total_faturado_final_3/t.total_faturado_final_2)*100).toFixed(2)
-                t.total_faturado_final_1 = "R$ " + t.total_faturado_final_1.toFixed(2).replace(".", ",")
-                t.avg_ticket = "R$ " + (t.avg_ticket/response.data.items.length).toFixed(2).replace(".", ",")
-                t.total_faturado_final_2 = "R$ " + t.total_faturado_final_2.toFixed(2).replace(".", ",")
-                t.avg_ticket_2 = "R$ " + (t.avg_ticket_2/response.data.items.length).toFixed(2).replace(".", ",")
-                t.total_faturado_final_3 = "R$ " + t.total_faturado_final_3.toFixed(2).replace(".", ",")
-                t.avg_ticket_3 = "R$ " + (t.avg_ticket_3/response.data.items.length).toFixed(2).replace(".", ",")
+                t.avg_ticket = (t.avg_ticket/response.data.items.length)
+                t.avg_ticket_2 = (t.avg_ticket_2/response.data.items.length)
+                t.avg_ticket_3 = (t.avg_ticket_3/response.data.items.length)
 
                 // Totais
                 t.data.push({
@@ -444,23 +552,11 @@ header('Content-Type: text/html; charset=utf-8'); ?>
                 t.date_ontem.setDate(t.date.getDate() - 1)
                 t.date_semana_passada.setDate(t.date.getDate() - 7)
                 t.loading = false
-            }).catch((error) => {
-                t.data = []
-                t.total_final_qtd_nf_1 = 0
-                t.total_faturado_final_1 = 0
-                t.avg_ticket = 0
-                t.total_final_qtd_nf_2 = 0
-                t.total_faturado_final_2 = 0
-                t.avg_ticket_2 = 0
-                t.fat_comp_hj_1 = 0
-                t.total_final_qtd_nf_3 = 0
-                t.total_faturado_final_3 = 0
-                t.avg_ticket_3 = 0
-                t.fat_comp_hj_2 = 0
-                t.fat_comp_ontem = 0
-                t.loading = false
-                throw error
-            })
+            // }).catch((error) => {
+            //     t.clear()
+            //     t.loading = false
+            //     throw error
+            // })
           }
         },
         mounted() {
@@ -481,5 +577,9 @@ header('Content-Type: text/html; charset=utf-8'); ?>
 .is-sticky-column-three {
     background: #949a96 !important;
     color: white !important;
+}
+.table tr.is-selected {
+    background: #d4d2d8 !important;
+    color: #0a0a0a !important;
 }
 </style>
